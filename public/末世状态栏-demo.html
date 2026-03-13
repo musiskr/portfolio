@@ -1,0 +1,1134 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- disable-default-loading -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Sans+SC:wght@300;400;600;700&display=swap');
+
+:root {
+  --toxic-green: #39FF14;
+  --toxic-dim: #1a3d00;
+  --blood-red: #8B0000;
+  --blood-bright: #CC0000;
+  --warning-amber: #FF6B00;
+  --bone-white: #D4C5A9;
+  --panel-bg: #0d0d0a;
+  --card-bg: #141410;
+  --ice-blue: #00d4ff;
+  --fire-orange: #ff4500;
+  --scanline: rgba(0,0,0,0.1);
+  --grid-line: rgba(57, 255, 20, 0.05);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: transparent;
+  color: var(--bone-white);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ===== 主容器 ===== */
+.apocalypse-hub {
+  max-width: 402px;
+  margin: 16px auto;
+  background: linear-gradient(135deg, #0d0d0a 0%, #12120e 50%, #0a0a06 100%);
+  border: 1px solid var(--toxic-dim);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 0 30px rgba(0,0,0,0.8), 0 0 60px rgba(57,255,20,0.05);
+}
+
+.apocalypse-hub::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, var(--scanline) 2px, var(--scanline) 4px);
+  pointer-events: none;
+  z-index: 100;
+  animation: scanDrift 10s linear infinite;
+}
+
+.apocalypse-hub.open::before { opacity: 0.2; animation: none; }
+
+@keyframes scanDrift {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(4px); }
+}
+
+.apocalypse-hub::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes powerFlicker {
+  0%, 100% { opacity: 1; }
+  93% { opacity: 0.7; filter: brightness(0.8); }
+  95% { opacity: 0.6; filter: brightness(1.2); }
+  96% { opacity: 1; filter: none; }
+}
+
+.apocalypse-hub:not(.open) { animation: powerFlicker 12s infinite; }
+
+@keyframes powerOutage {
+  0%, 100% { opacity: 1; }
+  10% { opacity: 0.2; filter: brightness(0.15); }
+  15% { opacity: 0.1; }
+  20% { opacity: 0.85; }
+  50% { opacity: 0.1; }
+  55% { opacity: 0.8; }
+  70% { opacity: 0.15; }
+  75% { opacity: 1; }
+}
+
+.apocalypse-hub.low-power:not(.open) { animation: powerOutage 8s infinite; }
+.apocalypse-hub.open { animation: none; }
+
+/* ===== 冰冻特效 ===== */
+.freeze-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none; z-index: 2000; opacity: 0; transition: opacity 1s;
+}
+.freeze-overlay.active { opacity: 1; }
+.freeze-frost {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(0,212,255,0.18) 0%, transparent 45%),
+    radial-gradient(ellipse at 100% 0%, rgba(0,212,255,0.15) 0%, transparent 40%),
+    radial-gradient(ellipse at 0% 100%, rgba(0,212,255,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 100%, rgba(0,212,255,0.16) 0%, transparent 42%);
+  animation: frostPulse 4s ease-in-out infinite;
+}
+@keyframes frostPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.85; } }
+.ice-crystal {
+  position: absolute; width: 3px;
+  background: linear-gradient(180deg, var(--ice-blue), rgba(0,212,255,0.3), transparent);
+  opacity: 0.7; animation: crystalGrow 3s ease-in-out infinite;
+}
+@keyframes crystalGrow { 0%, 100% { transform: scaleY(0.4); opacity: 0.3; } 50% { transform: scaleY(1); opacity: 0.85; } }
+.ice-crystal:nth-child(1) { top: 3%; left: 6%; height: 25px; }
+.ice-crystal:nth-child(2) { top: 8%; right: 12%; height: 30px; animation-delay: 0.5s; }
+.ice-crystal:nth-child(3) { bottom: 15%; left: 4%; height: 22px; animation-delay: 1s; }
+.ice-crystal:nth-child(4) { top: 25%; right: 6%; height: 20px; animation-delay: 1.5s; }
+.ice-crystal:nth-child(5) { bottom: 8%; right: 18%; height: 28px; animation-delay: 2s; }
+.ice-crystal:nth-child(6) { top: 45%; left: 2%; height: 18px; animation-delay: 0.8s; }
+.freeze-vignette {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  box-shadow: inset 0 0 100px 30px rgba(0,180,220,0.15);
+  animation: vignetteBreath 5s ease-in-out infinite;
+}
+@keyframes vignetteBreath { 0%, 100% { box-shadow: inset 0 0 100px 30px rgba(0,180,220,0.1); } 50% { box-shadow: inset 0 0 120px 50px rgba(0,180,220,0.2); } }
+
+/* ===== 火灾特效 ===== */
+.fire-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none; z-index: 2000; opacity: 0; transition: opacity 1s;
+}
+.fire-overlay.active { opacity: 1; }
+.fire-glow {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 45%;
+  background: linear-gradient(180deg, transparent 0%, rgba(255,69,0,0.08) 40%, rgba(255,69,0,0.2) 70%, rgba(255,100,0,0.35) 100%);
+  animation: fireGlow 1.5s ease-in-out infinite;
+}
+@keyframes fireGlow { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+.fire-ember {
+  position: absolute; width: 5px; height: 5px;
+  background: radial-gradient(circle, #ffcc00, var(--fire-orange));
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--fire-orange), 0 0 15px rgba(255,69,0,0.6);
+  animation: emberFloat 3.5s ease-out infinite;
+}
+@keyframes emberFloat { 0% { transform: translateY(100vh) scale(1); opacity: 1; } 100% { transform: translateY(-15vh) scale(0.2); opacity: 0; } }
+.fire-ember:nth-child(1) { left: 8%; animation-delay: 0s; animation-duration: 3s; }
+.fire-ember:nth-child(2) { left: 20%; animation-delay: 0.6s; animation-duration: 3.5s; }
+.fire-ember:nth-child(3) { left: 35%; animation-delay: 1.2s; animation-duration: 2.8s; }
+.fire-ember:nth-child(4) { left: 50%; animation-delay: 0.3s; animation-duration: 4s; }
+.fire-ember:nth-child(5) { left: 65%; animation-delay: 1.8s; animation-duration: 3.2s; }
+.fire-ember:nth-child(6) { left: 80%; animation-delay: 0.9s; animation-duration: 3.6s; }
+.fire-ember:nth-child(7) { left: 92%; animation-delay: 2.1s; animation-duration: 2.9s; }
+.fire-flicker {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255,80,0,0.02); animation: fireFlicker 0.12s steps(2) infinite;
+}
+@keyframes fireFlicker { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.5; } }
+.fire-vignette { position: absolute; top: 0; left: 0; right: 0; bottom: 0; box-shadow: inset 0 0 80px 20px rgba(255,69,0,0.1); }
+
+/* ===== 雾天效果 ===== */
+.weather-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none; z-index: 1000; opacity: 0; transition: opacity 1s;
+}
+.weather-overlay.active { opacity: 1; }
+.fog-layer {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse 90% 60% at 15% 25%, rgba(180,180,180,0.1) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 75% 55%, rgba(180,180,180,0.08) 0%, transparent 50%);
+  animation: fogDrift 25s ease-in-out infinite;
+}
+@keyframes fogDrift { 0%, 100% { transform: translateX(-4%); opacity: 0.65; } 50% { transform: translateX(4%); opacity: 0.85; } }
+.fog-particle {
+  position: absolute;
+  background: radial-gradient(ellipse at center, rgba(200,200,200,0.08) 0%, transparent 70%);
+  border-radius: 50%; animation: fogFloat 18s ease-in-out infinite;
+}
+.fog-particle:nth-child(1) { top: 8%; left: 3%; width: 180px; height: 100px; }
+.fog-particle:nth-child(2) { top: 25%; right: 8%; width: 220px; height: 120px; animation-delay: 4s; }
+.fog-particle:nth-child(3) { bottom: 18%; left: 15%; width: 200px; height: 110px; animation-delay: 8s; }
+@keyframes fogFloat { 0%, 100% { transform: translateX(0) scale(1); opacity: 0.4; } 50% { transform: translateX(40px) scale(1.15); opacity: 0.75; } }
+
+/* ===== 警告条 ===== */
+.hazard-strip {
+  display: flex; align-items: center; justify-content: center; gap: 40px; padding: 6px 16px;
+  background: repeating-linear-gradient(-45deg, var(--blood-red), var(--blood-red) 10px, #1a0000 10px, #1a0000 20px);
+  background-size: 28.28px 28.28px; animation: stripScroll 3s linear infinite;
+  position: relative; z-index: 10;
+}
+@keyframes stripScroll { 0% { background-position: 0 0; } 100% { background-position: 28.28px 0; } }
+.hazard-text {
+  font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--bone-white);
+  text-transform: uppercase; letter-spacing: 3px;
+  text-shadow: 0 0 8px var(--blood-bright); animation: textPulse 2s ease-in-out infinite;
+}
+@keyframes textPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+/* ===== 顶栏 ===== */
+.hub-header {
+  display: grid; grid-template-columns: auto 1fr auto auto auto;
+  align-items: center; gap: 14px; padding: 14px 18px;
+  background: rgba(0,0,0,0.5); border-bottom: 1px solid var(--toxic-dim);
+  position: relative; z-index: 10; cursor: pointer;
+}
+.hub-header:hover { background: rgba(57,255,20,0.03); }
+.day-display { display: flex; flex-direction: column; align-items: center; padding-right: 14px; border-right: 1px solid rgba(57,255,20,0.1); }
+.day-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--toxic-green); text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; }
+.day-num { font-family: 'Share Tech Mono', monospace; font-size: 26px; font-weight: 700; color: var(--toxic-green); line-height: 1; text-shadow: 0 0 15px var(--toxic-green), 0 0 30px rgba(57,255,20,0.4); }
+.location-block { display: flex; flex-direction: column; gap: 4px; }
+.loc-main { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--bone-white); letter-spacing: 0.5px; }
+.loc-icon { width: 8px; height: 8px; background: var(--warning-amber); border-radius: 50%; box-shadow: 0 0 8px var(--warning-amber); animation: locPulse 2s infinite; flex-shrink: 0; }
+@keyframes locPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.7; } }
+.loc-meta { display: flex; gap: 12px; font-size: 10px; color: rgba(212,197,169,0.55); }
+
+/* 电池 */
+.battery-indicator { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--toxic-dim); border-radius: 3px; }
+.battery-indicator.low-battery { border-color: var(--blood-bright); animation: batteryAlarm 1s infinite; }
+@keyframes batteryAlarm { 0%, 100% { border-color: var(--blood-bright); box-shadow: 0 0 10px rgba(204,0,0,0.6); } 50% { border-color: var(--toxic-dim); box-shadow: none; } }
+.battery-icon { position: relative; width: 28px; height: 14px; border: 2px solid var(--toxic-green); border-radius: 2px; display: flex; align-items: center; padding: 2px; gap: 1px; }
+.battery-indicator.low-battery .battery-icon { border-color: var(--blood-bright); }
+.battery-icon::after { content: ''; position: absolute; right: -5px; top: 50%; transform: translateY(-50%); width: 3px; height: 6px; background: var(--toxic-green); border-radius: 0 1px 1px 0; }
+.battery-indicator.low-battery .battery-icon::after { background: var(--blood-bright); }
+.battery-seg { flex: 1; height: 100%; background: rgba(57,255,20,0.15); border-radius: 1px; }
+.battery-seg.active { background: var(--toxic-green); box-shadow: 0 0 4px var(--toxic-green); }
+.battery-seg.danger { background: var(--blood-bright); box-shadow: 0 0 4px var(--blood-bright); animation: segBlink 0.5s infinite; }
+@keyframes segBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.battery-text { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--toxic-green); }
+.battery-indicator.low-battery .battery-text { color: var(--blood-bright); animation: textPulse 0.5s infinite; }
+
+/* 时间 */
+.time-block { text-align: right; padding-left: 14px; border-left: 1px solid rgba(57,255,20,0.1); }
+.time-main { font-family: 'Share Tech Mono', monospace; font-size: 20px; color: var(--toxic-green); letter-spacing: 2px; text-shadow: 0 0 10px var(--toxic-green); }
+.time-period { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--warning-amber); text-transform: uppercase; }
+.toggle-btn { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: rgba(57,255,20,0.08); border: 1px solid var(--toxic-dim); border-radius: 3px; color: var(--toxic-green); font-size: 12px; transition: transform 0.3s; cursor: pointer; }
+.apocalypse-hub.open .toggle-btn { transform: rotate(180deg); }
+
+/* 主内容区 */
+.hub-content { position: relative; z-index: 10; max-height: 0; overflow: hidden; transition: max-height 0.5s ease; }
+.apocalypse-hub.open .hub-content { max-height: 5000px; }
+
+/* 威胁条 */
+.threat-bar { display: flex; align-items: center; gap: 12px; padding: 10px 18px; background: rgba(139,0,0,0.1); border-bottom: 1px solid var(--toxic-dim); }
+.threat-label { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--blood-bright); text-transform: uppercase; letter-spacing: 2px; display: flex; align-items: center; gap: 5px; }
+.threat-label::before { content: '⚠'; animation: warnBlink 1s infinite; }
+@keyframes warnBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.threat-track { flex: 1; height: 8px; background: rgba(0,0,0,0.5); border: 1px solid var(--toxic-dim); border-radius: 2px; overflow: hidden; display: flex; gap: 2px; padding: 1px; }
+.threat-seg { flex: 1; background: rgba(30,30,25,0.6); border-radius: 1px; }
+.threat-seg.active-safe { background: var(--toxic-green); box-shadow: 0 0 6px var(--toxic-green); }
+.threat-seg.active-warn { background: var(--warning-amber); box-shadow: 0 0 6px var(--warning-amber); }
+.threat-seg.active-danger { background: var(--blood-bright); animation: dangerPulse 0.6s infinite; }
+@keyframes dangerPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+.threat-status { font-family: 'Share Tech Mono', monospace; font-size: 11px; min-width: 65px; text-align: right; text-transform: uppercase; }
+.threat-status.safe { color: var(--toxic-green); }
+.threat-status.warn { color: var(--warning-amber); }
+.threat-status.danger { color: var(--blood-bright); animation: warnBlink 0.5s infinite; }
+
+/* 导航标签栏 */
+.nav-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--toxic-dim); border-bottom: 1px solid var(--toxic-dim); }
+.nav-tab { padding: 12px 10px; background: var(--panel-bg); text-align: center; cursor: pointer; position: relative; }
+.nav-tab::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--toxic-green); transform: scaleX(0); transition: transform 0.3s; }
+.nav-tab:hover { background: rgba(57,255,20,0.05); }
+.nav-tab.active { background: rgba(57,255,20,0.08); }
+.nav-tab.active::after { transform: scaleX(1); }
+.tab-icon { font-size: 18px; margin-bottom: 4px; }
+.tab-label { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--toxic-green); text-transform: uppercase; letter-spacing: 1px; }
+.nav-tab:not(.active) .tab-label { color: rgba(212,197,169,0.5); }
+
+/* 内容面板 */
+.tab-panel { display: none; padding: 16px; background: var(--panel-bg); min-height: 420px; }
+.tab-panel.active { display: block; }
+
+/* 人物面板 */
+.character-section { display: flex; flex-direction: column; gap: 16px; }
+.portraits-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* 角色卡片翻转 */
+.char-card { background: var(--card-bg); border: 1px solid var(--toxic-dim); border-radius: 4px; overflow: hidden; cursor: pointer; perspective: 1000px; height: 290px; }
+.char-card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.6s; }
+.char-card.flipped .char-card-inner { transform: rotateY(180deg); }
+.char-front, .char-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; overflow: hidden; }
+.char-back { transform: rotateY(180deg); background: var(--card-bg); overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--toxic-dim) transparent; }
+.char-back::-webkit-scrollbar { width: 4px; }
+.char-back::-webkit-scrollbar-thumb { background: var(--toxic-dim); border-radius: 2px; }
+.char-visual { height: 150px; position: relative; overflow: hidden; background: linear-gradient(180deg, #0f0f0a 0%, #1a1a14 50%, #0f0f0a 100%); display:flex; align-items:center; justify-content:center; }
+.char-visual img { width: 100%; height: 100%; object-fit: cover; object-position: top center; opacity: 0.9; } .char-visual img[src=""] { display:none; } .char-visual::before { content: "☣"; font-size: 42px; color: rgba(57,255,20,0.12); position: absolute; z-index:1; }
+.char-visual::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: linear-gradient(transparent, var(--card-bg)); }
+.char-info { padding: 12px; }
+.char-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.char-name { font-size: 15px; font-weight: 600; color: var(--bone-white); }
+.char-race { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--toxic-green); text-transform: uppercase; padding: 2px 6px; background: rgba(57,255,20,0.1); border-radius: 2px; }
+.char-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.c-tag { font-size: 9px; padding: 2px 6px; border-radius: 2px; background: rgba(0,0,0,0.4); border: 1px solid rgba(57,255,20,0.1); }
+.c-tag.good { color: var(--toxic-green); border-color: rgba(57,255,20,0.2); }
+.c-tag.warn { color: var(--warning-amber); border-color: rgba(255,107,0,0.2); }
+.c-tag.danger { color: var(--blood-bright); border-color: rgba(204,0,0,0.2); }
+.tap-hint { font-family: 'Share Tech Mono', monospace; font-size: 8px; color: rgba(212,197,169,0.3); text-align: center; margin-top: 6px; }
+
+/* 背面状态 */
+.char-back-content { padding: 12px; position: relative; min-height: 100%; }
+.blood-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 10; overflow: hidden; opacity: 0; transition: opacity 0.5s; }
+.blood-overlay.active { opacity: 1; }
+.blood-drop { position: absolute; width: 8px; height: 8px; background: radial-gradient(ellipse at 30% 30%, #ff2020, var(--blood-bright) 50%, #6a0000); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; box-shadow: 0 0 4px rgba(139,0,0,0.6); animation: bloodDropFall 3.5s ease-in infinite; opacity: 0; }
+@keyframes bloodDropFall { 0% { transform: translateY(-15px) scale(0.8); opacity: 0; } 5% { opacity: 1; transform: translateY(0) scale(1); } 100% { transform: translateY(350px) scale(0.5); opacity: 0.2; } }
+.blood-drop:nth-child(1) { left: 10%; animation-delay: 0s; }
+.blood-drop:nth-child(2) { left: 25%; animation-delay: 1s; width: 6px; height: 6px; }
+.blood-drop:nth-child(3) { left: 42%; animation-delay: 2s; width: 10px; height: 10px; }
+.blood-drop:nth-child(4) { left: 60%; animation-delay: 0.5s; width: 7px; height: 7px; }
+.blood-drop:nth-child(5) { left: 75%; animation-delay: 1.5s; }
+.blood-drop:nth-child(6) { left: 88%; animation-delay: 2.5s; width: 5px; height: 5px; }
+.back-avatar { width: 45px; height: 45px; border-radius: 4px; overflow: hidden; border: 2px solid var(--toxic-dim); margin-bottom: 8px; }
+.back-avatar img { width: 100%; height: 100%; object-fit: cover; } .back-avatar img[src=""] { display:none; } .back-avatar:has(img[src=""]) { background: linear-gradient(135deg, #1a1a14, #0f0f0a); display:flex; align-items:center; justify-content:center; } .back-avatar:has(img[src=""])::after { content:"☣"; font-size:20px; color:rgba(57,255,20,0.15); }
+.back-name { font-size: 13px; font-weight: 600; color: var(--bone-white); margin-bottom: 10px; }
+
+/* SAN值 */
+.san-bar { margin-bottom: 10px; position: relative; }
+.san-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.san-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--warning-amber); letter-spacing: 1px; }
+.san-value { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--bone-white); }
+.san-track { height: 5px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden; }
+.san-fill { height: 100%; background: linear-gradient(90deg, var(--blood-bright) 0%, var(--warning-amber) 40%, var(--toxic-green) 100%); border-radius: 3px; transition: width 0.5s ease; }
+@keyframes sanShakeCritical { 0%, 100% { transform: translate(0, 0); } 10% { transform: translate(-3px, -2px); } 20% { transform: translate(3px, 2px); } 30% { transform: translate(-3px, 1px); } 40% { transform: translate(3px, -1px); } 50% { transform: translate(-2px, 2px); } 60% { transform: translate(2px, -2px); } 70% { transform: translate(-2px, -1px); } 80% { transform: translate(2px, 1px); } 90% { transform: translate(-1px, 0); } }
+@keyframes sanPulseCritical { 0%, 100% { box-shadow: inset 0 0 15px rgba(204,0,0,0.3), 0 0 12px rgba(204,0,0,0.4); } 50% { box-shadow: inset 0 0 30px rgba(204,0,0,0.5), 0 0 20px rgba(204,0,0,0.6); } }
+.san-bar.critical { animation: sanShakeCritical 0.2s infinite; }
+.san-bar.critical::before { content: ''; position: absolute; top: -8px; left: -8px; right: -8px; bottom: -8px; background: rgba(139,0,0,0.12); border-radius: 6px; animation: sanPulseCritical 0.6s infinite; z-index: -1; }
+.san-bar.critical .san-fill { background: var(--blood-bright); box-shadow: 0 0 10px var(--blood-bright); }
+.san-bar.critical .san-label, .san-bar.critical .san-value { color: var(--blood-bright); animation: warnBlink 0.3s infinite; }
+.san-bar.danger { animation: sanShakeCritical 0.35s infinite; }
+.san-bar.danger .san-fill { background: linear-gradient(90deg, var(--blood-bright) 0%, var(--warning-amber) 100%); }
+.san-bar.warn .san-fill { background: linear-gradient(90deg, var(--warning-amber) 0%, var(--toxic-green) 100%); }
+
+/* 状态网格 */
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 8px; margin-bottom: 10px; }
+.stat-row { display: flex; justify-content: space-between; align-items: center; padding: 2px 0; }
+.stat-label { font-size: 10px; color: rgba(212,197,169,0.6); }
+.stat-value { font-family: 'Share Tech Mono', monospace; font-size: 9px; padding: 1px 5px; border-radius: 2px; background: rgba(0,0,0,0.4); }
+.stat-value.excellent { color: var(--toxic-green); border-left: 2px solid var(--toxic-green); }
+.stat-value.good { color: #7CB518; border-left: 2px solid #7CB518; }
+.stat-value.normal { color: var(--bone-white); border-left: 2px solid rgba(212,197,169,0.3); }
+.stat-value.warn { color: var(--warning-amber); border-left: 2px solid var(--warning-amber); }
+.stat-value.danger { color: var(--blood-bright); border-left: 2px solid var(--blood-bright); }
+
+/* 伤口 */
+.condition-section { margin-top: 8px; }
+.condition-title { font-family: 'Share Tech Mono', monospace; font-size: 8px; color: var(--toxic-green); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+.condition-list { display: flex; flex-direction: column; gap: 3px; }
+.condition-item { font-size: 9px; padding: 3px 6px; background: rgba(139,0,0,0.12); border-left: 2px solid var(--blood-bright); border-radius: 0 2px 2px 0; color: rgba(212,197,169,0.8); }
+.condition-item.healed { background: rgba(57,255,20,0.08); border-left-color: var(--toxic-green); }
+
+/* 内心区域 */
+.inner-section { margin-top: 16px; background: var(--card-bg); border: 1px solid var(--toxic-dim); border-radius: 4px; overflow: hidden; }
+.inner-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: rgba(0,0,0,0.3); border-bottom: 1px solid var(--toxic-dim); cursor: pointer; }
+.inner-header:hover { background: rgba(57,255,20,0.03); }
+.inner-title { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--toxic-green); text-transform: uppercase; letter-spacing: 1.5px; display: flex; align-items: center; gap: 6px; }
+.inner-arrow { font-size: 10px; color: var(--toxic-green); opacity: 0.5; transition: transform 0.3s; }
+.inner-section.open .inner-arrow { transform: rotate(180deg); }
+.inner-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+.inner-section.open .inner-body { max-height: 600px; }
+.inner-content-wrap { padding: 14px; }
+.inner-block { margin-bottom: 14px; }
+.inner-block:last-child { margin-bottom: 0; }
+.inner-block-title { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(212,197,169,0.7); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.inner-text { font-size: 11px; color: rgba(212,197,169,0.7); line-height: 1.7; font-style: italic; padding: 10px; background: rgba(0,0,0,0.4); border-radius: 4px; border-left: 2px solid rgba(212,197,169,0.2); }
+.desire-block { margin-top: 12px; position: relative; }
+.desire-container { position: relative; border-radius: 4px; overflow: hidden; }
+.desire-text { font-size: 11px; color: rgba(180,50,50,0.8); line-height: 1.7; font-style: italic; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 4px; border-left: 2px solid rgba(139,0,0,0.4); }
+.desire-mask { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, #0a0a0a 0%, #1a0808 50%, #0a0a0a 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: opacity 0.5s; border-radius: 4px; border: 1px dashed rgba(139,0,0,0.3); }
+.desire-mask.revealed { opacity: 0; pointer-events: none; }
+.desire-mask-icon { font-size: 24px; margin-bottom: 8px; opacity: 0.6; }
+.desire-mask-text { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(180,50,50,0.6); text-transform: uppercase; letter-spacing: 2px; }
+@keyframes glitchDesire { 0%, 100% { clip-path: inset(0 0 0 0); transform: translateX(0); } 5% { clip-path: inset(15% 0 65% 0); transform: translateX(-2px); filter: hue-rotate(90deg); } 10% { clip-path: inset(45% 0 25% 0); transform: translateX(2px); filter: hue-rotate(-90deg); } 15% { clip-path: inset(0 0 0 0); transform: translateX(0); filter: none; } }
+.desire-glitch { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent 0%, rgba(139,0,0,0.1) 50%, transparent 100%); animation: glitchDesire 5s infinite; pointer-events: none; }
+
+/* ===== 物资面板 ===== */
+.fuel-card { background: var(--card-bg); border: 1px solid var(--toxic-dim); border-radius: 4px; padding: 14px; position: relative; }
+@keyframes fuelAlarm { 0%, 100% { border-color: var(--toxic-dim); } 50% { border-color: var(--blood-bright); box-shadow: 0 0 20px rgba(204,0,0,0.4); } }
+.fuel-card.low-fuel { animation: fuelAlarm 0.8s infinite; }
+.fuel-card.low-fuel::before { content: '⚠ LOW FUEL'; position: absolute; top: 10px; right: 10px; font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--blood-bright); animation: warnBlink 0.4s infinite; }
+.fuel-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.fuel-title { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--toxic-green); text-transform: uppercase; }
+.fuel-stats { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--bone-white); }
+.fuel-stats strong { color: var(--toxic-green); }
+.fuel-track { height: 10px; background: rgba(0,0,0,0.5); border: 1px solid var(--toxic-dim); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
+.fuel-fill { height: 100%; background: linear-gradient(90deg, var(--blood-bright) 0%, var(--warning-amber) 30%, var(--toxic-green) 60%); border-radius: 3px; transition: width 0.5s ease; }
+.fuel-info { display: flex; justify-content: space-between; font-family: 'Share Tech Mono', monospace; font-size: 10px; color: rgba(212,197,169,0.55); }
+
+/* 物资卡片（翻转） */
+.supply-categories { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.supply-cat { background: var(--card-bg); border: 1px solid var(--toxic-dim); border-radius: 4px; cursor: pointer; perspective: 600px; overflow: hidden; min-height: 100px; }
+.cat-flipper { transition: transform 0.5s; transform-style: preserve-3d; position: relative; min-height: 100px; }
+.supply-cat.flipped .cat-flipper { transform: rotateY(180deg); }
+.cat-front, .cat-back { backface-visibility: hidden; }
+.cat-front { padding: 12px 8px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.cat-back { position: absolute; top: 0; left: 0; right: 0; bottom: 0; transform: rotateY(180deg); padding: 10px; background: rgba(0,0,0,0.5); overflow-y: auto; }
+.cat-icon { font-size: 22px; }
+.cat-name { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--toxic-green); text-transform: uppercase; }
+.cat-days { font-size: 9px; color: var(--warning-amber); text-align: center; }
+.cat-days.danger { color: var(--blood-bright); animation: warnBlink 1s infinite; }
+.back-title { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--toxic-green); margin-bottom: 6px; border-bottom: 1px dashed rgba(57,255,20,0.2); padding-bottom: 4px; }
+.back-list { font-size: 10px; color: rgba(212,197,169,0.8); line-height: 1.6; }
+
+/* ===== 地图面板 ===== */
+.map-container { background: var(--card-bg); border: 1px solid var(--toxic-dim); border-radius: 4px; overflow: hidden; }
+.map-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: rgba(0,0,0,0.4); border-bottom: 1px solid var(--toxic-dim); }
+.map-title { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--toxic-green); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
+.map-dot { width: 6px; height: 6px; background: var(--toxic-green); border-radius: 50%; box-shadow: 0 0 8px var(--toxic-green); animation: locPulse 2s infinite; }
+.map-coords { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(212,197,169,0.5); }
+.map-view { height: 220px; position: relative; background: #080806; overflow: hidden; }
+.contour-lines { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(ellipse 180px 120px at 12% 25%, transparent 38%, rgba(57,255,20,0.12) 39%, transparent 40%), radial-gradient(ellipse 150px 100px at 15% 28%, transparent 38%, rgba(57,255,20,0.1) 39%, transparent 40%), radial-gradient(ellipse 120px 80px at 18% 30%, transparent 38%, rgba(57,255,20,0.08) 39%, transparent 40%), radial-gradient(ellipse 160px 110px at 78% 50%, transparent 38%, rgba(57,255,20,0.11) 39%, transparent 40%), radial-gradient(ellipse 130px 90px at 80% 52%, transparent 38%, rgba(57,255,20,0.09) 39%, transparent 40%), radial-gradient(ellipse 200px 80px at 50% 85%, transparent 38%, rgba(57,255,20,0.08) 39%, transparent 40%), radial-gradient(ellipse 80px 55px at 35% 40%, transparent 38%, rgba(57,255,20,0.07) 39%, transparent 40%); }
+.map-grid { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: linear-gradient(rgba(57,255,20,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(57,255,20,0.04) 1px, transparent 1px); background-size: 30px 30px; }
+.radar-sweep { position: absolute; top: 50%; left: 20%; width: 160px; height: 160px; transform: translate(-50%, -50%); border-radius: 50%; background: conic-gradient(from 0deg, transparent 0deg, rgba(57,255,20,0.22) 35deg, transparent 70deg); animation: radarSweep 4s linear infinite; }
+@keyframes radarSweep { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+.current-marker { position: absolute; top: 48%; left: 18%; transform: translate(-50%, -50%); }
+.marker-dot { width: 12px; height: 12px; background: var(--toxic-green); border-radius: 50%; box-shadow: 0 0 12px var(--toxic-green), 0 0 24px rgba(57,255,20,0.5); animation: markerPulse 1.5s infinite; }
+@keyframes markerPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.4); } }
+.marker-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border: 1px solid var(--toxic-green); border-radius: 50%; opacity: 0; animation: markerRing 2s infinite; }
+@keyframes markerRing { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.9; } 100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; } }
+.target-marker { position: absolute; top: 40%; right: 12%; width: 12px; height: 12px; background: var(--warning-amber); border-radius: 50%; box-shadow: 0 0 10px var(--warning-amber); }
+.route-path { position: absolute; top: 45%; left: 22%; width: 55%; height: 3px; background: repeating-linear-gradient(90deg, var(--toxic-green) 0px, var(--toxic-green) 10px, transparent 10px, transparent 18px); opacity: 0.5; transform: rotate(-5deg); animation: routeFlow 1.5s linear infinite; }
+@keyframes routeFlow { 0% { background-position: 0 0; } 100% { background-position: 18px 0; } }
+.map-label { position: absolute; font-family: 'Share Tech Mono', monospace; font-size: 10px; text-shadow: 0 0 6px rgba(0,0,0,0.9); }
+.map-label.current { top: 62%; left: 12%; color: var(--toxic-green); }
+.map-label.target { top: 28%; right: 8%; color: var(--warning-amber); }
+
+/* 仪表盘 */
+.dashboard-panel { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 12px; background: rgba(0,0,0,0.3); border-top: 1px solid var(--toxic-dim); }
+.gauge { display: flex; flex-direction: column; align-items: center; }
+.gauge-circle { width: 70px; height: 70px; border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 15px rgba(0,0,0,0.8), 0 0 8px rgba(57,255,20,0.2); }
+.gauge-circle::before { content: ''; position: absolute; width: 54px; height: 54px; border-radius: 50%; background: radial-gradient(circle, #1a1a14 0%, #0a0a08 100%); }
+.gauge-value { position: relative; z-index: 1; font-family: 'Share Tech Mono', monospace; font-size: 14px; color: var(--toxic-green); text-shadow: 0 0 6px var(--toxic-green); }
+.gauge-label { margin-top: 6px; font-family: 'Share Tech Mono', monospace; font-size: 8px; color: rgba(212,197,169,0.5); text-transform: uppercase; letter-spacing: 1px; }
+.gauge.fuel.low .gauge-value { color: var(--blood-bright); animation: warnBlink 0.5s infinite; }
+.dash-info-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--toxic-dim); }
+.dash-info-item { background: var(--panel-bg); padding: 8px; text-align: center; }
+.dash-info-item .icon { font-size: 12px; margin-bottom: 2px; }
+.dash-info-item .label { font-size: 7px; color: rgba(212,197,169,0.45); margin-bottom: 2px; }
+.dash-info-item .value { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--toxic-green); }
+.dash-info-item .value.warning { color: var(--warning-amber); }
+
+/* ===== 区域威胁 ===== */
+.zone-threat-card { background: var(--card-bg); border: 1px solid rgba(139,0,0,0.3); border-radius: 4px; overflow: hidden; }
+.zone-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: rgba(139,0,0,0.15); border-bottom: 1px solid rgba(139,0,0,0.2); }
+.zone-header-icon { font-size: 18px; animation: warnBlink 1.2s infinite; }
+.zone-header-text { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--blood-bright); text-transform: uppercase; letter-spacing: 2px; }
+.threat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 14px; }
+.threat-item { background: rgba(0,0,0,0.3); padding: 12px 6px; border-radius: 4px; text-align: center; border: 1px solid transparent; }
+.threat-item.active { border-color: var(--blood-bright); background: rgba(139,0,0,0.12); }
+.threat-item .icon { font-size: 20px; margin-bottom: 5px; }
+.threat-item .name { font-size: 8px; color: rgba(212,197,169,0.6); text-transform: uppercase; }
+.threat-item .level { font-family: 'Share Tech Mono', monospace; font-size: 9px; margin-top: 3px; }
+.threat-item .level.none { color: rgba(212,197,169,0.3); }
+.threat-item .level.low { color: var(--toxic-green); }
+.threat-item .level.mid { color: var(--warning-amber); }
+.threat-item .level.high { color: var(--blood-bright); animation: warnBlink 0.8s infinite; }
+
+/* ===== 底部 ===== */
+.hub-footer { padding: 12px 18px; background: rgba(0,0,0,0.4); border-top: 1px solid var(--toxic-dim); text-align: center; }
+.footer-quote { font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--toxic-green); letter-spacing: 1px; min-height: 20px; }
+.footer-quote .char { display: inline-block; opacity: 0; animation: typeChar 0.1s forwards; text-shadow: 0 0 8px var(--toxic-green), 0 0 15px rgba(57,255,20,0.5); }
+@keyframes typeChar { 0% { opacity: 0; transform: translateY(-5px); filter: blur(2px); } 40% { opacity: 1; transform: translateY(2px); text-shadow: 0 0 20px var(--toxic-green), 0 0 30px rgba(57,255,20,0.8); filter: blur(0); } 100% { opacity: 1; transform: translateY(0); text-shadow: 0 0 8px var(--toxic-green); } }
+.footer-cursor { display: inline-block; width: 10px; height: 16px; background: var(--toxic-green); margin-left: 3px; animation: cursorBlink 0.7s steps(2) infinite; box-shadow: 0 0 10px var(--toxic-green), 0 0 20px rgba(57,255,20,0.5); vertical-align: middle; }
+@keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.collapse-btn { text-align: center; padding: 10px; cursor: pointer; }
+.collapse-text { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(57,255,20,0.4); text-transform: uppercase; letter-spacing: 2px; animation: collapseFlicker 2s infinite; }
+@keyframes collapseFlicker { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.7; } }
+.collapse-text:hover { color: var(--toxic-green); text-shadow: 0 0 8px var(--toxic-green); }
+
+/* 响应式 */
+@media (max-width: 402px) {
+  .hub-header { grid-template-columns: auto 1fr auto auto; gap: 10px; }
+  .time-block { display: none; }
+  .char-card { height: 270px; }
+  .supply-categories { grid-template-columns: repeat(2, 1fr); }
+  .threat-grid { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-panel { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .gauge-circle { width: 60px; height: 60px; }
+  .gauge-circle::before { width: 46px; height: 46px; }
+  .gauge-value { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- 冰冻特效 -->
+<div class="freeze-overlay" id="freezeOverlay">
+  <div class="freeze-frost"></div>
+  <div class="freeze-vignette"></div>
+  <div class="ice-crystal"></div><div class="ice-crystal"></div><div class="ice-crystal"></div>
+  <div class="ice-crystal"></div><div class="ice-crystal"></div><div class="ice-crystal"></div>
+</div>
+
+<!-- 火灾特效 -->
+<div class="fire-overlay" id="fireOverlay">
+  <div class="fire-glow"></div><div class="fire-flicker"></div><div class="fire-vignette"></div>
+  <div class="fire-ember"></div><div class="fire-ember"></div><div class="fire-ember"></div>
+  <div class="fire-ember"></div><div class="fire-ember"></div><div class="fire-ember"></div><div class="fire-ember"></div>
+</div>
+
+<!-- 雾天效果 -->
+<div class="weather-overlay" id="weatherOverlay">
+  <div class="fog-layer"></div>
+  <div class="fog-particle"></div><div class="fog-particle"></div><div class="fog-particle"></div>
+</div>
+
+<div class="apocalypse-hub open" id="apocalypseHub" data-effect="fog" data-battery="23" data-san1="35" data-san2="62" data-threat="7" data-fuel="18" data-waterdays="3" data-fooddays="4">
+
+  <!-- 警告条 -->
+  <div class="hazard-strip">
+    <span class="hazard-text">☣ Outbreak Day 147 ☣</span>
+    <span class="hazard-text">暴雨 Warning</span>
+  </div>
+
+  <!-- 顶栏 -->
+  <div class="hub-header" onclick="toggleHub()">
+    <div class="day-display">
+      <span class="day-label">Day</span>
+      <span class="day-num">147</span>
+    </div>
+    <div class="location-block">
+      <div class="loc-main">
+        <span class="loc-icon"></span>
+        <span>废弃医院·地下三层</span>
+      </div>
+      <div class="loc-meta">
+        <span>暴雨</span>
+        <span>🌡️ 12°C</span>
+        <span>👁️ 低能见度</span>
+      </div>
+    </div>
+    <div class="battery-indicator" id="batteryIndicator">
+      <div class="battery-icon">
+        <div class="battery-seg" id="seg1"></div>
+        <div class="battery-seg" id="seg2"></div>
+        <div class="battery-seg" id="seg3"></div>
+        <div class="battery-seg" id="seg4"></div>
+      </div>
+      <span class="battery-text">23%</span>
+    </div>
+    <div class="time-block">
+      <div class="time-main">18:42</div>
+      <div class="time-period">黄昏</div>
+    </div>
+    <div class="toggle-btn">▼</div>
+  </div>
+
+  <!-- 主内容 -->
+  <div class="hub-content">
+
+    <!-- 威胁条 -->
+    <div class="threat-bar">
+      <span class="threat-label">Threat</span>
+      <div class="threat-track" id="threatTrack">
+        <div class="threat-seg" id="ts1"></div><div class="threat-seg" id="ts2"></div>
+        <div class="threat-seg" id="ts3"></div><div class="threat-seg" id="ts4"></div>
+        <div class="threat-seg" id="ts5"></div><div class="threat-seg" id="ts6"></div>
+        <div class="threat-seg" id="ts7"></div><div class="threat-seg" id="ts8"></div>
+        <div class="threat-seg" id="ts9"></div><div class="threat-seg" id="ts10"></div>
+      </div>
+      <span class="threat-status" id="threatStatus">DANGER</span>
+    </div>
+
+    <!-- 导航标签栏 -->
+    <div class="nav-tabs">
+      <div class="nav-tab active" onclick="switchTab('character')"><div class="tab-icon">👥</div><div class="tab-label">人物</div></div>
+      <div class="nav-tab" onclick="switchTab('supply')"><div class="tab-icon">📦</div><div class="tab-label">物资</div></div>
+      <div class="nav-tab" onclick="switchTab('map')"><div class="tab-icon">🗺️</div><div class="tab-label">地图</div></div>
+      <div class="nav-tab" onclick="switchTab('zone')"><div class="tab-icon">☠️</div><div class="tab-label">威胁</div></div>
+    </div>
+
+    <!-- ===== 人物面板 ===== -->
+    <div class="tab-panel active" id="panel-character">
+      <div class="character-section">
+        <div class="portraits-row">
+
+          <!-- 迟子喻 -->
+          <div class="char-card" id="charCard1" onclick="flipCharCard('charCard1')">
+            <div class="char-card-inner">
+              <div class="char-front">
+                <div class="char-visual"><img src="" alt="裴衍"></div>
+                <div class="char-info">
+                  <div class="char-header">
+                    <span class="char-name">裴衍</span>
+                    <span class="char-race">人类</span>
+                  </div>
+                  <div class="char-tags" id="char1Tags"></div>
+                </div>
+                <div class="tap-hint">[ TAP TO FLIP ]</div>
+              </div>
+              <div class="char-back">
+                <div class="blood-overlay" id="blood1">
+                  <div class="blood-drop"></div><div class="blood-drop"></div><div class="blood-drop"></div>
+                  <div class="blood-drop"></div><div class="blood-drop"></div><div class="blood-drop"></div>
+                </div>
+                <div class="char-back-content">
+                  <div class="back-avatar"><img src="" alt="裴衍"></div>
+                  <div class="back-name">裴衍</div>
+                  <div class="san-bar" id="san1">
+                    <div class="san-header">
+                      <span class="san-label">SAN值</span>
+                      <span class="san-value">35/100</span>
+                    </div>
+                    <div class="san-track"><div class="san-fill" id="san1Fill"></div></div>
+                  </div>
+                  <div class="stat-grid">
+                    <div class="stat-row"><span class="stat-label">健康</span><span class="stat-value" id="s1health">较差</span></div>
+                    <div class="stat-row"><span class="stat-label">饥饿</span><span class="stat-value" id="s1hunger">饥饿</span></div>
+                    <div class="stat-row"><span class="stat-label">口渴</span><span class="stat-value" id="s1thirst">口渴</span></div>
+                    <div class="stat-row"><span class="stat-label">疲劳</span><span class="stat-value" id="s1fatigue">一般</span></div>
+                    <div class="stat-row"><span class="stat-label">清洁</span><span class="stat-value" id="s1clean">脏污</span></div>
+                    <div class="stat-row"><span class="stat-label">精神</span><span class="stat-value" id="s1mental">较差</span></div>
+                  </div>
+                  <div class="condition-section">
+                    <div class="condition-title">🩹 伤口/症状</div>
+                    <div class="condition-list" id="char1Wounds"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 可恩 -->
+          <div class="char-card" id="charCard2" onclick="flipCharCard('charCard2')">
+            <div class="char-card-inner">
+              <div class="char-front">
+                <div class="char-visual"><img src="" alt="林晚"></div>
+                <div class="char-info">
+                  <div class="char-header">
+                    <span class="char-name">林晚</span>
+                    <span class="char-race">变异体</span>
+                  </div>
+                  <div class="char-tags" id="char2Tags"></div>
+                </div>
+                <div class="tap-hint">[ TAP TO FLIP ]</div>
+              </div>
+              <div class="char-back">
+                <div class="blood-overlay" id="blood2">
+                  <div class="blood-drop"></div><div class="blood-drop"></div><div class="blood-drop"></div>
+                  <div class="blood-drop"></div><div class="blood-drop"></div><div class="blood-drop"></div>
+                </div>
+                <div class="char-back-content">
+                  <div class="back-avatar"><img src="" alt="林晚"></div>
+                  <div class="back-name">林晚</div>
+                  <div class="san-bar" id="san2">
+                    <div class="san-header">
+                      <span class="san-label">SAN值</span>
+                      <span class="san-value">62/100</span>
+                    </div>
+                    <div class="san-track"><div class="san-fill" id="san2Fill"></div></div>
+                  </div>
+                  <div class="stat-grid">
+                    <div class="stat-row"><span class="stat-label">健康</span><span class="stat-value" id="s2health">良好</span></div>
+                    <div class="stat-row"><span class="stat-label">饥饿</span><span class="stat-value" id="s2hunger">一般</span></div>
+                    <div class="stat-row"><span class="stat-label">口渴</span><span class="stat-value" id="s2thirst">一般</span></div>
+                    <div class="stat-row"><span class="stat-label">疲劳</span><span class="stat-value" id="s2fatigue">一般</span></div>
+                    <div class="stat-row"><span class="stat-label">清洁</span><span class="stat-value" id="s2clean">良好</span></div>
+                    <div class="stat-row"><span class="stat-label">精神</span><span class="stat-value" id="s2mental">乐观</span></div>
+                  </div>
+                  <div class="condition-section">
+                    <div class="condition-title">🩹 伤口/症状</div>
+                    <div class="condition-list" id="char2Wounds"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 迟子喻 内心世界 -->
+        <div class="inner-section open" id="innerSection">
+          <div class="inner-header" onclick="toggleInner()">
+            <div class="inner-title"><span>🧠</span> 裴衍 · 内心世界</div>
+            <span class="inner-arrow">▼</span>
+          </div>
+          <div class="inner-body">
+            <div class="inner-content-wrap">
+              <div class="inner-block">
+                <div class="inner-block-title">🧠 内心独白</div>
+                <div class="inner-text">这里太安静了。安静得让人发疯。她还在发烧，药已经不够了……我必须在天亮前找到出路。</div>
+              </div>
+              <div class="desire-block">
+                <div class="inner-block-title">🔥 暗欲</div>
+                <div class="desire-container">
+                  <div class="desire-text">想把她紧紧抱在怀里，感受她的体温，确认她还活着。哪怕世界已经崩塌，只要她还在呼吸。</div>
+                  <div class="desire-glitch"></div>
+                  <div class="desire-mask" id="desireMask" onclick="revealDesire(event)">
+                    <span class="desire-mask-icon">🔒</span>
+                    <span class="desire-mask-text">[ Tap to Reveal ]</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 物资面板 ===== -->
+    <div class="tab-panel" id="panel-supply">
+      <!-- 燃油单独一行 -->
+      <div class="fuel-card" id="fuelCard">
+        <div class="fuel-header">
+          <div class="fuel-title">⛽ Fuel</div>
+          <div class="fuel-stats"><strong>18L</strong> · 续航 <strong>≈225km</strong></div>
+        </div>
+        <div class="fuel-track"><div class="fuel-fill" id="fuelFill"></div></div>
+        <div class="fuel-info">
+          <span>车辆: 丰田 Land Cruiser</span>
+          <span>油耗: ≈8L/100km</span>
+        </div>
+      </div>
+
+      <!-- 6个物资翻转卡片 3×2 -->
+      <div class="supply-categories">
+        <div class="supply-cat" onclick="flipSupply(this)">
+          <div class="cat-flipper">
+            <div class="cat-front">
+              <span class="cat-icon">🥫</span>
+              <span class="cat-name">Food</span>
+              <span class="cat-days" id="foodDays">≈4天</span>
+            </div>
+            <div class="cat-back">
+              <div class="back-title">食物清单</div>
+              <div class="back-list">压缩饼干×3, 罐头×2, 能量棒×5</div>
+            </div>
+          </div>
+        </div>
+        <div class="supply-cat" onclick="flipSupply(this)">
+          <div class="cat-flipper">
+            <div class="cat-front">
+              <span class="cat-icon">💧</span>
+              <span class="cat-name">Water</span>
+              <span class="cat-days" id="waterDays">≈3天</span>
+            </div>
+            <div class="cat-back">
+              <div class="back-title">饮水清单</div>
+              <div class="back-list">6L</div>
+            </div>
+          </div>
+        </div>
+        <div class="supply-cat" onclick="flipSupply(this)">
+          <div class="cat-flipper">
+            <div class="cat-front">
+              <span class="cat-icon">⚔️</span>
+              <span class="cat-name">Weapons</span>
+              <span class="cat-days">装备</span>
+            </div>
+            <div class="cat-back">
+              <div class="back-title">武器清单</div>
+              <div class="back-list">手枪(子弹×12), 匕首, 撬棍</div>
+            </div>
+          </div>
+        </div>
+        <div class="supply-cat" onclick="flipSupply(this)">
+          <div class="cat-flipper">
+            <div class="cat-front">
+              <span class="cat-icon">💊</span>
+              <span class="cat-name">Medicine</span>
+              <span class="cat-days">医疗</span>
+            </div>
+            <div class="cat-back">
+              <div class="back-title">药品清单</div>
+              <div class="back-list">止痛药×4, 绷带×2, 退烧药×1</div>
+            </div>
+          </div>
+        </div>
+        <div class="supply-cat" onclick="flipSupply(this)">
+          <div class="cat-flipper">
+            <div class="cat-front">
+              <span class="cat-icon">🔧</span>
+              <span class="cat-name">Tools</span>
+              <span class="cat-days">工具</span>
+            </div>
+            <div class="cat-back">
+              <div class="back-title">工具清单</div>
+              <div class="back-list">手电筒, 打火机, 绳索10m, 万能钥匙</div>
+            </div>
+          </div>
+        </div>
+        <div class="supply-cat" onclick="flipSupply(this)">
+          <div class="cat-flipper">
+            <div class="cat-front">
+              <span class="cat-icon">🎒</span>
+              <span class="cat-name">Daily</span>
+              <span class="cat-days">杂物</span>
+            </div>
+            <div class="cat-back">
+              <div class="back-title">日用品清单</div>
+              <div class="back-list">毛毯×1, 雨衣×2, 口罩×6</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 地图面板 ===== -->
+    <div class="tab-panel" id="panel-map">
+      <div class="map-container">
+        <div class="map-header">
+          <div class="map-title"><span class="map-dot"></span> Position Tracking</div>
+          <div class="map-coords">31.2°N 121.5°E</div>
+        </div>
+        <div class="map-view">
+          <div class="contour-lines"></div>
+          <div class="map-grid"></div>
+          <div class="radar-sweep"></div>
+          <div class="route-path"></div>
+          <div class="current-marker">
+            <div class="marker-dot"></div>
+            <div class="marker-ring"></div>
+          </div>
+          <div class="target-marker"></div>
+          <div class="map-label current">废弃医院·地下三层</div>
+          <div class="map-label target">安全区Alpha</div>
+        </div>
+
+        <!-- 仪表盘 -->
+        <div class="dashboard-panel">
+          <div class="gauge speed">
+            <div class="gauge-circle" style="background: conic-gradient(from 135deg, rgba(30,30,25,0.8) 0deg, rgba(30,30,25,0.8) 135deg, var(--toxic-green) 135deg, var(--warning-amber) 200deg, var(--blood-bright) 250deg, rgba(30,30,25,0.8) 250deg);">
+              <span class="gauge-value">0</span>
+            </div>
+            <span class="gauge-label">km/h</span>
+          </div>
+          <div class="gauge rpm">
+            <div class="gauge-circle" style="background: conic-gradient(from 135deg, rgba(30,30,25,0.8) 0deg, rgba(30,30,25,0.8) 90deg, var(--toxic-green) 90deg, var(--toxic-green) 180deg, rgba(30,30,25,0.8) 180deg);">
+              <span class="gauge-value">--</span>
+            </div>
+            <span class="gauge-label">RPM</span>
+          </div>
+          <div class="gauge fuel" id="gaugeFuel">
+            <div class="gauge-circle" style="background: conic-gradient(from 135deg, rgba(30,30,25,0.8) 0deg, var(--blood-bright) 0deg, var(--blood-bright) 40deg, var(--warning-amber) 40deg, var(--warning-amber) 80deg, var(--toxic-green) 80deg, var(--toxic-green) 180deg, rgba(30,30,25,0.8) 180deg);">
+              <span class="gauge-value" id="gaugeFuelValue">--%</span>
+            </div>
+            <span class="gauge-label">Fuel</span>
+          </div>
+        </div>
+
+        <!-- 信息条 -->
+        <div class="dash-info-strip">
+          <div class="dash-info-item">
+            <div class="icon">📏</div>
+            <div class="label">已行驶</div>
+            <div class="value">892km</div>
+          </div>
+          <div class="dash-info-item">
+            <div class="icon">🎯</div>
+            <div class="label">距安全区Alpha</div>
+            <div class="value">≈340km</div>
+          </div>
+          <div class="dash-info-item">
+            <div class="icon">⏱️</div>
+            <div class="label">预计</div>
+            <div class="value warning">约6小时</div>
+          </div>
+          <div class="dash-info-item">
+            <div class="icon">🛤️</div>
+            <div class="label">路况</div>
+            <div class="value">严重损毁</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 区域威胁面板 ===== -->
+    <div class="tab-panel" id="panel-zone">
+      <div class="zone-threat-card">
+        <div class="zone-header">
+          <span class="zone-header-icon">☠</span>
+          <span class="zone-header-text">Zone Threat Assessment</span>
+        </div>
+        <div class="threat-grid">
+          <div class="threat-item" id="zt-zombie">
+            <div class="icon">🧟</div>
+            <div class="name">丧尸</div>
+            <div class="level" id="ztl-zombie">严重</div>
+          </div>
+          <div class="threat-item" id="zt-mutant">
+            <div class="icon">🐺</div>
+            <div class="name">变异生物</div>
+            <div class="level" id="ztl-mutant">中等</div>
+          </div>
+          <div class="threat-item" id="zt-hostile">
+            <div class="icon">👥</div>
+            <div class="name">敌对幸存者</div>
+            <div class="level" id="ztl-hostile">轻微</div>
+          </div>
+          <div class="threat-item" id="zt-flood">
+            <div class="icon">🌊</div>
+            <div class="name">洪水</div>
+            <div class="level" id="ztl-flood">无</div>
+          </div>
+          <div class="threat-item" id="zt-pollution">
+            <div class="icon">☢️</div>
+            <div class="name">污染</div>
+            <div class="level" id="ztl-pollution">中等</div>
+          </div>
+          <div class="threat-item" id="zt-acidrain">
+            <div class="icon">🌧️</div>
+            <div class="name">酸雨</div>
+            <div class="level" id="ztl-acidrain">轻微</div>
+          </div>
+          <div class="threat-item" id="zt-fog">
+            <div class="icon">🌫️</div>
+            <div class="name">浓雾</div>
+            <div class="level" id="ztl-fog">严重</div>
+          </div>
+          <div class="threat-item" id="zt-fire">
+            <div class="icon">🔥</div>
+            <div class="name">火灾</div>
+            <div class="level" id="ztl-fire">无</div>
+          </div>
+          <div class="threat-item" id="zt-cold">
+            <div class="icon">❄️</div>
+            <div class="name">极寒</div>
+            <div class="level" id="ztl-cold">中等</div>
+          </div>
+          <div class="threat-item" id="zt-quake">
+            <div class="icon">🌀</div>
+            <div class="name">地震/台风</div>
+            <div class="level" id="ztl-quake">无</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部题记 -->
+    <div class="hub-footer">
+      <div class="footer-quote" id="footerQuote"></div>
+    </div>
+
+    <!-- 收起按钮 -->
+    <div class="collapse-btn" onclick="toggleHub()">
+      <span class="collapse-text">[ collapse ]</span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function() {
+  const hub = document.getElementById('apocalypseHub');
+  if (!hub) return;
+
+  const effect = hub.dataset.effect;
+  const battery = parseInt(hub.dataset.battery) || 100;
+  const san1Val = parseInt(hub.dataset.san1) || 100;
+  const san2Val = parseInt(hub.dataset.san2) || 100;
+  const threatLvl = parseInt(hub.dataset.threat) || 1;
+  const fuelL = parseInt(hub.dataset.fuel) || 0;
+  const waterDays = parseInt(hub.dataset.waterdays) || 99;
+  const foodDays = parseInt(hub.dataset.fooddays) || 99;
+
+  // 特效
+  if (effect === 'freeze') document.getElementById('freezeOverlay').classList.add('active');
+  else if (effect === 'fire') document.getElementById('fireOverlay').classList.add('active');
+  else if (effect === 'fog') document.getElementById('weatherOverlay').classList.add('active');
+
+  // 电量
+  if (battery <= 25) {
+    document.getElementById('batteryIndicator').classList.add('low-battery');
+    hub.classList.add('low-power');
+  }
+  var segs = [document.getElementById('seg1'), document.getElementById('seg2'), document.getElementById('seg3'), document.getElementById('seg4')];
+  segs.forEach(function(seg, i) {
+    if (battery > (i + 1) * 25) seg.classList.add('active');
+    else if (battery > i * 25 && battery <= 25) seg.classList.add('danger');
+  });
+
+  // SAN1
+  document.getElementById('san1Fill').style.width = san1Val + '%';
+  var sanBar1 = document.getElementById('san1');
+  if (san1Val <= 20) sanBar1.classList.add('critical');
+  else if (san1Val <= 40) sanBar1.classList.add('danger');
+  else if (san1Val <= 60) sanBar1.classList.add('warn');
+
+  // SAN2
+  document.getElementById('san2Fill').style.width = san2Val + '%';
+  var sanBar2 = document.getElementById('san2');
+  if (san2Val <= 20) sanBar2.classList.add('critical');
+  else if (san2Val <= 40) sanBar2.classList.add('danger');
+  else if (san2Val <= 60) sanBar2.classList.add('warn');
+
+  // 血滴 - 角色1
+  var wounds1 = '左肩枪伤,右腿擦伤';
+  if (wounds1 && wounds1 !== '无' && wounds1 !== '无伤') {
+    document.getElementById('blood1').classList.add('active');
+  }
+  // 血滴 - 角色2
+  var wounds2 = '无';
+  if (wounds2 && wounds2 !== '无' && wounds2 !== '无伤') {
+    document.getElementById('blood2').classList.add('active');
+  }
+
+  // 伤口列表
+  function renderWounds(containerId, woundsStr) {
+    var container = document.getElementById(containerId);
+    if (woundsStr && woundsStr !== '无' && woundsStr !== '无伤') {
+      container.innerHTML = woundsStr.split(',').map(function(w) {
+        return '<div class="condition-item">' + w.trim() + '</div>';
+      }).join('');
+    } else {
+      container.innerHTML = '<div class="condition-item healed">无明显伤口</div>';
+    }
+  }
+  renderWounds('char1Wounds', '左肩枪伤,右腿擦伤');
+  renderWounds('char2Wounds', '无');
+
+  // 状态值着色
+  function colorStat(id, val) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var v = val.trim();
+    if (v === '优良' || v === '饱腹' || v === '乐观') el.classList.add('excellent');
+    else if (v === '良好') el.classList.add('good');
+    else if (v === '一般' || v === '轻微') el.classList.add('normal');
+    else if (v === '较差' || v === '饥饿' || v === '口渴' || v === '脏污') el.classList.add('warn');
+    else if (v === '危险' || v === '极度疲惫' || v === '濒临崩溃') el.classList.add('danger');
+    else el.classList.add('normal');
+  }
+  colorStat('s1health', '较差'); colorStat('s1hunger', '饥饿'); colorStat('s1thirst', '口渴');
+  colorStat('s1fatigue', '一般'); colorStat('s1clean', '脏污'); colorStat('s1mental', '较差');
+  colorStat('s2health', '良好'); colorStat('s2hunger', '一般'); colorStat('s2thirst', '一般');
+  colorStat('s2fatigue', '一般'); colorStat('s2clean', '良好'); colorStat('s2mental', '乐观');
+
+  // 角色标签
+  function makeTags(containerId, stats) {
+    var container = document.getElementById(containerId);
+    container.innerHTML = stats.map(function(s) {
+      var v = s.trim();
+      var cls = 'normal';
+      if (v === '优良' || v === '良好' || v === '饱腹' || v === '乐观') cls = 'good';
+      else if (v === '较差' || v === '饥饿' || v === '口渴' || v === '脏污') cls = 'warn';
+      else if (v === '危险' || v === '极度疲惫' || v === '濒临崩溃') cls = 'danger';
+      return '<span class="c-tag ' + cls + '">' + v + '</span>';
+    }).join('');
+  }
+  makeTags('char1Tags', ['较差', '脏污', '较差']);
+  makeTags('char2Tags', ['良好', '良好', '乐观']);
+
+  // 威胁条
+  for (var i = 1; i <= 10; i++) {
+    var seg = document.getElementById('ts' + i);
+    if (seg && i <= threatLvl) {
+      if (threatLvl <= 3) seg.classList.add('active-safe');
+      else if (threatLvl <= 6) seg.classList.add('active-warn');
+      else seg.classList.add('active-danger');
+    }
+  }
+  var statusEl = document.getElementById('threatStatus');
+  if (threatLvl <= 3) statusEl.classList.add('safe');
+  else if (threatLvl <= 6) statusEl.classList.add('warn');
+  else statusEl.classList.add('danger');
+
+  // 燃油
+  var fuelPercent = Math.min(100, (fuelL / 120) * 100);
+  document.getElementById('fuelFill').style.width = fuelPercent + '%';
+  if (fuelPercent <= 20) document.getElementById('fuelCard').classList.add('low-fuel');
+  document.getElementById('gaugeFuelValue').textContent = Math.round(fuelPercent) + '%';
+  if (fuelPercent <= 20) document.getElementById('gaugeFuel').classList.add('low');
+
+  // 食物/饮水天数警报
+  if (foodDays <= 3) document.getElementById('foodDays').classList.add('danger');
+  if (waterDays <= 3) document.getElementById('waterDays').classList.add('danger');
+
+  // 区域威胁着色
+  function colorZoneThreat(itemId, levelId, val) {
+    var item = document.getElementById(itemId);
+    var level = document.getElementById(levelId);
+    if (!item || !level) return;
+    var v = val.trim();
+    if (v === '无' || v === '稀少') { level.classList.add('none'); }
+    else if (v === '轻微') { level.classList.add('low'); }
+    else if (v === '中等') { level.classList.add('mid'); item.classList.add('active'); }
+    else if (v === '严重' || v === '极高') { level.classList.add('high'); item.classList.add('active'); }
+    else { level.classList.add('none'); }
+  }
+  colorZoneThreat('zt-zombie', 'ztl-zombie', '严重');
+  colorZoneThreat('zt-mutant', 'ztl-mutant', '中等');
+  colorZoneThreat('zt-hostile', 'ztl-hostile', '轻微');
+  colorZoneThreat('zt-flood', 'ztl-flood', '无');
+  colorZoneThreat('zt-pollution', 'ztl-pollution', '中等');
+  colorZoneThreat('zt-acidrain', 'ztl-acidrain', '轻微');
+  colorZoneThreat('zt-fog', 'ztl-fog', '严重');
+  colorZoneThreat('zt-fire', 'ztl-fire', '无');
+  colorZoneThreat('zt-cold', 'ztl-cold', '中等');
+  colorZoneThreat('zt-quake', 'ztl-quake', '无');
+
+  // 打字机题记
+  var quoteText = '末世之上，我们携手同行。';
+  var container = document.getElementById('footerQuote');
+  container.innerHTML = '';
+  var ci = 0;
+  function typeChar() {
+    if (ci < quoteText.length) {
+      var span = document.createElement('span');
+      span.className = 'char';
+      span.textContent = quoteText[ci];
+      span.style.animationDelay = (ci * 0.08) + 's';
+      container.appendChild(span);
+      ci++;
+      setTimeout(typeChar, 80);
+    } else {
+      var cursor = document.createElement('span');
+      cursor.className = 'footer-cursor';
+      container.appendChild(cursor);
+    }
+  }
+  typeChar();
+})();
+
+function toggleHub() { document.getElementById('apocalypseHub').classList.toggle('open'); }
+function switchTab(tabName) {
+  document.querySelectorAll('.nav-tab').forEach(function(tab) { tab.classList.remove('active'); });
+  document.querySelectorAll('.tab-panel').forEach(function(panel) { panel.classList.remove('active'); });
+  event.currentTarget.classList.add('active');
+  document.getElementById('panel-' + tabName).classList.add('active');
+}
+function flipCharCard(id) { document.getElementById(id).classList.toggle('flipped'); }
+function flipSupply(el) {
+  document.querySelectorAll('.supply-cat.flipped').forEach(function(card) { if (card !== el) card.classList.remove('flipped'); });
+  el.classList.toggle('flipped');
+}
+function toggleInner() { document.getElementById('innerSection').classList.toggle('open'); }
+function revealDesire(e) { e.stopPropagation(); document.getElementById('desireMask').classList.add('revealed'); }
+</script>
+
+</body>
+</html>

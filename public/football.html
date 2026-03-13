@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>快乐足球模拟器</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700&family=Ma+Shan+Zheng&family=ZCOOL+QingKe+HuangYou&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+
+:root{
+  --gold:#c4a450;--gold-soft:rgba(196,164,80,0.12);--gold-glow:rgba(196,164,80,0.25);
+  --rose:#9e5068;--rose-soft:rgba(158,80,104,0.08);
+  --dk:#0a1510;--forest:#122a1c;--forest-mid:#1a3828;--forest-light:#245a38;
+  --cream:#f3ede2;--cream-warm:#faf6ed;
+  --txt:#2c2c2c;--txt2:#777;--txt3:#aaa;
+  --midnight:#0d1a2e;--midnight-deep:#060e18;
+  /* iPhone 16 Pro: 393px × 852px logical pixels */
+  --app-w:393px;
+  --nav-h:72px;
+  --safe-bottom:env(safe-area-inset-bottom, 0px);
+}
+
+html, body {
+  margin:0;padding:0;
+  width:100%;height:100%;
+  background:#050a08;
+  /* 固定font-size，避免系统字体缩放导致忽大忽小 */
+  font-size:16px;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+
+body {
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  min-height:100vh;
+  min-height:100dvh;
+}
+
+/* ===== SHELL ===== */
+#HF{
+  font-family:'Noto Serif SC',serif;
+  /* 严格限定宽度为 iPhone 16 Pro 逻辑宽度 */
+  width:100%;
+  max-width:var(--app-w);
+  min-height:100vh;
+  min-height:100dvh;
+  position:relative;
+  overflow-x:hidden;
+  background:var(--dk);
+  box-shadow:0 0 60px rgba(0,0,0,0.6);
+  /* 防止内容被系统UI遮挡 */
+  padding-bottom:0;
+}
+
+/* ===== COVER ===== */
+#coverLayer{
+  position:fixed;
+  /* 跟随shell居中 */
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:var(--app-w);
+  top:0;bottom:0;
+  z-index:100;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 30%,#1a3a28 0%,#122a1c 50%,#0a1a12 100%);
+  transition:opacity 0.5s ease;
+}
+#coverLayer.hidden{opacity:0;pointer-events:none;}
+
+/* Rose petal click effects */
+.rose-petal{position:fixed;pointer-events:none;z-index:99999;width:16px;height:16px;opacity:0;animation:petalFall 1.5s ease-out forwards;}
+.rose-petal svg{width:100%;height:100%;}
+@keyframes petalFall{0%{opacity:0.7;transform:translate(0,0) rotate(0deg) scale(0.3);}100%{opacity:0;transform:translate(var(--dx),120px) rotate(var(--rot)) scale(var(--sc));}}
+
+/* Floating cover items */
+.cv-float{position:absolute;pointer-events:none;z-index:2;opacity:0;animation:cvFloatAnim 7s ease-in-out infinite;}
+@keyframes cvFloatAnim{0%,100%{opacity:0;transform:translateY(0) rotate(0deg);}15%,85%{opacity:1;}50%{transform:translateY(-18px) rotate(8deg);}}
+
+.cv-pitch{position:absolute;top:52%;left:50%;transform:translate(-50%,-50%);width:78%;opacity:0.25;}
+.cv-p{position:absolute;pointer-events:none;color:var(--gold);opacity:0;animation:cvFade 8s ease-in-out infinite;}
+.cv-p:nth-child(2){top:10%;left:8%;font-size:1rem;animation-delay:0s;}
+.cv-p:nth-child(3){top:6%;right:12%;font-size:1.25rem;animation-delay:2s;}
+.cv-p:nth-child(4){bottom:28%;left:5%;font-size:0.75rem;animation-delay:4s;}
+.cv-p:nth-child(5){bottom:15%;right:8%;font-size:1.125rem;animation-delay:6s;}
+.cv-p:nth-child(6){top:42%;right:4%;font-size:0.625rem;animation-delay:1s;}
+
+.cv-card{
+  position:relative;z-index:5;text-align:center;
+  padding:2rem 1.5rem 1.5rem;
+  margin:0 1.2rem;
+}
+.cv-card .sub{font-family:'Cormorant Garamond',serif;font-size:1.6em;color:rgba(255,255,255,0.85);letter-spacing:2px;font-weight:300;font-style:italic;margin-top:10px;line-height:1.4;}
+.cv-card h1{
+  font-family:'Noto Serif SC','Ma Shan Zheng',serif;
+  font-size:3em;color:var(--gold);
+  letter-spacing:8px;line-height:1.25;margin:0;
+  text-shadow:0 0 60px rgba(196,164,80,0.2);font-weight:700;
+}
+.cv-card .credit{font-size:1.2em;color:rgba(255,255,255,0.45);letter-spacing:4px;margin-top:14px;font-family:'Cormorant Garamond',serif;font-weight:300;}
+
+.cv-enter{position:relative;z-index:5;margin-top:2rem;text-align:center;}
+.cv-ball{font-size:2.625rem;display:inline-block;animation:ballBounce 3s ease-in-out infinite;filter:drop-shadow(0 8px 20px rgba(0,0,0,0.5));}
+.cv-enter-txt{display:block;margin-top:0.875rem;font-size:0.85em;color:rgba(255,255,255,0.7);letter-spacing:8px;animation:pulse 2.5s ease-in-out infinite;font-family:'Cormorant Garamond',serif;}
+
+/* ===== GOAL overlay ===== */
+#goalOv{
+  display:none;
+  position:fixed;
+  left:50%;transform:translateX(-50%);
+  width:100%;max-width:var(--app-w);
+  top:0;bottom:0;
+  z-index:9999;
+  align-items:center;justify-content:center;flex-direction:column;
+  background:rgba(5,10,8,0.94);
+}
+#goalOv.active{display:flex;}
+.gl-txt{font-family:'Cormorant Garamond',serif;font-size:3.2em;color:var(--gold);letter-spacing:14px;text-shadow:0 0 60px rgba(196,164,80,0.3);animation:goalShake 0.8s cubic-bezier(.175,.885,.32,1.275) forwards;transform:scale(0);font-weight:700;}
+@keyframes goalShake{0%{transform:scale(0) rotate(-8deg);opacity:0;}40%{transform:scale(1.3) rotate(4deg);opacity:1;}60%{transform:scale(0.9) rotate(-3deg);}80%{transform:scale(1.1) rotate(2deg);}100%{transform:scale(1) rotate(0);}}
+.gl-line{width:45px;height:1px;background:rgba(196,164,80,0.2);margin:12px 0;animation:goalPop 1s cubic-bezier(.175,.885,.32,1.275) .25s forwards;transform:scale(0);}
+.gl-sub{font-size:0.7em;color:rgba(255,255,255,0.25);letter-spacing:10px;animation:goalPop 1s cubic-bezier(.175,.885,.32,1.275) .45s forwards;transform:scale(0);}
+
+/* ===== MAIN APP ===== */
+#mainApp{
+  display:none;
+  position:relative;
+  min-height:100vh;min-height:100dvh;
+  background:var(--cream);
+  /* 底部留出导航栏 + 系统安全区域 */
+  padding-bottom:calc(var(--nav-h) + var(--safe-bottom));
+}
+#mainApp.show{display:block;animation:fadeUp .5s ease;}
+
+/* Top bar */
+.topbar{
+  background:var(--dk);
+  /* topbar高度固定，不随字体缩放 */
+  padding:0.75rem 1rem;
+  height:48px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:60;
+  border-bottom:1px solid rgba(196,164,80,0.06);
+  /* 顶部安全区 */
+  padding-top:calc(0.75rem + env(safe-area-inset-top, 0px));
+  height:calc(48px + env(safe-area-inset-top, 0px));
+}
+.tb-back{background:none;border:none;color:rgba(196,164,80,0.5);font-family:inherit;font-size:0.72em;cursor:pointer;letter-spacing:1px;padding:4px 8px;transition:color .2s;min-height:44px;display:flex;align-items:center;}
+.tb-back:active{color:var(--gold);}
+.tb-title{color:var(--gold);font-size:0.75em;letter-spacing:2px;font-weight:600;}
+.tb-music{
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(196,164,80,0.06);border:1px solid rgba(196,164,80,0.1);
+  color:var(--gold);font-size:1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+  /* 保证触摸区域 ≥ 44px (Apple HIG) */
+  flex-shrink:0;
+}
+.tb-music.on{animation:musicPulse 1.5s ease-in-out infinite;}
+@keyframes musicPulse{0%,100%{box-shadow:0 0 0 0 var(--gold-glow);}50%{box-shadow:0 0 0 8px transparent;}}
+
+/* ===== BOTTOM NAV ===== */
+.bnav{
+  position:fixed;
+  bottom:0;
+  left:50%;transform:translateX(-50%);
+  width:100%;max-width:var(--app-w);
+  z-index:70;
+  background:linear-gradient(0deg,var(--dk) 60%,rgba(10,21,16,0.95) 85%,transparent 100%);
+  /* 底部安全区 */
+  padding:8px 0 calc(18px + var(--safe-bottom));
+  text-align:center;
+}
+.bnav-ring{
+  display:inline-flex;align-items:center;gap:2px;
+  padding:4px;border:1px solid rgba(196,164,80,0.08);
+  border-radius:28px;background:rgba(0,0,0,0.3);
+}
+.bnav-btn{
+  /* 保证 ≥44px 触摸高度 */
+  min-height:44px;
+  padding:0 13px;
+  border:none;border-radius:22px;
+  background:transparent;color:rgba(255,255,255,0.3);
+  font-family:inherit;font-size:0.62em;font-weight:600;
+  cursor:pointer;letter-spacing:0.5px;transition:all .3s;white-space:nowrap;
+  display:flex;align-items:center;
+}
+.bnav-btn.on{background:rgba(196,164,80,0.12);color:var(--gold);}
+.bnav-ball{display:block;margin:4px auto 0;font-size:12px;opacity:0.2;animation:spin 5s linear infinite;}
+
+/* ===== PAGES ===== */
+.pg{display:none;}
+.pg.show{display:block;animation:fadeUp .35s ease;}
+.pg-head{text-align:center;padding:1.5rem 1.25rem 0.25rem;}
+.pg-head h2{font-size:1.1em;color:var(--forest-mid);font-weight:700;letter-spacing:2px;}
+.pg-head p{font-size:0.72em;color:var(--txt3);margin-top:4px;letter-spacing:1px;}
+
+/* Card */
+.cd{background:white;border-radius:16px;padding:1.25rem;margin:0.75rem 0.875rem;box-shadow:0 3px 18px rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.025);}
+.cd-t{font-size:0.92em;font-weight:700;color:var(--forest-mid);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.cd-t::before{content:'';width:3px;height:15px;background:var(--gold);border-radius:2px;flex-shrink:0;}
+.cd-b{line-height:1.8;color:#444;font-size:0.84em;}
+.cd-hint{background:var(--gold-soft);border-left:3px solid rgba(196,164,80,0.3);padding:10px 14px;border-radius:0 8px 8px 0;margin:10px 0;font-size:0.82em;color:#6b5a2e;}
+.cd-hint2{background:var(--rose-soft);border-left:3px solid rgba(158,80,104,0.2);padding:10px 14px;border-radius:0 8px 8px 0;margin:10px 0;font-size:0.82em;color:#7a4a58;}
+
+/* ===== ISOMETRIC PITCH ===== */
+.iso-wrap{margin:1rem 0.875rem;padding:0.875rem;background:linear-gradient(180deg,#1e4a32 0%,#1a4230 25%,#163a26 50%,#1a4230 75%,#14321e 100%);border-radius:16px;border:1px solid rgba(196,164,80,0.08);box-shadow:0 6px 24px rgba(0,0,0,0.1);position:relative;overflow:hidden;}
+.iso-label{text-align:center;font-size:0.58em;color:rgba(196,164,80,0.35);letter-spacing:5px;margin-bottom:10px;text-transform:uppercase;position:relative;z-index:2;}
+.iso-svg{width:100%;height:auto;display:block;position:relative;z-index:2;}
+/* Hover/touch zoom for character icons - smooth only */
+.iso-node{cursor:pointer;transition:transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94);}
+.iso-node:hover{transform:scale(1.15);}
+.iso-node:active{transform:scale(0.95);}
+.iso-node circle{transition:all .2s;}
+/* Gentle pulse for known character nodes */
+@keyframes nodePulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
+
+/* ===== CHAR DETAIL ===== */
+#charPage{
+  display:none;
+  position:fixed;
+  left:50%;transform:translateX(-50%);
+  width:100%;max-width:var(--app-w);
+  top:0;bottom:0;
+  z-index:200;
+  background:var(--cream);
+  overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+}
+#charPage.show{display:block;animation:slideUp .4s ease;}
+@keyframes slideUp{from{transform:translate(-50%,100%);}to{transform:translate(-50%,0);}}
+
+.cp-hero{position:relative;width:100%;height:22.5rem;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;}
+.cp-bg{position:absolute;inset:0;}
+.cp-emoji{position:relative;z-index:2;font-size:5.625rem;margin-bottom:1.5rem;filter:drop-shadow(0 10px 25px rgba(0,0,0,0.3));}
+.cp-close{
+  position:absolute;top:14px;right:14px;z-index:10;
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.1);
+  color:rgba(255,255,255,0.6);font-size:0.9em;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+}
+.cp-close:active{background:rgba(0,0,0,0.4);color:white;}
+.cp-body{position:relative;z-index:5;margin-top:-1.5rem;background:var(--cream);border-radius:24px 24px 0 0;padding:1.625rem 1.25rem 3.125rem;}
+.cp-name{font-size:1.4em;font-weight:700;color:var(--txt);}
+.cp-num{font-size:0.7em;color:var(--gold);font-weight:600;margin-left:8px;letter-spacing:1px;}
+.cp-pos{display:inline-block;padding:4px 11px;margin-top:6px;background:var(--rose-soft);color:var(--rose);border-radius:10px;font-size:0.65em;font-weight:600;}
+.cp-tags{display:flex;flex-wrap:wrap;gap:5px;margin:12px 0;}
+.cp-tag{padding:3px 10px;background:rgba(26,56,40,0.04);border:1px solid rgba(26,56,40,0.07);border-radius:8px;font-size:0.66em;color:var(--forest-mid);}
+.cp-quote{background:rgba(196,164,80,0.04);border-radius:12px;padding:1rem;font-style:italic;color:var(--txt2);line-height:1.8;font-size:0.86em;margin:14px 0 18px;border-left:3px solid var(--gold-soft);}
+.cp-sec{font-size:0.78em;font-weight:700;color:var(--forest-mid);margin:16px 0 8px;display:flex;align-items:center;gap:6px;padding-top:2px;}
+.cp-desc{font-size:0.8em;line-height:1.8;color:#555;margin-bottom:4px;}
+.cp-fun{font-size:0.78em;color:var(--txt2);line-height:1.7;margin-top:6px;padding:12px 14px;background:rgba(196,164,80,0.03);border-radius:10px;margin-bottom:4px;}
+/* Roast section */
+.cp-roast{margin-top:8px;padding:14px;background:rgba(158,80,104,0.04);border-radius:12px;border:1px dashed rgba(158,80,104,0.12);}
+.cp-roast-title{font-size:0.72em;color:var(--rose);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.cp-roast-item{font-size:0.76em;line-height:1.7;color:#666;padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.03);}
+.cp-roast-item:last-child{border-bottom:none;}
+.cp-roast-who{font-size:0.68em;color:var(--rose);font-weight:600;margin-right:4px;}
+/* Typewriter animation */
+@keyframes typewriter{from{max-height:0;opacity:0;}to{max-height:200px;opacity:1;}}
+.cp-roast-item{overflow:hidden;animation:typewriter 0.8s ease-out forwards;animation-delay:var(--d,0s);}
+
+/* ===== STORY CARDS ===== */
+.st-card{background:white;border-radius:14px;margin:0 0.875rem 0.75rem;overflow:hidden;cursor:pointer;box-shadow:0 3px 14px rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.025);transition:transform .25s ease,box-shadow .25s ease;}
+.st-card:hover{transform:scale(1.03);box-shadow:0 6px 24px rgba(0,0,0,0.06);}
+.st-card:active{transform:scale(0.98);}
+.st-inner{padding:1rem;}
+.st-ep{font-size:0.6em;color:var(--gold);letter-spacing:3px;font-weight:600;margin-bottom:4px;}
+.st-title{font-size:0.9em;font-weight:700;color:var(--txt);margin-bottom:5px;}
+.st-desc{font-size:0.76em;color:var(--txt2);line-height:1.55;}
+.st-arrow{text-align:right;padding:0 1rem 0.75rem;font-size:0.68em;color:var(--gold);letter-spacing:2px;}
+.st-add{
+  display:block;margin:0 0.875rem 1.25rem;padding:0.875rem;
+  background:transparent;border:1.5px dashed rgba(196,164,80,0.15);
+  border-radius:14px;text-align:center;cursor:pointer;
+  color:var(--txt3);font-family:inherit;font-size:0.78em;letter-spacing:2px;
+  width:calc(100% - 1.75rem);
+  min-height:44px;
+}
+
+/* ===== FORM ===== */
+.fm-grid{display:grid;grid-template-columns:3fr 2fr;gap:0.6rem;margin:0 0.875rem;overflow:hidden;}
+/* 姓名/年龄/身份单独占满行 */
+.fm-g.solo{grid-column:1/-1;}
+.fm-g{display:flex;flex-direction:column;min-width:0;}
+.fm-g.full{grid-column:1/-1;}
+.fm-l{margin-bottom:4px;font-weight:600;font-size:0.7em;color:#444;}
+.fm-l .r{color:var(--rose);}
+.fm-i{
+  padding:0.5rem 0.6rem;
+  border:1.5px solid rgba(0,0,0,0.05);border-radius:12px;
+  font-family:inherit;
+  font-size:0.88rem;
+  background:white;outline:none;color:var(--txt);
+  transition:border .2s,box-shadow .2s;
+  -webkit-appearance:none;
+  min-height:40px;width:100%;box-sizing:border-box;
+}
+.fm-i:focus{border-color:rgba(196,164,80,0.3);box-shadow:0 0 0 3px rgba(196,164,80,0.06);}
+.fm-i::placeholder{color:#ccc;}
+.fm-cb{display:flex;gap:1rem;padding:4px 0;}
+.fm-cb label{display:flex;align-items:center;gap:4px;font-size:0.82em;cursor:pointer;min-height:44px;}
+.fm-cb input{accent-color:var(--forest-mid);width:18px;height:18px;}
+.fm-submit{
+  display:block;margin:1.125rem auto;padding:0.8125rem 2.75rem;
+  background:linear-gradient(135deg,var(--forest-mid),var(--forest-light));
+  color:var(--gold);border:1px solid rgba(196,164,80,0.15);
+  border-radius:28px;font-family:inherit;font-size:0.86em;font-weight:700;
+  cursor:pointer;letter-spacing:3px;
+  box-shadow:0 5px 16px rgba(26,56,40,0.12);
+  min-height:48px;
+}
+.fm-submit:active{transform:scale(0.96);}
+
+/* ===== RELATION SVG ===== */
+.rel-svg{width:100%;height:auto;display:block;margin-top:8px;}
+@keyframes relFloat{0%,100%{transform:translateY(0);filter:drop-shadow(0 3px 4px rgba(0,0,0,0.15));}50%{transform:translateY(-4px);filter:drop-shadow(0 8px 8px rgba(0,0,0,0.2));}}
+
+/* ===== PENALTY ===== */
+.pk-wrap{margin:0.75rem 0.875rem;background:var(--forest-mid);border-radius:16px;padding:1.25rem 1rem;border:1px solid rgba(196,164,80,0.08);text-align:center;}
+.pk-title{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:1.05em;letter-spacing:4px;margin-bottom:12px;font-weight:700;}
+.pk-field{position:relative;width:100%;aspect-ratio:3/2;background:linear-gradient(180deg,#1a3828,#143020);border:2px solid rgba(255,255,255,0.3);border-radius:6px;overflow:hidden;margin-bottom:12px;}
+.pk-field::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0px,transparent 18px,rgba(255,255,255,0.02) 18px,rgba(255,255,255,0.02) 36px);pointer-events:none;}
+.pk-goal{position:absolute;top:5%;left:15%;width:70%;height:35%;border:2px solid rgba(255,255,255,0.4);border-bottom:none;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);}
+.pk-z{border:1px dashed rgba(255,255,255,0.1);cursor:pointer;transition:background .12s;}
+.pk-z.sel{background:rgba(196,164,80,0.25);}
+.pk-goal::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,0.04) 0px,rgba(255,255,255,0.04) 1px,transparent 1px,transparent 8px),repeating-linear-gradient(180deg,rgba(255,255,255,0.04) 0px,rgba(255,255,255,0.04) 1px,transparent 1px,transparent 8px);pointer-events:none;}
+.pk-keeper{position:absolute;bottom:26%;left:50%;transform:translateX(-50%);font-size:1.6em;transition:all .4s ease;}
+.pk-ball{position:absolute;bottom:10%;left:50%;transform:translateX(-50%);font-size:1.3em;transition:all .5s cubic-bezier(.25,.46,.45,.94);}
+.pk-pixel-border{position:absolute;inset:0;pointer-events:none;border:3px solid transparent;border-image:repeating-linear-gradient(90deg,rgba(196,164,80,0.2) 0px,rgba(196,164,80,0.2) 3px,transparent 3px,transparent 6px) 3;}
+.pk-score{color:rgba(255,255,255,0.6);font-size:0.82em;font-family:monospace;margin-bottom:4px;}
+.pk-result{color:var(--gold);font-size:0.9em;font-weight:bold;min-height:1.4em;margin-bottom:8px;font-family:'Cormorant Garamond',serif;letter-spacing:2px;}
+.pk-btn{padding:8px 22px;border:none;border-radius:6px;font-family:monospace;font-weight:bold;cursor:pointer;margin:2px;font-size:0.78em;letter-spacing:1px;min-height:44px;}
+.pk-btn-go{background:var(--gold);color:var(--dk);}
+.pk-btn-go:disabled{opacity:0.3;cursor:not-allowed;}
+.pk-btn-x{background:transparent;color:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.12);}
+/* Pixel keeper */
+.pk-gk-pixel{position:absolute;bottom:16%;display:flex;flex-direction:column;align-items:center;gap:0;pointer-events:none;transition:all .4s ease;}
+.pk-gk-body{display:flex;flex-direction:column;align-items:center;}
+.pk-gk-head{width:14px;height:12px;background:#f0c070;border:1.5px solid #8a5000;border-radius:3px 3px 2px 2px;position:relative;}
+.pk-gk-head::after{content:'';position:absolute;top:3px;left:2px;width:3px;height:3px;background:#3a2000;border-radius:50%;box-shadow:5px 0 0 #3a2000;}
+.pk-gk-torso{width:18px;height:14px;background:#1a8040;border:1.5px solid #0a5020;margin-top:-1px;}
+.pk-gk-arms{position:absolute;top:14px;width:34px;height:8px;display:flex;justify-content:space-between;}
+.pk-gk-arm-l,.pk-gk-arm-r{width:8px;height:14px;background:#f0c070;border:1.5px solid #8a5000;border-radius:0 0 2px 2px;}
+.pk-gk-glove-l,.pk-gk-glove-r{display:none;}
+.pk-gk-legs{display:flex;gap:3px;margin-top:0;}
+.pk-gk-leg{width:7px;height:10px;background:#1a1a6a;border:1px solid #0a0a40;}
+.pk-gk-feet{display:flex;gap:3px;}
+.pk-gk-foot{width:8px;height:5px;background:#2a2a2a;border:1px solid #111;}
+.pk-gk-pixel.dive-left{transform:translateX(-160%) rotate(-15deg);}
+.pk-gk-pixel.dive-right{transform:translateX(60%) rotate(15deg);}
+/* Keeper idle bounce */
+@keyframes keeperIdle{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-3px);}}
+.pk-gk-pixel.idle{animation:keeperIdle 1.2s ease-in-out infinite;}
+/* Penalty dialogue bubble */
+.pk-dialogue{margin:12px 0 0;padding:10px 14px;background:rgba(196,164,80,0.04);border-radius:12px;border-left:3px solid var(--gold-soft);font-size:0.78em;color:var(--gold);font-style:italic;line-height:1.6;display:none;}
+.pk-dialogue.show{display:block;animation:fadeUp .4s ease;}
+/* Penalty game info */
+.pk-info{margin:0.75rem 0.875rem;background:white;border-radius:14px;padding:1rem 1.25rem;border:1px solid rgba(0,0,0,0.025);box-shadow:0 3px 14px rgba(0,0,0,0.03);}
+.pk-info-t{font-size:0.82em;font-weight:700;color:var(--forest-mid);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.pk-info-t::before{content:'🎮';font-size:1em;}
+.pk-info-li{font-size:0.76em;color:var(--txt2);line-height:1.7;padding:3px 0;display:flex;align-items:flex-start;gap:6px;}
+.pk-info-li::before{content:'•';color:var(--gold);font-weight:bold;flex-shrink:0;}
+/* Confetti */
+.confetti-wrap{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;overflow:hidden;display:none;}
+.confetti-wrap.active{display:block;}
+.cf-piece{position:absolute;top:-10px;width:8px;height:8px;opacity:0;animation:cfFall 2.8s ease-in forwards;}
+@keyframes cfFall{0%{opacity:1;transform:translateY(0) rotate(0deg);}100%{opacity:0;transform:translateY(100vh) rotate(720deg);}}
+
+/* ===== ANIMATIONS ===== */
+@keyframes cvFade{0%,100%{opacity:0;transform:translateY(0);}30%,70%{opacity:0.25;}50%{transform:translateY(-10px);}}
+@keyframes ballBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+@keyframes pulse{0%,100%{opacity:0.3;}50%{opacity:0.65;}}
+@keyframes goalPop{0%{transform:scale(0) rotate(-3deg);opacity:0;}60%{transform:scale(1.05) rotate(1deg);opacity:1;}100%{transform:scale(1) rotate(0);opacity:1;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+::-webkit-scrollbar{width:2px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(196,164,80,0.15);border-radius:2px;}
+</style>
+</head>
+<body>
+<div id="HF">
+
+<!-- ============ COVER ============ -->
+<div id="coverLayer" onclick="enterGame()">
+  <!-- Vertical football pitch background -->
+  <svg class="cv-pitch" viewBox="0 0 340 520" fill="none">
+    <!-- Grass stripe pattern -->
+    <defs><pattern id="grass" width="340" height="52" patternUnits="userSpaceOnUse"><rect width="340" height="26" fill="rgba(255,255,255,0.04)"/><rect y="26" width="340" height="26" fill="rgba(0,0,0,0.04)"/></pattern></defs>
+    <rect x="10" y="10" width="320" height="500" fill="url(#grass)"/>
+    <!-- Outer boundary -->
+    <rect x="10" y="10" width="320" height="500" rx="3" stroke="rgba(255,255,255,0.35)" stroke-width="1.8" fill="none"/>
+    <!-- Center line -->
+    <line x1="10" y1="260" x2="330" y2="260" stroke="rgba(255,255,255,0.28)" stroke-width="1.2"/>
+    <!-- Center circle -->
+    <circle cx="170" cy="260" r="48" stroke="rgba(255,255,255,0.25)" stroke-width="1" fill="none"/>
+    <circle cx="170" cy="260" r="2.5" fill="rgba(196,164,80,0.4)"/>
+    <!-- Top penalty area -->
+    <rect x="80" y="10" width="180" height="80" stroke="rgba(255,255,255,0.25)" stroke-width="1" fill="none"/>
+    <!-- Top goal area -->
+    <rect x="120" y="10" width="100" height="30" stroke="rgba(255,255,255,0.22)" stroke-width="1" fill="none"/>
+    <!-- Top penalty arc -->
+    <path d="M130 90 A45 45 0 0 0 210 90" stroke="rgba(255,255,255,0.18)" stroke-width="1" fill="none"/>
+    <!-- Top penalty spot -->
+    <circle cx="170" cy="60" r="2" fill="rgba(196,164,80,0.3)"/>
+    <!-- Top goal -->
+    <rect x="140" y="4" width="60" height="6" stroke="rgba(255,255,255,0.28)" stroke-width="1" fill="none" rx="1"/>
+    <!-- Bottom penalty area -->
+    <rect x="80" y="430" width="180" height="80" stroke="rgba(255,255,255,0.25)" stroke-width="1" fill="none"/>
+    <!-- Bottom goal area -->
+    <rect x="120" y="480" width="100" height="30" stroke="rgba(255,255,255,0.22)" stroke-width="1" fill="none"/>
+    <!-- Bottom penalty arc -->
+    <path d="M130 430 A45 45 0 0 1 210 430" stroke="rgba(255,255,255,0.18)" stroke-width="1" fill="none"/>
+    <!-- Bottom penalty spot -->
+    <circle cx="170" cy="460" r="2" fill="rgba(196,164,80,0.3)"/>
+    <!-- Bottom goal -->
+    <rect x="140" y="510" width="60" height="6" stroke="rgba(255,255,255,0.28)" stroke-width="1" fill="none" rx="1"/>
+    <!-- Corner arcs -->
+    <path d="M10 16 A6 6 0 0 0 16 10" stroke="rgba(255,255,255,0.18)" stroke-width="0.8" fill="none"/>
+    <path d="M324 10 A6 6 0 0 0 330 16" stroke="rgba(255,255,255,0.18)" stroke-width="0.8" fill="none"/>
+    <path d="M10 504 A6 6 0 0 1 16 510" stroke="rgba(255,255,255,0.18)" stroke-width="0.8" fill="none"/>
+    <path d="M324 510 A6 6 0 0 1 330 504" stroke="rgba(255,255,255,0.18)" stroke-width="0.8" fill="none"/>
+    <!-- Center circle dot pattern -->
+    <circle cx="170" cy="260" r="70" stroke="rgba(196,164,80,0.06)" stroke-width="0.5" fill="none" stroke-dasharray="3,5"/>
+  </svg>
+
+  <!-- Cover music button -->
+  <button class="cv-music-btn" onclick="event.stopPropagation();toggleMusic();" id="cvMusicBtn" style="position:absolute;top:16px;right:16px;z-index:10;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(196,164,80,0.2);color:var(--gold);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">🎵</button>
+
+  <!-- Floating football items -->
+  <div class="cv-float" style="top:5%;left:6%;font-size:1.8rem;animation-delay:0s;">⚽</div>
+  <div class="cv-float" style="top:3%;right:8%;font-size:1.5rem;animation-delay:1.5s;">🏆</div>
+  <div class="cv-float" style="bottom:22%;left:4%;font-size:1.3rem;animation-delay:3s;">📣</div>
+  <div class="cv-float" style="bottom:8%;right:6%;font-size:1.4rem;animation-delay:4.5s;">⚽</div>
+  <div class="cv-float" style="top:38%;right:3%;font-size:1.1rem;animation-delay:2s;">🟨</div>
+  <div class="cv-float" style="top:28%;left:3%;font-size:1rem;animation-delay:5s;">🟥</div>
+  <div class="cv-float" style="bottom:30%;right:4%;font-size:1.1rem;animation-delay:1s;">🚩</div>
+  <div class="cv-float" style="bottom:5%;left:8%;font-size:1.2rem;animation-delay:3.5s;">👟</div>
+
+  <div class="cv-p">✦</div><div class="cv-p">✦</div><div class="cv-p">⚽</div><div class="cv-p">✦</div><div class="cv-p">⚽</div><div class="cv-p">✦</div>
+  <div class="cv-card">
+    <h1>快乐足球<br>模拟器</h1>
+    <p class="sub">The Beautiful Game Awaits</p>
+    <p class="credit">✦ by Keen ✦</p>
+  </div>
+  <div class="cv-enter">
+    <span class="cv-ball">⚽</span>
+    <span class="cv-enter-txt">— 点击入场 —</span>
+  </div>
+</div>
+
+<!-- GOOOOAL -->
+<div id="goalOv">
+  <span class="gl-txt">G O O O O A L !</span>
+  <div class="gl-line"></div>
+  <span class="gl-sub">比赛开始</span>
+</div>
+
+<!-- Audio element -->
+<!-- Music generated via Web Audio API -->
+
+<!-- ============ MAIN ============ -->
+<div id="mainApp">
+  <div class="topbar">
+    <button class="tb-back" onclick="backToCover()">◁ 封面</button>
+    <span class="tb-title">Castilla de Oro</span>
+    <button class="tb-music" onclick="toggleMusic()" id="musicBtn">🎵</button>
+  </div>
+
+  <!-- PAGE 0 -->
+  <div id="pg0" class="pg show">
+    <div class="pg-head"><h2>📖 入场指南</h2><p>命运的哨声已经吹响</p></div>
+    <div class="cd" style="animation:fadeUp .4s ease backwards;">
+      <div class="cd-t">欢迎来到绿茵场</div>
+      <div class="cd-b">
+        <p>欢迎来到「快乐足球模拟器」——以 Real Castilla de Oro CF 为舞台的架空足球世界。热血竞技、日常喜剧、多线情感与禁忌张力交织，在这片绿茵场上你将邂逅风格各异的球员们。</p>
+        <div class="cd-hint">💡 自由选择身份：球员、教练、队医、记者、经纪人、投资方，甚至某位球员的青梅竹马。支持 BG / GB / BL。</div>
+        <p>在「身份档案」填写你的角色，从「故事开场」选择起点，踏入属于你的传说。</p>
+      </div>
+    </div>
+    <div class="cd" style="animation:fadeUp .4s .08s ease backwards;">
+      <div class="cd-t">快乐足球精神</div>
+      <div class="cd-b">
+        <p>乌龙球、门将离奇出击、后卫惊天回传、前锋单刀偏出银河系……「快乐足球」是球迷津津乐道的名场面文化。有时候那些失误的背后不只是紧张——媒体最爱捕捉的，是"他看了谁一眼才漏掉了那个球"。</p>
+        <div class="cd-hint2">🏟️ 点击阵型图中的角色图标，解锁他们的档案与故事。</div>
+      </div>
+    </div>
+    <div class="iso-wrap" style="animation:fadeUp .4s .16s ease backwards;">
+      <div class="iso-label">── SQUAD FORMATION ──</div>
+      <svg class="iso-svg" viewBox="0 0 440 780" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="ns"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.35"/></filter>
+        </defs>
+        <!-- Vertical pitch markings (taller than wide) -->
+        <rect x="20" y="10" width="400" height="540" rx="4" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+        <line x1="20" y1="280" x2="420" y2="280" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <circle cx="220" cy="280" r="50" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="0.8"/>
+        <circle cx="220" cy="280" r="2.5" fill="rgba(255,255,255,0.1)"/>
+        <!-- Top penalty area -->
+        <rect x="110" y="10" width="220" height="90" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="0.8"/>
+        <rect x="155" y="10" width="130" height="35" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/>
+        <path d="M160 100 A55 55 0 0 0 280 100" stroke="rgba(255,255,255,0.05)" stroke-width="0.8" fill="none"/>
+        <!-- Bottom penalty area -->
+        <rect x="110" y="460" width="220" height="90" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="0.8"/>
+        <rect x="155" y="515" width="130" height="35" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/>
+        <path d="M160 460 A55 55 0 0 1 280 460" stroke="rgba(255,255,255,0.05)" stroke-width="0.8" fill="none"/>
+
+        <!-- ===== PLAYERS ===== -->
+        <!-- CF 沈夜舟 -->
+        <g class="iso-node" onclick="openChar('cf')" filter="url(#ns)">
+          <circle cx="220" cy="55" r="28" fill="rgba(0,0,0,0.5)" stroke="var(--gold)" stroke-width="2.5"/>
+          <text x="220" y="64" text-anchor="middle" font-size="22">⚡</text>
+          <line x1="248" y1="55" x2="330" y2="55" stroke="rgba(196,164,80,0.4)" stroke-width="1"/>
+          <text x="336" y="59" font-size="11" fill="rgba(196,164,80,0.8)" font-family="monospace">#9 沈夜舟 CF</text>
+        </g>
+
+        <!-- SS 鹤鸣 -->
+        <g class="iso-node" onclick="openChar('ss')" filter="url(#ns)">
+          <circle cx="120" cy="130" r="26" fill="rgba(0,0,0,0.5)" stroke="var(--gold)" stroke-width="2.2"/>
+          <text x="120" y="139" text-anchor="middle" font-size="20">🌀</text>
+          <line x1="94" y1="130" x2="15" y2="130" stroke="rgba(196,164,80,0.4)" stroke-width="1"/>
+          <text x="10" y="124" font-size="11" fill="rgba(196,164,80,0.8)" font-family="monospace" text-anchor="start">#11 鹤鸣</text>
+          <text x="10" y="138" font-size="9" fill="rgba(196,164,80,0.5)" font-family="monospace">SS</text>
+        </g>
+
+        <!-- RW 玲央 -->
+        <g class="iso-node" onclick="openChar('rw')" filter="url(#ns)">
+          <circle cx="340" cy="130" r="26" fill="rgba(0,0,0,0.5)" stroke="var(--gold)" stroke-width="2.2"/>
+          <text x="340" y="139" text-anchor="middle" font-size="20">💨</text>
+          <line x1="366" y1="130" x2="425" y2="130" stroke="rgba(196,164,80,0.4)" stroke-width="1"/>
+          <text x="430" y="124" font-size="11" fill="rgba(196,164,80,0.8)" font-family="monospace">#10 玲央</text>
+          <text x="430" y="138" font-size="9" fill="rgba(196,164,80,0.5)" font-family="monospace">RW</text>
+        </g>
+
+        <!-- LW 神秘 -->
+        <g class="iso-node" onclick="openChar('lw')" filter="url(#ns)">
+          <circle cx="60" cy="170" r="24" fill="rgba(0,0,0,0.35)" stroke="rgba(196,164,80,0.4)" stroke-width="1.8" stroke-dasharray="4,3"/>
+          <text x="60" y="178" text-anchor="middle" font-size="17" fill="rgba(196,164,80,0.6)">？</text>
+          <line x1="84" y1="170" x2="130" y2="170" stroke="rgba(196,164,80,0.25)" stroke-width="0.8"/>
+          <text x="136" y="174" font-size="10" fill="rgba(196,164,80,0.5)" font-family="monospace">LW ???</text>
+        </g>
+
+        <!-- CAM 阿维拉 -->
+        <g class="iso-node" onclick="openChar('cam')" filter="url(#ns)">
+          <circle cx="220" cy="190" r="26" fill="rgba(0,0,0,0.5)" stroke="var(--gold)" stroke-width="2.2"/>
+          <text x="220" y="199" text-anchor="middle" font-size="20">🎯</text>
+          <line x1="246" y1="190" x2="330" y2="190" stroke="rgba(196,164,80,0.4)" stroke-width="1"/>
+          <text x="336" y="184" font-size="11" fill="rgba(196,164,80,0.8)" font-family="monospace">#7 阿维拉</text>
+          <text x="336" y="198" font-size="9" fill="rgba(196,164,80,0.5)" font-family="monospace">CAM</text>
+        </g>
+
+        <!-- CDM1 -->
+        <g class="iso-node" onclick="openChar('dm1')" filter="url(#ns)">
+          <circle cx="150" cy="270" r="24" fill="rgba(0,0,0,0.35)" stroke="rgba(196,164,80,0.4)" stroke-width="1.8" stroke-dasharray="4,3"/>
+          <text x="150" y="278" text-anchor="middle" font-size="17" fill="rgba(196,164,80,0.6)">？</text>
+          <line x1="126" y1="270" x2="15" y2="270" stroke="rgba(196,164,80,0.25)" stroke-width="0.8"/>
+          <text x="10" y="274" font-size="10" fill="rgba(196,164,80,0.5)" font-family="monospace">CDM ???</text>
+        </g>
+
+        <!-- CDM2 -->
+        <g class="iso-node" onclick="openChar('dm2')" filter="url(#ns)">
+          <circle cx="290" cy="270" r="24" fill="rgba(0,0,0,0.35)" stroke="rgba(196,164,80,0.4)" stroke-width="1.8" stroke-dasharray="4,3"/>
+          <text x="290" y="278" text-anchor="middle" font-size="17" fill="rgba(196,164,80,0.6)">？</text>
+          <line x1="314" y1="270" x2="425" y2="270" stroke="rgba(196,164,80,0.25)" stroke-width="0.8"/>
+          <text x="430" y="274" font-size="10" fill="rgba(196,164,80,0.5)" font-family="monospace">CDM ???</text>
+        </g>
+
+        <!-- CB1 内里 -->
+        <g class="iso-node" onclick="openChar('cb1')" filter="url(#ns)">
+          <circle cx="150" cy="370" r="26" fill="rgba(0,0,0,0.5)" stroke="var(--gold)" stroke-width="2.2"/>
+          <text x="150" y="379" text-anchor="middle" font-size="20">🗡️</text>
+          <line x1="124" y1="370" x2="15" y2="370" stroke="rgba(196,164,80,0.4)" stroke-width="1"/>
+          <text x="10" y="364" font-size="11" fill="rgba(196,164,80,0.8)" font-family="monospace">#5 内里 ©</text>
+          <text x="10" y="378" font-size="9" fill="rgba(196,164,80,0.5)" font-family="monospace">CB</text>
+        </g>
+
+        <!-- CB2 鹤行 -->
+        <g class="iso-node" onclick="openChar('cb2')" filter="url(#ns)">
+          <circle cx="290" cy="370" r="26" fill="rgba(0,0,0,0.5)" stroke="var(--gold)" stroke-width="2.2"/>
+          <text x="290" y="379" text-anchor="middle" font-size="20">🏔️</text>
+          <line x1="316" y1="370" x2="425" y2="370" stroke="rgba(196,164,80,0.4)" stroke-width="1"/>
+          <text x="430" y="364" font-size="11" fill="rgba(196,164,80,0.8)" font-family="monospace">#4 鹤行</text>
+          <text x="430" y="378" font-size="9" fill="rgba(196,164,80,0.5)" font-family="monospace">CB</text>
+        </g>
+
+        <!-- LB -->
+        <g class="iso-node" onclick="openChar('lb')" filter="url(#ns)">
+          <circle cx="55" cy="400" r="24" fill="rgba(0,0,0,0.35)" stroke="rgba(196,164,80,0.4)" stroke-width="1.8" stroke-dasharray="4,3"/>
+          <text x="55" y="408" text-anchor="middle" font-size="17" fill="rgba(196,164,80,0.6)">？</text>
+          <line x1="79" y1="400" x2="130" y2="400" stroke="rgba(196,164,80,0.25)" stroke-width="0.8"/>
+          <text x="136" y="404" font-size="10" fill="rgba(196,164,80,0.5)" font-family="monospace">LB ???</text>
+        </g>
+
+        <!-- RB 裴瑞 -->
+        <g class="iso-node" onclick="openChar('rb')" filter="url(#ns)">
+          <circle cx="385" cy="400" r="26" fill="rgba(0,0,0,0.5)" stroke="var(--gold)" stroke-width="2.2"/>
+          <text x="385" y="409" text-anchor="middle" font-size="20">⚔️</text>
+          <line x1="359" y1="400" x2="300" y2="400" stroke="rgba(196,164,80,0.4)" stroke-width="1"/>
+          <text x="294" y="394" font-size="11" fill="rgba(196,164,80,0.8)" font-family="monospace" text-anchor="end">#2 裴瑞</text>
+          <text x="294" y="408" font-size="9" fill="rgba(196,164,80,0.5)" font-family="monospace" text-anchor="end">RB</text>
+        </g>
+
+        <!-- GK 尼科 -->
+        <g class="iso-node" onclick="openChar('gk')" filter="url(#ns)">
+          <circle cx="220" cy="490" r="28" fill="rgba(0,0,0,0.5)" stroke="var(--gold)" stroke-width="2.5"/>
+          <text x="220" y="499" text-anchor="middle" font-size="22">🧤</text>
+          <line x1="248" y1="490" x2="330" y2="490" stroke="rgba(196,164,80,0.4)" stroke-width="1"/>
+          <text x="336" y="484" font-size="11" fill="rgba(196,164,80,0.8)" font-family="monospace">#1 尼科</text>
+          <text x="336" y="498" font-size="9" fill="rgba(196,164,80,0.5)" font-family="monospace">GK</text>
+        </g>
+
+        <!-- ===== BENCH ===== -->
+        <text x="220" y="570" text-anchor="middle" font-size="9" fill="rgba(196,164,80,0.35)" letter-spacing="4" font-family="monospace">── BENCH ──</text>
+
+        <!-- 教练陆昭恩 — 引线向左 -->
+        <g onclick="openChar('coach')" style="cursor:pointer">
+          <circle cx="170" cy="610" r="26" fill="rgba(244,239,228,0.85)" stroke="var(--forest-mid)" stroke-width="2"/>
+          <text x="170" y="619" text-anchor="middle" font-size="20">👔</text>
+          <line x1="144" y1="610" x2="15" y2="610" stroke="rgba(196,164,80,0.35)" stroke-width="0.8"/>
+          <text x="10" y="604" font-size="10" fill="rgba(196,164,80,0.6)" font-family="monospace">主教练</text>
+          <text x="10" y="618" font-size="10" fill="rgba(196,164,80,0.6)" font-family="monospace">陆昭恩</text>
+        </g>
+
+        <!-- 助教 — 引线向右 -->
+        <g onclick="openChar('ac')" style="cursor:pointer">
+          <circle cx="290" cy="610" r="24" fill="rgba(244,239,228,0.6)" stroke="rgba(26,56,40,0.3)" stroke-width="1.6" stroke-dasharray="4,3"/>
+          <text x="290" y="618" text-anchor="middle" font-size="17" fill="rgba(26,56,40,0.5)">📋</text>
+          <line x1="314" y1="610" x2="425" y2="610" stroke="rgba(196,164,80,0.2)" stroke-width="0.8"/>
+          <text x="430" y="604" font-size="10" fill="rgba(196,164,80,0.45)" font-family="monospace">助教</text>
+          <text x="430" y="618" font-size="10" fill="rgba(196,164,80,0.45)" font-family="monospace">???</text>
+        </g>
+
+        <!-- ===== SHADOWS ===== -->
+        <text x="220" y="660" text-anchor="middle" font-size="9" fill="rgba(196,164,80,0.3)" letter-spacing="4" font-family="monospace">── SHADOWS ──</text>
+
+        <!-- Shadow A -->
+        <g onclick="openChar('shadow1')" style="cursor:pointer">
+          <circle cx="80" cy="700" r="22" fill="rgba(0,0,0,0.3)" stroke="rgba(158,80,104,0.4)" stroke-width="1.6" stroke-dasharray="4,3"/>
+          <text x="80" y="708" text-anchor="middle" font-size="16" fill="rgba(158,80,104,0.55)">👤</text>
+          <line x1="102" y1="700" x2="155" y2="700" stroke="rgba(158,80,104,0.25)" stroke-width="0.8"/>
+          <text x="160" y="704" font-size="9" fill="rgba(158,80,104,0.55)" font-family="monospace">他队·A</text>
+        </g>
+
+        <!-- Shadow B -->
+        <g onclick="openChar('shadow2')" style="cursor:pointer">
+          <circle cx="220" cy="700" r="22" fill="rgba(0,0,0,0.3)" stroke="rgba(158,80,104,0.4)" stroke-width="1.6" stroke-dasharray="4,3"/>
+          <text x="220" y="708" text-anchor="middle" font-size="16" fill="rgba(158,80,104,0.55)">👤</text>
+          <line x1="242" y1="700" x2="295" y2="700" stroke="rgba(158,80,104,0.25)" stroke-width="0.8"/>
+          <text x="300" y="704" font-size="9" fill="rgba(158,80,104,0.55)" font-family="monospace">他队·B</text>
+        </g>
+
+        <!-- Shadow C -->
+        <g onclick="openChar('shadow3')" style="cursor:pointer">
+          <circle cx="360" cy="700" r="22" fill="rgba(0,0,0,0.3)" stroke="rgba(158,80,104,0.4)" stroke-width="1.6" stroke-dasharray="4,3"/>
+          <text x="360" y="708" text-anchor="middle" font-size="16" fill="rgba(158,80,104,0.55)">👤</text>
+          <line x1="338" y1="700" x2="285" y2="700" stroke="rgba(158,80,104,0.25)" stroke-width="0.8"/>
+          <text x="279" y="704" font-size="9" fill="rgba(158,80,104,0.55)" font-family="monospace" text-anchor="end">他队·C</text>
+        </g>
+
+        <!-- 投资方 -->
+        <g onclick="openChar('investor')" style="cursor:pointer">
+          <circle cx="220" cy="745" r="22" fill="rgba(0,0,0,0.3)" stroke="rgba(196,164,80,0.4)" stroke-width="1.6" stroke-dasharray="4,3"/>
+          <text x="220" y="753" text-anchor="middle" font-size="16" fill="rgba(196,164,80,0.55)">💰</text>
+          <line x1="242" y1="745" x2="330" y2="745" stroke="rgba(196,164,80,0.25)" stroke-width="0.8"/>
+          <text x="336" y="749" font-size="10" fill="rgba(196,164,80,0.5)" font-family="monospace">神秘投资方</text>
+        </g>
+
+        <!-- 底部说明 -->
+        <text x="220" y="778" text-anchor="middle" font-size="10" fill="rgba(196,164,80,0.5)" font-style="italic">— 等待你探索的角色 —</text>
+      </svg>
+
+      <!-- Oro 徽标 + 口号 -->
+      <div style="display:flex;flex-direction:column;align-items:center;padding:6px 0 10px;gap:10px;position:relative;z-index:2;">
+        <svg viewBox="0 0 120 140" width="90" height="105" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="shG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0d1f2d"/><stop offset="100%" stop-color="#060e18"/></linearGradient></defs>
+          <path d="M60,4 L112,22 L112,72 Q112,112 60,136 Q8,112 8,72 L8,22 Z" fill="url(#shG)" stroke="#c4a450" stroke-width="2"/>
+          <path d="M60,10 L106,26 L106,72 Q106,108 60,130 Q14,108 14,72 L14,26 Z" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="0.8"/>
+          <g fill="#c4a450"><polygon points="38,30 42,22 48,28 54,19 60,26 66,19 72,28 78,22 82,30 80,36 40,36" opacity="0.9"/><rect x="40" y="35" width="40" height="3.5" rx="1" opacity="0.65"/></g>
+          <g transform="translate(60,78)" fill="#c4a450" opacity="0.88">
+            <ellipse cx="0" cy="4" rx="7" ry="10"/>
+            <circle cx="0" cy="-7" r="6"/>
+            <polygon points="4,-8 10,-5 4,-4"/>
+            <path d="M-7,2 Q-28,-8 -38,4 Q-26,8 -7,10 Z"/>
+            <path d="M-7,5 Q-24,2 -34,12 Q-22,14 -7,12 Z" opacity="0.55"/>
+            <path d="M7,2 Q28,-8 38,4 Q26,8 7,10 Z"/>
+            <path d="M7,5 Q24,2 34,12 Q22,14 7,12 Z" opacity="0.55"/>
+            <line x1="-4" y1="14" x2="-7" y2="20" stroke="#c4a450" stroke-width="1.5"/>
+            <line x1="4" y1="14" x2="7" y2="20" stroke="#c4a450" stroke-width="1.5"/>
+            <line x1="-7" y1="20" x2="-10" y2="23" stroke="#c4a450" stroke-width="1.2"/>
+            <line x1="-7" y1="20" x2="-6" y2="24" stroke="#c4a450" stroke-width="1.2"/>
+            <line x1="7" y1="20" x2="10" y2="23" stroke="#c4a450" stroke-width="1.2"/>
+            <line x1="7" y1="20" x2="6" y2="24" stroke="#c4a450" stroke-width="1.2"/>
+          </g>
+          <g fill="#9e5068" opacity="0.72">
+            <circle cx="36" cy="122" r="4"/><circle cx="36" cy="118" r="2.5"/><line x1="36" y1="126" x2="36" y2="132" stroke="#9e5068" stroke-width="1"/>
+            <circle cx="60" cy="124" r="4.5"/><circle cx="60" cy="119" r="3"/><line x1="60" y1="128" x2="60" y2="134" stroke="#9e5068" stroke-width="1.2"/>
+            <circle cx="84" cy="122" r="4"/><circle cx="84" cy="118" r="2.5"/><line x1="84" y1="126" x2="84" y2="132" stroke="#9e5068" stroke-width="1"/>
+          </g>
+          <path d="M20,38 Q16,55 16,72" stroke="rgba(196,164,80,0.28)" stroke-width="1" fill="none"/>
+          <path d="M100,38 Q104,55 104,72" stroke="rgba(196,164,80,0.28)" stroke-width="1" fill="none"/>
+        </svg>
+        <div style="text-align:center;display:flex;flex-direction:column;gap:4px;padding:0 16px;">
+          <div style="font-size:0.63em;letter-spacing:1.5px;color:rgba(196,164,80,0.6);font-style:italic;">Caemos como pétalos, nos alzamos como águilas.</div>
+          <div style="font-size:0.58em;letter-spacing:2px;color:rgba(196,164,80,0.38);">我们如花瓣般坠落，如金鹰般升起</div>
+          <div style="font-size:0.52em;letter-spacing:3px;color:rgba(158,80,104,0.45);margin-top:3px;font-family:monospace;">SANGRE Y SEDA · FLORECEMOS EN SANGRE</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 1 -->
+  <div id="pg1" class="pg">
+    <div class="pg-head"><h2>🎬 故事开场</h2><p>每一段故事都是通往不同命运的入口</p></div>
+    <div id="storyList">
+      <div class="st-card" style="animation:fadeUp .35s ease backwards;">
+        <div class="st-inner"><div class="st-ep">EPISODE 01</div><div class="st-title">初入绿茵</div><div class="st-desc">转会窗口的最后一天，你拖着行李来到索拉雷斯。卡斯蒂利亚圣殿的灯光穿透薄雾，像一场命中注定的邂逅……</div></div>
+        <div class="st-arrow">进入故事 →</div>
+      </div>
+      <div class="st-card" style="animation:fadeUp .35s .06s ease backwards;">
+        <div class="st-inner"><div class="st-ep">EPISODE 02</div><div class="st-title">德比之夜</div><div class="st-desc">与蒙卡达的国家德比。对面阵中有一张熟悉的脸——松田玲央，从死敌来的10号。看台上的怒吼声中，你们的目光交汇了。</div></div>
+        <div class="st-arrow">进入故事 →</div>
+      </div>
+      <div class="st-card" style="animation:fadeUp .35s .12s ease backwards;">
+        <div class="st-inner"><div class="st-ep">EPISODE 03</div><div class="st-title">替补席上的秘密</div><div class="st-desc">你不是球员，只是刚入行的队医。但当那个毒舌门将尼科在队医室拉上帘子后露出脆弱的表情时——冰袋之下，不只有伤。</div></div>
+        <div class="st-arrow">进入故事 →</div>
+      </div>
+      <div class="st-card" style="animation:fadeUp .35s .18s ease backwards;">
+        <div class="st-inner"><div class="st-ep">EPISODE 04</div><div class="st-title">看台上的家人</div><div class="st-desc">你是某位球员的家属——也许是姐姐，也许是青梅竹马。VIP包厢里你假装镇定地看着他在场上拼命，手里的咖啡早就凉了。赛后通道里他满身是汗地走过来，第一句话是："你怎么又哭了。"</div></div>
+        <div class="st-arrow">进入故事 →</div>
+      </div>
+      <div class="st-card" style="animation:fadeUp .35s .24s ease backwards;">
+        <div class="st-inner"><div class="st-ep">EPISODE 05</div><div class="st-title">束发的秘密</div><div class="st-desc">女扮男装进入青训营，你以为自己藏得很好——直到那天更衣室里只剩你和他。你的发带松了，长发散落在肩上。他靠在柜子上看了你三秒，然后把门从里面锁上："所以，你打算什么时候告诉我？"</div></div>
+        <div class="st-arrow">进入故事 →</div>
+      </div>
+    </div>
+    <button class="st-add">＋ 添加新的开场白</button>
+  </div>
+
+  <!-- PAGE 2 -->
+  <div id="pg2" class="pg">
+    <div class="pg-head"><h2>🌟 身份档案</h2><p>在绿茵场上，你将以何种姿态登场？</p></div>
+    <div class="fm-grid">
+      <div class="fm-g"><label class="fm-l">姓名 <span class="r">*</span></label><input class="fm-i" id="fN" placeholder="你的名字"></div>
+      <div class="fm-g"><label class="fm-l">年龄 <span class="r">*</span></label><input class="fm-i" id="fA" type="number" min="16" max="50" placeholder="16-50"></div>
+      <div class="fm-g"><label class="fm-l">性别 <span class="r">*</span></label><select class="fm-i" id="fG"><option value="">请选择</option><option>男性</option><option>女性</option><option>其他</option></select></div>
+      <div class="fm-g"><label class="fm-l">身份 <span class="r">*</span></label><select class="fm-i" id="fI" onchange="document.getElementById('fPG').style.display=this.value==='球员'?'flex':'none';"><option value="">请选择</option><option>球员</option><option>主教练</option><option>助理教练</option><option>体能教练</option><option>队医</option><option>记者</option><option>经纪人</option><option>投资方</option><option>球迷</option><option>青梅竹马</option><option>其他</option></select></div>
+      <div class="fm-g" id="fPG" style="display:none;"><label class="fm-l">球场位置</label><select class="fm-i" id="fP"><option value="">请选择</option><option>GK 守门员</option><option>CB 中后卫</option><option>LB 左后卫</option><option>RB 右后卫</option><option>CDM 后腰</option><option>CM 中场</option><option>CAM 前腰</option><option>LW 左边锋</option><option>RW 右边锋</option><option>CF 中锋</option><option>SS 影锋</option></select></div>
+      <div class="fm-g"><label class="fm-l">所属俱乐部</label><select class="fm-i" id="fC"><option value="">请选择</option><option>Castilla de Oro</option><option>FC 蒙卡达联合</option><option>US 韦基亚·都灵</option><option>SC 艾森堡</option><option>梅西FC</option><option>塞维利亚诺竞技</option><option>皇家瓦伦提亚</option><option>马里斯马竞技</option><option>AS 流光巴黎</option><option>其他俱乐部</option><option>无/自由人</option></select></div>
+      <div class="fm-g full"><label class="fm-l">背景故事（选填）</label><textarea class="fm-i" id="fB" placeholder="角色从哪里来，有什么过去……" style="min-height:80px;resize:vertical;"></textarea></div>
+      <div class="fm-g full"><label class="fm-l">CP取向（选填）</label><div class="fm-cb"><label><input type="checkbox" name="cp" value="BG">BG</label><label><input type="checkbox" name="cp" value="GB">GB</label><label><input type="checkbox" name="cp" value="BL">BL</label></div></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;margin:1.125rem auto;">
+      <button class="fm-submit" onclick="randomChar()" style="background:linear-gradient(135deg,rgba(158,80,104,0.8),rgba(120,60,80,0.9));padding:0.8125rem 1.5rem;">🎲 随机分配</button>
+      <button class="fm-submit" onclick="submitChar()">⚽ 确认入场</button>
+    </div>
+    <div class="cd" style="margin-top:8px;">
+      <div class="cd-t">关系图谱</div>
+      <p style="font-size:0.72em;color:var(--txt3);font-style:italic;margin-bottom:6px;">故事推进后，关系线将逐渐显现……</p>
+      <svg class="rel-svg" viewBox="0 0 380 380" xmlns="http://www.w3.org/2000/svg">
+        <style>
+          .rel-node{animation:relFloat 3s ease-in-out infinite;}
+          .rel-node:nth-child(2){animation-delay:0.3s;}.rel-node:nth-child(3){animation-delay:0.6s;}.rel-node:nth-child(4){animation-delay:0.9s;}.rel-node:nth-child(5){animation-delay:1.2s;}.rel-node:nth-child(6){animation-delay:1.5s;}.rel-node:nth-child(7){animation-delay:1.8s;}.rel-node:nth-child(8){animation-delay:2.1s;}
+          @keyframes relFloat{0%,100%{transform:translateY(0);filter:drop-shadow(0 2px 3px rgba(0,0,0,0.15));}50%{transform:translateY(-5px);filter:drop-shadow(0 8px 6px rgba(0,0,0,0.25));}}
+        </style>
+        <!-- 背景装饰圆环 -->
+        <circle cx="190" cy="190" r="135" fill="none" stroke="rgba(196,164,80,0.06)" stroke-width="1" stroke-dasharray="4,6"/>
+        <circle cx="190" cy="190" r="90" fill="none" stroke="rgba(196,164,80,0.04)" stroke-width="0.8"/>
+
+        <!-- 关系线（从中心"你"出发） -->
+        <!-- 教练 — 金色实线（权力关系） -->
+        <line x1="190" y1="190" x2="190" y2="55" stroke="rgba(255,255,255,0.3)" stroke-width="1.2"/>
+        <!-- 沈夜舟 — 玫瑰虚线 -->
+        <line x1="190" y1="190" x2="313" y2="97" stroke="rgba(158,80,104,0.3)" stroke-width="1" stroke-dasharray="4,3"/>
+        <!-- 内里 — 金色虚线 -->
+        <line x1="190" y1="190" x2="353" y2="190" stroke="rgba(255,255,255,0.25)" stroke-width="1" stroke-dasharray="4,3"/>
+        <!-- 裴瑞 — 玫瑰 -->
+        <line x1="190" y1="190" x2="313" y2="283" stroke="rgba(158,80,104,0.25)" stroke-width="0.9" stroke-dasharray="3,4"/>
+        <!-- 尼科 — 淡色 -->
+        <line x1="190" y1="190" x2="190" y2="325" stroke="rgba(255,255,255,0.12)" stroke-width="0.8" stroke-dasharray="3,4"/>
+        <!-- 鹤行 — 淡色 -->
+        <line x1="190" y1="190" x2="67" y2="283" stroke="rgba(255,255,255,0.12)" stroke-width="0.8" stroke-dasharray="3,4"/>
+        <!-- 阿维拉 — 玫瑰 -->
+        <line x1="190" y1="190" x2="27" y2="190" stroke="rgba(158,80,104,0.2)" stroke-width="0.8" stroke-dasharray="3,5"/>
+        <!-- 鹤鸣 — 淡色 -->
+        <line x1="190" y1="190" x2="67" y2="97" stroke="rgba(255,255,255,0.12)" stroke-width="0.8" stroke-dasharray="3,4"/>
+        <!-- 玲央 — 淡色 -->
+        <line x1="190" y1="190" x2="280" y2="58" stroke="rgba(255,255,255,0.1)" stroke-width="0.7" stroke-dasharray="2,5"/>
+        <!-- 神秘CDM — 极淡 -->
+        <line x1="190" y1="190" x2="100" y2="58" stroke="rgba(196,164,80,0.1)" stroke-width="0.6" stroke-dasharray="2,6"/>
+        <!-- 助教 — 极淡 -->
+        <line x1="190" y1="190" x2="280" y2="322" stroke="rgba(196,164,80,0.08)" stroke-width="0.6" stroke-dasharray="2,6"/>
+
+        <!-- 12点：教练 陆昭恩 -->
+        <g class="rel-node">
+        <circle cx="190" cy="55" r="24" fill="rgba(244,239,228,0.88)" stroke="var(--forest-mid)" stroke-width="2"/>
+        <text x="190" y="63" text-anchor="middle" font-size="18">👔</text>
+        <text x="190" y="42" text-anchor="middle" font-size="7.5" fill="rgba(196,164,80,0.7)" font-family="monospace">主教练</text>
+        <text x="190" y="88" text-anchor="middle" font-size="6.5" fill="rgba(196,164,80,0.5)" font-style="italic">权力&羁绊</text>
+        </g>
+
+        <!-- 1:30方向：沈夜舟 -->
+        <g class="rel-node">
+        <circle cx="313" cy="97" r="21" fill="rgba(0,0,0,0.5)" stroke="var(--rose)" stroke-width="1.8"/>
+        <text x="313" y="105" text-anchor="middle" font-size="16">⚡</text>
+        <text x="313" y="84" text-anchor="middle" font-size="7" fill="rgba(158,80,104,0.65)" font-family="monospace">#9 夜舟</text>
+        <text x="338" y="110" text-anchor="middle" font-size="6" fill="rgba(158,80,104,0.4)" font-style="italic">队友</text>
+        </g>
+
+        <!-- 3点：内里 -->
+        <g class="rel-node">
+        <circle cx="353" cy="190" r="21" fill="rgba(0,0,0,0.5)" stroke="var(--gold)" stroke-width="1.8"/>
+        <text x="353" y="198" text-anchor="middle" font-size="16">🗡️</text>
+        <text x="353" y="177" text-anchor="middle" font-size="7" fill="rgba(196,164,80,0.65)" font-family="monospace">#5 内里©</text>
+        <text x="375" y="210" text-anchor="middle" font-size="6" fill="rgba(196,164,80,0.4)" font-style="italic">队长</text>
+        </g>
+
+        <!-- 4:30方向：裴瑞 -->
+        <g class="rel-node">
+        <circle cx="313" cy="283" r="21" fill="rgba(0,0,0,0.5)" stroke="rgba(196,164,80,0.55)" stroke-width="1.5"/>
+        <text x="313" y="291" text-anchor="middle" font-size="16">⚔️</text>
+        <text x="313" y="270" text-anchor="middle" font-size="7" fill="rgba(196,164,80,0.5)" font-family="monospace">#2 裴瑞</text>
+        </g>
+
+        <!-- 6点：尼科 -->
+        <g class="rel-node">
+        <circle cx="190" cy="325" r="21" fill="rgba(0,0,0,0.5)" stroke="rgba(255,255,255,0.2)" stroke-width="1.2"/>
+        <text x="190" y="333" text-anchor="middle" font-size="16">🧤</text>
+        <text x="190" y="312" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.35)" font-family="monospace">#1 尼科</text>
+        </g>
+
+        <!-- 7:30方向：鹤行 -->
+        <g class="rel-node">
+        <circle cx="67" cy="283" r="21" fill="rgba(0,0,0,0.5)" stroke="rgba(255,255,255,0.2)" stroke-width="1.2"/>
+        <text x="67" y="291" text-anchor="middle" font-size="16">🏔️</text>
+        <text x="67" y="270" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.35)" font-family="monospace">#4 鹤行</text>
+        </g>
+
+        <!-- 9点：阿维拉 -->
+        <g class="rel-node">
+        <circle cx="27" cy="190" r="21" fill="rgba(0,0,0,0.5)" stroke="rgba(158,80,104,0.45)" stroke-width="1.4"/>
+        <text x="27" y="198" text-anchor="middle" font-size="16">🎯</text>
+        <text x="27" y="177" text-anchor="middle" font-size="7" fill="rgba(158,80,104,0.55)" font-family="monospace">#7 阿维拉</text>
+        <text x="5" y="210" text-anchor="middle" font-size="6" fill="rgba(158,80,104,0.35)" font-style="italic">禁忌</text>
+        </g>
+
+        <!-- 10:30方向：鹤鸣 -->
+        <g class="rel-node">
+        <circle cx="67" cy="97" r="21" fill="rgba(0,0,0,0.5)" stroke="rgba(255,255,255,0.2)" stroke-width="1.2"/>
+        <text x="67" y="105" text-anchor="middle" font-size="16">🌀</text>
+        <text x="67" y="84" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.35)" font-family="monospace">#11 鹤鸣</text>
+        </g>
+
+        <!-- 1点方向(浅)：玲央 — 略靠外 -->
+        <circle cx="280" cy="58" r="18" fill="rgba(0,0,0,0.35)" stroke="rgba(255,255,255,0.22)" stroke-width="1.2" stroke-dasharray="3,2.5"/>
+        <text x="280" y="66" text-anchor="middle" font-size="14">💨</text>
+        <text x="280" y="47" text-anchor="middle" font-size="6.5" fill="rgba(196,164,80,0.3)" font-family="monospace">#10 玲央</text>
+
+        <!-- 11点方向：神秘CDM -->
+        <circle cx="100" cy="58" r="16" fill="rgba(0,0,0,0.2)" stroke="rgba(196,164,80,0.15)" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="100" y="64" text-anchor="middle" font-size="13" fill="rgba(196,164,80,0.3)">？</text>
+        <text x="100" y="47" text-anchor="middle" font-size="6" fill="rgba(196,164,80,0.2)" font-family="monospace">CDM ???</text>
+
+        <!-- 5点方向：助教 -->
+        <circle cx="280" cy="322" r="16" fill="rgba(244,239,228,0.3)" stroke="rgba(26,56,40,0.2)" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="280" y="328" text-anchor="middle" font-size="12" fill="rgba(26,56,40,0.4)">📋</text>
+        <text x="280" y="311" text-anchor="middle" font-size="6" fill="rgba(196,164,80,0.2)" font-family="monospace">助教 ???</text>
+
+        <!-- 中心：你 -->
+        <circle cx="190" cy="190" r="30" fill="var(--cream-warm)" stroke="var(--gold)" stroke-width="2.2"/>
+        <text x="190" y="198" text-anchor="middle" font-size="20">👤</text>
+        <text x="190" y="232" text-anchor="middle" font-size="8" fill="var(--gold)" font-family="monospace" letter-spacing="2">Y O U</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- PAGE 3 -->
+  <div id="pg3" class="pg">
+    <div class="pg-head"><h2>🎮 点球大战</h2><p>选择方向，一击入魂</p></div>
+    <div class="pk-wrap">
+      <div class="pk-title">⚽ PENALTY SHOOTOUT ⚽</div>
+      <div class="pk-field">
+        <div class="pk-pixel-border"></div>
+        <div class="pk-goal">
+          <div class="pk-z" data-z="tl" onclick="selZ(this)"></div>
+          <div class="pk-z" data-z="tc" onclick="selZ(this)"></div>
+          <div class="pk-z" data-z="tr" onclick="selZ(this)"></div>
+          <div class="pk-z" data-z="bl" onclick="selZ(this)"></div>
+          <div class="pk-z" data-z="bc" onclick="selZ(this)"></div>
+          <div class="pk-z" data-z="br" onclick="selZ(this)"></div>
+        </div>
+        <!-- 像素Q版守门员 -->
+        <div class="pk-gk-pixel idle" id="pkK" style="left:50%;transform:translateX(-50%);">
+          <div class="pk-gk-body" style="position:relative;">
+            <div class="pk-gk-head"></div>
+            <div class="pk-gk-torso"></div>
+            <div class="pk-gk-arms">
+              <div style="display:flex;flex-direction:column;align-items:center;">
+                <div class="pk-gk-arm-l"></div>
+                <div class="pk-gk-glove-l"></div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;">
+                <div class="pk-gk-arm-r"></div>
+                <div class="pk-gk-glove-r"></div>
+              </div>
+            </div>
+          </div>
+          <div class="pk-gk-legs">
+            <div class="pk-gk-leg"></div>
+            <div class="pk-gk-leg"></div>
+          </div>
+          <div class="pk-gk-feet">
+            <div class="pk-gk-foot"></div>
+            <div class="pk-gk-foot"></div>
+          </div>
+        </div>
+        <div class="pk-ball" id="pkB">⚽</div>
+      </div>
+      <div class="pk-score" id="pkSc">得分：0 / 5</div>
+      <div class="pk-result" id="pkRs"></div>
+      <button class="pk-btn pk-btn-go" id="pkGo" disabled onclick="shoot()">射门！</button>
+      <button class="pk-btn pk-btn-x" onclick="resetPK()">重新开始</button>
+      <div class="pk-dialogue" id="pkDialogue"></div>
+    </div>
+    <!-- Game info -->
+    <div class="pk-info">
+      <div class="pk-info-t">游戏规则</div>
+      <div class="pk-info-li">点击球门内的六个区域选择射门方向</div>
+      <div class="pk-info-li">守门员会根据你的射门习惯学习扑救方向</div>
+      <div class="pk-info-li">五轮射门，尝试变化方向来迷惑守门员</div>
+      <div class="pk-info-li">连续进球可解锁角色台词，全进解锁庆祝彩蛋</div>
+      <div class="pk-info-li">每次开局都有机会听到球员们的赛场悄悄话</div>
+    </div>
+  </div>
+  <!-- confetti层 -->
+  <div class="confetti-wrap" id="confettiWrap"></div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bnav">
+    <div class="bnav-ring">
+      <button class="bnav-btn on" onclick="go(0)">入场指南</button>
+      <button class="bnav-btn" onclick="go(1)">故事开场</button>
+      <button class="bnav-btn" onclick="go(2)">身份档案</button>
+      <button class="bnav-btn" onclick="go(3)">点球大战</button>
+    </div>
+    <span class="bnav-ball">⚽</span>
+  </div>
+</div>
+
+<!-- CHAR DETAIL -->
+<div id="charPage">
+  <div class="cp-hero"><div class="cp-bg" id="cpBg"></div><button class="cp-close" onclick="closeChar()">✕</button><div class="cp-emoji" id="cpEmoji"></div></div>
+  <div class="cp-body">
+    <div style="display:flex;align-items:baseline;gap:6px;"><span class="cp-name" id="cpName"></span><span class="cp-num" id="cpNum"></span></div>
+    <div class="cp-pos" id="cpPos"></div>
+    <div class="cp-tags" id="cpTags"></div>
+    <div class="cp-quote" id="cpQuote"></div>
+    <div class="cp-sec">📋 角色简介</div>
+    <div class="cp-desc" id="cpDesc"></div>
+    <div class="cp-sec">⚽ 快乐足球名场面</div>
+    <div class="cp-fun" id="cpFun"></div>
+    <div class="cp-sec">🔗 羁绊线索</div>
+    <div class="cp-desc" id="cpBond"></div>
+    <div class="cp-sec">💬 队内吐槽墙</div>
+    <div class="cp-roast" id="cpRoast"></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+var C={
+  cf:{name:'沈夜舟',num:'#9',emoji:'⚡',pos:'中锋 CF',tags:['速度型','沉默寡言','进球机器','极致自律'],quote:'「嗯。」「知道了。」「不去。」',color:'#9e5068',desc:'队内头号射手，25岁，中国人。冷白皮，眉骨高而锋利，瞳色极深。黑色短发微卷，训练时用发带箍住。对自身要求近乎偏执——训练量永远全队最高，饮食严格到令人发指。场下极其寡言，不社交不应酬。感知力极强但表达欲极低，能察觉队友情绪低落却不会主动安慰，最多默默把球传给对方。有轻微失眠症，凌晨三四点经常一个人在训练场跑步。',fun:'国家德比带球过了三人，射门时踩到自己鞋带，球飞上看台。一次头球攻门砸中门柱弹回来正中自己的脸，鼻血喷一身。',bond:'怕猫，看到猫绕路走。随身带一个老旧mp3听歌。射门前无意识用右手拇指蹭鼻尖。',roast:[{who:'尼科',txt:'他进球的庆祝方式就是面无表情地走回去……哥们你是在上班还是在踢球啊 (困惑.jpg)'},{who:'鹤鸣',txt:'我往他柜子里放了一只橘猫玩偶，他绕了柜子三圈才敢开门 hhhhh 笑死我了'},{who:'匿名队友',txt:'凌晨四点看到他在训练场跑步我以为见鬼了……结果是舟哥在加练，比鬼还吓人好吧'}]},
+  ss:{name:'姜鹤鸣',num:'#11',emoji:'🌀',pos:'影锋 SS',tags:['顽劣天使','腹黑','恶作剧大师','双子·哥'],quote:'「是我干的，然后呢？」',color:'#7a6ca0',desc:'21岁，巴西/中国双重国籍，双子中的哥哥（大四分钟）。左嘴角有一颗很浅的痣，耳骨上打了两个银色小环，头发留得更长更乱。痞得要命的笑容下是强得离谱的观察力——谁和谁之间有矛盾、谁今天心情不好，他全看在眼里。恶作剧永远刚好卡在"不会被正式处罚"的线上。在贫民窟长大的孩子的本能：信息是武器，武器让你活下来。',fun:'假装无辜地递给教练一支已经被拧松笔帽的记号笔。往队友球鞋里塞过湿纸巾。',bond:'对弟弟鹤行，所有面具消失。保护弟弟的方式不是温柔的——是狡猾的、强硬的、带着攻击性的。',roast:[{who:'鹤行',txt:'……他又偷我软糖了。（面无表情但明显在生气.jpg）'},{who:'内里',txt:'我的记号笔爆了一次之后，我再也不接他递过来的任何东西，包括水。'},{who:'匿名工作人员',txt:'整理更衣室的时候发现了他藏在天花板夹层里的恶作剧道具库……我选择假装没看见'}]},
+  cb2:{name:'姜鹤行',num:'#4',emoji:'🏔️',pos:'中后卫 CB',tags:['沉默壁垒','冷面','双子·弟','钢铁后防'],quote:'「……」（沉默地看了你一眼）',color:'#4a5a6a',desc:'21岁，鹤鸣的双胞胎弟弟。右眉尾有一道极淡的旧疤，头发剃得很短，表情默认是冷的。比哥哥更结实，肩膀更宽，重心更低，是能把人撞飞的那种。和哥哥的花哨不同，他是纯粹的力量型后卫，空中对抗几乎不输。',fun:'（待解锁——在故事中发现）',bond:'想独立于哥哥的保护，但从三岁起长出来的根不是说断就能断的。',roast:[{who:'鹤鸣',txt:'我弟说话永远不超过五个字，但每个字都能把人噎死，这大概就是天赋（骄傲）'},{who:'对方前锋',txt:'被他盯了九十分钟，我感觉我被监控了。下次比赛能不能换个人来？(哭.jpg)'},{who:'尼科',txt:'他沉默的时候比我说一百句话压迫感还强，我认输好吧'}]},
+  cb1:{name:'亚历山德罗·内里',num:'#5',emoji:'🗡️',pos:'中后卫 CB · 队长',tags:['染血玫瑰','优雅铁血','意大利绅士','领袖'],quote:'「伤疤是皮肤的纹身，而且比纹身诚实。」',color:'#6a4050',desc:'27岁，意大利人，队长。文艺复兴湿壁画里走出来的脸——鼻梁高而窄，深棕近黑的微卷长发比赛时用发带束住。媒体绰号"染血玫瑰"——来源于一张广为流传的赛后照片：他跪在草皮上，月光白球衣从胸口到左肩全是血，眼神平静地看着远方。能说流利的西语和意大利式冷幽默，对记者礼貌得体、措辞讲究。',fun:'（队长的名场面？他太完美了——所以每次失误都格外名场面）',bond:'从韦基亚转会而来，与教练陆昭恩曾是韦基亚队友。',roast:[{who:'尼科',txt:'队长休息日穿得像走秀的，我穿着拖鞋站他旁边感觉自己是从垃圾堆里爬出来的 QAQ'},{who:'裴瑞',txt:'他骂人引用但丁这件事我到现在还没缓过来……队长你是什么文艺复兴战士啊'},{who:'球迷',txt:'内里发脾气的视频我存了，意大利语骂人居然这么优雅的吗？？直接文化输出了属于是'}]},
+  gk:{name:'尼科·赫尔曼',num:'#1',emoji:'🧤',pos:'门将 GK',tags:['毒舌广播','抽象文化','口嗨王','反差萌'],quote:'「你回去跟你教练说，那不叫射门，那叫放风筝。」',color:'#5a6a7a',desc:'23岁，德国/克罗地亚双重国籍。一米九三，浅灰绿色眼瞳。嘴从比赛第一分钟开到第九十分钟不停歇，毒舌覆盖队友、对手、裁判甚至天气。球迷管他的指挥声叫"圣殿广播"。社交媒体更新频率全队最高，内容混乱到让经纪人头疼——半夜两点发"如果足球是圆的那为什么我的人生是方的"。',fun:'转会是因为在ins上公开说"我想去一个每周有六万人骂我的地方试试"，被Oro球迷截图转发十万次。偷拍内里煮咖啡嘟囔意大利语的视频播放量破千万，内里知道后沉默看了他三秒，他把那条视频置顶了。',bond:'和裴瑞互损日常，嘴上嫌弃但关键时刻护着。',roast:[{who:'内里',txt:'他凌晨三点往群里发抽象视频的时候我真的想把他交易掉。（微笑）'},{who:'匿名',txt:'这个人站在中场看热闹对方反击了他还能百米冲回去扑救……你到底是门将还是闪电侠？'},{who:'经纪人',txt:'管理他的社交媒体是我职业生涯最大的挑战，没有之一。救命。'}]},
+  rb:{name:'裴瑞',num:'#2',emoji:'⚔️',pos:'右后卫 RB',tags:['社交枢纽','三语切换','小奶狗','归属焦虑'],quote:'「哈哈没有啦，Venga说什么呢——」',color:'#9a7a4a',desc:'24岁，中国/西班牙双重国籍。Oro青训出身，9岁进入摇篮基地。混血带来的不是浓烈的深邃而是柔和的精致。全队语言覆盖面最广——中文、西语、英语无缝切换。看起来是天生社交达人，但社交能力不是天赋，是12岁独自住青训宿舍后学会的生存技能。被认真对待时会愣住，耳朵尖发红。',fun:'尼科说他"传球是发给观众席第三排的"。铲球凶狠到裁判反复提醒。',bond:'随身带一本翻烂的西语原版《堂吉诃德》——母亲走时落下的，带了十二年没读完。会弹弗拉门戈吉他。右前臂内侧有一行极小的西班牙语纹身。',roast:[{who:'尼科',txt:'他做的海鲜饭确实好吃但他做完非要说"一般般吧"……你耳朵都红成那样了还一般般？？？'},{who:'鹤鸣',txt:'全队方向感最差的人居然踢的是边后卫，这是什么宇宙玩笑 ╮(╯▽╰)╭'},{who:'陆昭恩',txt:'Rui又在客场走丢了。我说过多少次不要一个人出门……(叹气.jpg)'}]},
+  rw:{name:'松田玲央',num:'#10',emoji:'💨',pos:'右边锋 RW',tags:['蒙卡达叛徒','安静倔强','三血混合','速度怪物'],quote:'「我不需要跟你解释我配不配，我用脚告诉你。」',color:'#8a6a4a',desc:'22岁，西班牙/巴西双重国籍（母亲日本人）。从死敌蒙卡达冬窗转会而来，带着10号球衣和全场的议论。头发扎低马尾，瞳色深棕偏蜜，即使不笑也看着像在笑。日常极安静极客气——被搭话会认真回答但很少延伸。但在球场上判若两人，过人花哨到近乎挑衅，是巴西街头足球和蒙卡达传控混合出来的怪物风格。',fun:'太想证明自己，越想越紧张越出错。失误后不发脾气，站在原地安静两秒——但认识他的人能看出来他在咬嘴唇内侧。',bond:'第一个打开他的人是鹤鸣——因为鹤鸣在他加入第一天就用葡萄牙语说了"Fala, irmão"。',roast:[{who:'鹤鸣',txt:'玲央折千纸鹤的速度比他过人还快，建议转职手工区up主（不是）'},{who:'尼科',txt:'他吃饭前说的那个日语……我学了八百遍发音还是不对，他每次都很认真纠正我，可爱捏'},{who:'蒙卡达球迷',txt:'叛徒！！！……好吧他上周那个进球确实帅（小声）'}]},
+  cam:{name:'但丁·阿维拉',num:'#7',emoji:'🎯',pos:'前腰 CAM',tags:['禁欲圣徒','堕天使纹身','暗面操控','虔诚分裂'],quote:'「上帝看管白天。剩下的时间，我说了算。」',color:'#6a5a3a',desc:'25岁，西班牙人，Oro青训出身。五官精致到像修道院的沉默打磨出来的——象牙白肌肤，深琥珀色瞳，头发梳得极整齐。每天清晨去基地小教堂祈祷二十分钟，进球后双手指天。但球衣下面，从肩胛骨到腰际，是整幅宗教堕天使纹身——路西法坠落的瞬间，六翼折断，表情不是痛苦，是微笑。',fun:'对所有人礼貌到无懈可否，连抗议裁判都像在做温和的学术讨论。',bond:'塞维利亚诺地下赛车场常客，用假名。"因为堕天使也曾经是天使。"',roast:[{who:'裴瑞',txt:'阿维拉说话永远温温柔柔的但我每次跟他聊完都感觉被读心了？？好可怕好可怕(抖.jpg)'},{who:'匿名教堂管理员',txt:'每天清晨六点他准时来祈祷，比我上班还准时。有时候我怀疑他才是这里的主人。'},{who:'尼科',txt:'你们见过他那个堕天使纹身吗。禁欲系外表下面居然是那个。我直接哇塞。'}]},
+  coach:{name:'陆昭恩',num:'',emoji:'👔',pos:'主教练',tags:['圣保罗天使','温柔铁腕','前韦基亚10号','过分好看'],quote:'「越生气越轻声。球员最怕的不是他发火——是他安静地看着你。」',color:'#3a4a3a',desc:'33岁，巴西出生（母亲巴西人，父亲华裔）。前进攻型中场，球员时代绰号"圣保罗天使"。长得过分好看——好看到执教后转播镜头依然会在他脸上多停两秒。左膝有陈旧手术疤痕，脖子上永远戴着银质十字架项链。从不提高声量，越生气越轻声，战术板上每个跑位精确到步数。',fun:'球员时代的海报至今在二手市场被炒到高价。弯腰部署战术板时十字架项链偶尔滑出来。',bond:'与队长内里曾是韦基亚队友。巴西朋友叫他Lucas，亚洲球员叫他中文名。',roast:[{who:'内里',txt:'他喝速溶咖啡的时候我的灵魂在尖叫。这是对咖啡最大的不尊重。(意大利人震怒.jpg)'},{who:'匿名球员',txt:'mister变魔术失败了还说"上帝今天不配合"……我们全队憋笑憋到内伤 (˃̣̣̥᷄⌓˂̣̣̥᷅)'},{who:'球迷',txt:'"上帝看到了"这句话我已经做成手机壁纸了，mister你清醒一点你是教练不是牧师aaaa'}]},
+  lw:{name:'???',num:'?',emoji:'？',pos:'左边锋 LW',tags:['神秘角色'],quote:'「……尚未现身。」',color:'#3a5a4a',desc:'这个位置的球员尚未揭晓。在故事推进中触发解锁。',fun:'——',bond:'——'},
+  dm1:{name:'???',num:'?',emoji:'？',pos:'后腰 CDM',tags:['神秘角色'],quote:'「……尚未现身。」',color:'#3a5a4a',desc:'这个位置的球员尚未揭晓。在故事推进中触发解锁。',fun:'——',bond:'——'},
+  dm2:{name:'???',num:'?',emoji:'？',pos:'后腰 CDM',tags:['神秘角色'],quote:'「……尚未现身。」',color:'#3a5a4a',desc:'这个位置的球员尚未揭晓。在故事推进中触发解锁。',fun:'——',bond:'——'},
+  lb:{name:'???',num:'?',emoji:'？',pos:'左后卫 LB',tags:['神秘角色'],quote:'「……尚未现身。」',color:'#3a5a4a',desc:'这个位置的球员尚未揭晓。在故事推进中触发解锁。',fun:'——',bond:'——'},
+  ac:{name:'???',num:'',emoji:'？',pos:'助理教练',tags:['神秘角色'],quote:'「……尚未现身。」',color:'#3a5a4a',desc:'助理教练的身份尚未揭晓。',fun:'——',bond:'——'},
+  shadow1:{name:'???',num:'?',emoji:'？',pos:'他队·神秘角色A',tags:['神秘角色'],quote:'「……尚未现身。」',color:'#5a3a4a',desc:'身份尚未揭晓。',fun:'——',bond:'——'},
+  shadow2:{name:'???',num:'?',emoji:'？',pos:'他队·神秘角色B',tags:['神秘角色'],quote:'「……尚未现身。」',color:'#5a3a4a',desc:'身份尚未揭晓。',fun:'——',bond:'——'},
+  shadow3:{name:'???',num:'?',emoji:'？',pos:'他队·神秘角色C',tags:['神秘角色'],quote:'「……尚未现身。」',color:'#5a3a4a',desc:'身份尚未揭晓。',fun:'——',bond:'——'},
+  investor:{name:'???',num:'',emoji:'？',pos:'神秘投资方',tags:['神秘角色'],quote:'「……金钱从不说谎。」',color:'#4a4a3a',desc:'身份尚未揭晓。在故事推进中触发解锁。',fun:'——',bond:'——'}
+};
+
+// Unlock dialogues for penalty game
+var pkDialogues=[
+  {speaker:'尼科',text:'「你以为我猜不到？……好吧确实猜不到。」'},
+  {speaker:'鹤鸣',text:'「哥看你踢球的样子还挺帅的嘛——骗你的。」'},
+  {speaker:'裴瑞',text:'「Dios mío，这脚法……你确定不是来度假的？」'},
+  {speaker:'内里',text:'「射门的弧线不错。比某些人的发型弧线好看。」'},
+  {speaker:'沈夜舟',text:'「……嗯。」（难得地多看了一眼）'},
+  {speaker:'阿维拉',text:'「上帝保佑了你的右脚。左脚的事……我们改天再说。」'},
+  {speaker:'玲央',text:'「いただきます——啊不对，这不是吃饭……Gol。」'},
+  {speaker:'鹤行',text:'「……」（嘴角动了一下。也许是风。）'},
+  {speaker:'陆昭恩',text:'「Muito bem. 下次试试不闭眼。」'},
+  {speaker:'尼科',text:'「我刚才是故意让你进的。为了内容。你懂的。」'}
+];
+
+// Rose petal click effect
+document.addEventListener('click',function(e){
+  for(var i=0;i<5;i++){
+    var p=document.createElement('div');
+    p.className='rose-petal';
+    p.style.left=(e.clientX-8)+'px';
+    p.style.top=(e.clientY-8)+'px';
+    p.style.setProperty('--dx',(Math.random()-0.5)*120+'px');
+    p.style.setProperty('--rot',(Math.random()*360)+'deg');
+    p.style.setProperty('--sc',0.4+Math.random()*0.6);
+    p.innerHTML='<svg viewBox="0 0 24 24" fill="rgba(158,80,104,0.5)"><path d="M12,21C12,21 4,16 4,10C4,6 7,3 10,3C11.5,3 12.5,4 13,5C13.5,4 14.5,3 16,3C19,3 22,6 22,10C22,16 14,21 14,21H12Z"/></svg>';
+    document.body.appendChild(p);
+    setTimeout(function(el){el.remove();},1600,p);
+  }
+});
+
+function enterGame(){
+  var cover=document.getElementById('coverLayer');
+  var goal=document.getElementById('goalOv');
+  var main=document.getElementById('mainApp');
+  goal.classList.add('active');
+  setTimeout(function(){
+    goal.classList.remove('active');
+    cover.classList.add('hidden');
+    main.style.display='block';
+    requestAnimationFrame(function(){
+      main.classList.add('show');
+    });
+  },2200);
+}
+
+function backToCover(){
+  var cover=document.getElementById('coverLayer');
+  var main=document.getElementById('mainApp');
+  main.classList.remove('show');
+  cover.classList.remove('hidden');
+  setTimeout(function(){main.style.display='none';},500);
+}
+
+var curPg=0;
+function go(n){
+  curPg=n;
+  for(var i=0;i<4;i++){
+    var pg=document.getElementById('pg'+i);
+    var btn=document.querySelectorAll('.bnav-btn')[i];
+    if(i===n){pg.classList.add('show');btn.classList.add('on');}
+    else{pg.classList.remove('show');btn.classList.remove('on');}
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function openChar(id){
+  var c=C[id];if(!c)return;
+  document.getElementById('cpName').textContent=c.name;
+  document.getElementById('cpNum').textContent=c.num;
+  document.getElementById('cpEmoji').textContent=c.emoji;
+  document.getElementById('cpPos').textContent=c.pos;
+  document.getElementById('cpQuote').textContent=c.quote;
+  document.getElementById('cpDesc').textContent=c.desc;
+  document.getElementById('cpFun').textContent=c.fun;
+  document.getElementById('cpBond').textContent=c.bond||'尚未建立任何羁绊。开始你的故事吧。';
+  document.getElementById('cpBg').style.background='linear-gradient(160deg,'+c.color+',var(--dk))';
+  var t=document.getElementById('cpTags');t.innerHTML='';
+  c.tags.forEach(function(tag){var s=document.createElement('span');s.className='cp-tag';s.textContent=tag;t.appendChild(s);});
+  // Roast section
+  var r=document.getElementById('cpRoast');r.innerHTML='';
+  if(c.roast&&c.roast.length>0){
+    r.innerHTML='<div class="cp-roast-title">🗣️ 大家都在说……</div>';
+    c.roast.forEach(function(item,i){
+      var d=document.createElement('div');
+      d.className='cp-roast-item';
+      d.style.setProperty('--d',(0.3+i*0.4)+'s');
+      d.innerHTML='<span class="cp-roast-who">@'+item.who+'：</span>'+item.txt;
+      r.appendChild(d);
+    });
+  }else{
+    r.innerHTML='<div style="font-size:0.76em;color:var(--txt3);font-style:italic;">暂无吐槽，等待故事推进……</div>';
+  }
+  var cp=document.getElementById('charPage');
+  cp.classList.add('show');cp.scrollTop=0;
+}
+
+function closeChar(){document.getElementById('charPage').classList.remove('show');}
+
+function submitChar(){
+  var cpArr=[];
+  document.querySelectorAll('input[name="cp"]:checked').forEach(function(el){cpArr.push(el.value);});
+  var data={name:document.getElementById('fN').value,age:document.getElementById('fA').value,gender:document.getElementById('fG').value,identity:document.getElementById('fI').value,position:(document.getElementById('fP')&&document.getElementById('fP').value)||'无',club:document.getElementById('fC').value||'无',background:document.getElementById('fB').value,cp_preference:cpArr};
+  if(typeof triggerSlash==='function'){triggerSlash('/echo severity=success 入场手续完成！⚽ '+JSON.stringify(data));}
+  else{alert('⚽ 角色已创建！\n\n'+JSON.stringify(data,null,2));}
+}
+
+function randomChar(){
+  var names=['林雨晴','苏子衿','白露','陈星河','许念安','顾晚','沈知意','楚辞','江屿','温言'];
+  var ages=[18,19,20,21,22,23,24,25];
+  var genders=['男性','女性'];
+  var identities=['球员','队医','记者','经纪人','球迷','青梅竹马'];
+  var clubs=['Castilla de Oro','FC 蒙卡达联合','US 韦基亚·都灵','无/自由人'];
+  var bgs=['从小在索拉雷斯长大，是Oro的死忠球迷。','东亚留学生，因一次偶然来到了球场。','家族与足球界有千丝万缕的联系。','逃离了原来的生活，来到这座城市重新开始。','体育新闻系毕业生，第一份工作就被派到了这里。'];
+  document.getElementById('fN').value=names[Math.floor(Math.random()*names.length)];
+  document.getElementById('fA').value=ages[Math.floor(Math.random()*ages.length)];
+  document.getElementById('fG').value=genders[Math.floor(Math.random()*genders.length)];
+  var id=identities[Math.floor(Math.random()*identities.length)];
+  document.getElementById('fI').value=id;
+  document.getElementById('fPG').style.display=id==='球员'?'flex':'none';
+  if(id==='球员'){
+    var positions=document.getElementById('fP').options;
+    document.getElementById('fP').selectedIndex=1+Math.floor(Math.random()*(positions.length-1));
+  }
+  document.getElementById('fC').value=clubs[Math.floor(Math.random()*clubs.length)];
+  document.getElementById('fB').value=bgs[Math.floor(Math.random()*bgs.length)];
+}
+
+var pkS=0,pkR=0,pkM=5,pkZ=null,pkHistory=[];
+// 玩家历史射门记录，用于守门员学习
+function selZ(el){
+  if(pkR>=pkM)return;
+  document.querySelectorAll('.pk-z').forEach(function(z){z.classList.remove('sel');});
+  el.classList.add('sel');pkZ=el.getAttribute('data-z');
+  document.getElementById('pkGo').disabled=false;
+}
+function getSmartKeeperZone(){
+  // 守门员AI：分析玩家历史，有权重地猜测
+  if(pkHistory.length===0){
+    var zones=['tl','tc','tr','bl','bc','br'];
+    return zones[Math.floor(Math.random()*6)];
+  }
+  // 统计各区出现频率
+  var freq={tl:0,tc:0,tr:0,bl:0,bc:0,br:0};
+  pkHistory.forEach(function(z){freq[z]=(freq[z]||0)+1;});
+  // 70%概率猜最常射的区域，30%随机
+  var rand=Math.random();
+  if(rand<0.7){
+    var maxZ='tl',maxC=0;
+    Object.keys(freq).forEach(function(k){if(freq[k]>maxC){maxC=freq[k];maxZ=k;}});
+    return maxZ;
+  }else{
+    var zones=['tl','tc','tr','bl','bc','br'];
+    return zones[Math.floor(Math.random()*6)];
+  }
+}
+function shoot(){
+  if(!pkZ||pkR>=pkM)return;
+  document.getElementById('pkGo').disabled=true;
+  var keeper=document.getElementById('pkK');
+  keeper.classList.remove('idle');
+  pkHistory.push(pkZ);
+  var kz=getSmartKeeperZone();
+  // 守门员位置映射（像素小人用left控制）
+  var keeper=document.getElementById('pkK');
+  var keeperPos={tl:'18%',tc:'38%',tr:'60%',bl:'18%',bc:'38%',br:'60%'};
+  keeper.style.left=keeperPos[kz];
+  keeper.style.transform='translateX(-50%)';
+  // 扑救动画方向
+  var rightSide=kz.endsWith('r');
+  var leftSide=kz.endsWith('l');
+  if(rightSide)keeper.style.transform='translateX(-50%) rotate(12deg)';
+  else if(leftSide)keeper.style.transform='translateX(-50%) rotate(-12deg)';
+
+  var ball=document.getElementById('pkB');
+  var positions={tl:{l:'25%',b:'60%'},tc:{l:'50%',b:'65%'},tr:{l:'75%',b:'60%'},bl:{l:'25%',b:'45%'},bc:{l:'50%',b:'50%'},br:{l:'75%',b:'45%'}};
+  var pos=positions[pkZ];
+  ball.style.left=pos.l;ball.style.bottom=pos.b;ball.style.transform='translateX(-50%) scale(0.7)';
+  pkR++;
+  setTimeout(function(){
+    var result=document.getElementById('pkRs');
+    var scored=pkZ!==kz;
+    if(scored){pkS++;result.textContent='⚽ GOOOOAL!!!';result.style.color='var(--gold)';
+      // Ball in net effect - ball stays in goal area
+      ball.style.opacity='0.7';ball.style.filter='blur(1px)';
+      var dIdx=Math.floor(Math.random()*pkDialogues.length);var d=pkDialogues[dIdx];
+      var dEl=document.getElementById('pkDialogue');dEl.textContent=d.speaker+'：'+d.text;dEl.classList.add('show');
+      setTimeout(function(){dEl.classList.remove('show');},3000);
+    }
+    else{result.textContent='🧤 SAVED!';result.style.color='var(--rose)';
+      // Saved - ball bounces away
+      ball.style.left=(Math.random()>0.5?'15%':'85%');ball.style.bottom='20%';ball.style.transform='translateX(-50%) scale(0.5) rotate(45deg)';ball.style.opacity='0.5';
+    }
+    document.getElementById('pkSc').textContent='得分：'+pkS+' / '+pkM;
+    setTimeout(function(){
+      ball.style.left='50%';ball.style.bottom='10%';ball.style.transform='translateX(-50%)';ball.style.opacity='1';ball.style.filter='none';
+      keeper.style.left='50%';keeper.style.transform='translateX(-50%)';
+      keeper.classList.add('idle');
+      document.querySelectorAll('.pk-z').forEach(function(z){z.classList.remove('sel');});pkZ=null;
+      if(pkR>=pkM){
+        var msg;
+        if(pkS===5){msg='🏆✨ 完美点球！你就是点球之王！';launchConfetti();}
+        else if(pkS>=4){msg='🏆 点球之王！差点完美！';}
+        else if(pkS>=2){msg='⚽ 还不错，守门员学聪明了……';}
+        else{msg='😅 守门员全猜对了，快乐足球！';}
+        result.textContent=pkS+'/'+pkM+' — '+msg;
+        if(pkR>=pkM)document.getElementById('pkGo').disabled=true;
+      }else{
+        document.getElementById('pkGo').disabled=true;
+      }
+    },1100);
+  },600);
+}
+function launchConfetti(){
+  // La Lluvia de Rosas - Rose Petal Rain!
+  var wrap=document.getElementById('confettiWrap');
+  wrap.innerHTML='';wrap.classList.add('active');
+  var colors=['#9e5068','#c4506a','#d4708a','#b8405a','#8a3048','#c4a450'];
+  for(var i=0;i<100;i++){
+    var p=document.createElement('div');
+    p.className='cf-piece';
+    p.style.left=Math.random()*100+'%';
+    p.style.background=colors[Math.floor(Math.random()*colors.length)];
+    p.style.width=(8+Math.random()*10)+'px';
+    p.style.height=(6+Math.random()*8)+'px';
+    p.style.borderRadius='50% 0 50% 50%';
+    p.style.animationDelay=(Math.random()*2)+'s';
+    p.style.animationDuration=(2.5+Math.random()*2)+'s';
+    p.style.opacity='0.8';
+    wrap.appendChild(p);
+  }
+  setTimeout(function(){wrap.classList.remove('active');wrap.innerHTML='';},5500);
+}
+function resetPK(){
+  pkS=0;pkR=0;pkZ=null;pkHistory=[];
+  document.getElementById('pkSc').textContent='得分：0 / '+pkM;
+  document.getElementById('pkRs').textContent='';
+  document.getElementById('pkGo').disabled=true;
+  var ball=document.getElementById('pkB');
+  ball.style.left='50%';ball.style.bottom='10%';ball.style.transform='translateX(-50%)';
+  var keeper=document.getElementById('pkK');
+  keeper.style.left='50%';keeper.style.transform='translateX(-50%)';
+  keeper.classList.add('idle');
+  document.querySelectorAll('.pk-z').forEach(function(z){z.classList.remove('sel');});
+  // Show random opening dialogue
+  var dIdx=Math.floor(Math.random()*pkDialogues.length);var d=pkDialogues[dIdx];
+  var dEl=document.getElementById('pkDialogue');dEl.textContent='💬 '+d.speaker+'：'+d.text;dEl.classList.add('show');
+  setTimeout(function(){dEl.classList.remove('show');},3500);
+}
+var mOn=false;
+var audioCtx=null;
+var musicTimeout=null;
+
+// Brazilian samba-football vibe 🇧🇷⚽
+// Bossa nova meets samba - warm, sunny, playful
+// Key of C major / A minor pentatonic for that Rio feel
+// BPM ~100, swing feel
+
+function playPerc(ctx,time,freq,dur,vol){
+  var o=ctx.createOscillator();var g=ctx.createGain();
+  o.type='sine';
+  o.frequency.setValueAtTime(freq,time);
+  o.frequency.exponentialRampToValueAtTime(freq*0.3,time+dur);
+  g.gain.setValueAtTime(vol,time);
+  g.gain.exponentialRampToValueAtTime(0.001,time+dur);
+  o.connect(g);g.connect(ctx.destination);
+  o.start(time);o.stop(time+dur+0.01);
+}
+
+function playShaker(ctx,time,vol){
+  var len=ctx.sampleRate*0.04;
+  var buf=ctx.createBuffer(1,len,ctx.sampleRate);
+  var d=buf.getChannelData(0);
+  for(var i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2);
+  var s=ctx.createBufferSource();s.buffer=buf;
+  var g=ctx.createGain();var f=ctx.createBiquadFilter();
+  f.type='bandpass';f.frequency.value=6000;f.Q.value=1;
+  g.gain.setValueAtTime(vol||0.1,time);
+  s.connect(f);f.connect(g);g.connect(ctx.destination);
+  s.start(time);s.stop(time+0.05);
+}
+
+function playNote(ctx,time,freq,dur,vol,type){
+  var o=ctx.createOscillator();var g=ctx.createGain();
+  o.type=type||'triangle';
+  o.frequency.value=freq;
+  g.gain.setValueAtTime(0,time);
+  g.gain.linearRampToValueAtTime(vol||0.06,time+0.015);
+  g.gain.setValueAtTime((vol||0.06)*0.8,time+dur*0.6);
+  g.gain.exponentialRampToValueAtTime(0.001,time+dur);
+  o.connect(g);g.connect(ctx.destination);
+  o.start(time);o.stop(time+dur+0.02);
+}
+
+function playNylon(ctx,time,freq,dur,vol){
+  // Nylon guitar sound: triangle + sine harmonics + quick decay
+  [1,2,3,5].forEach(function(h,i){
+    var o=ctx.createOscillator();var g=ctx.createGain();
+    o.type=i===0?'triangle':'sine';
+    o.frequency.value=freq*h;
+    var v=(vol||0.05)/(h*0.8);
+    g.gain.setValueAtTime(v,time);
+    g.gain.exponentialRampToValueAtTime(v*0.4,time+0.08);
+    g.gain.exponentialRampToValueAtTime(0.001,time+dur*(i===0?1:0.4));
+    o.connect(g);g.connect(ctx.destination);
+    o.start(time);o.stop(time+dur+0.02);
+  });
+}
+
+function playSection(){
+  if(!mOn||!audioCtx)return;
+  var ctx=audioCtx;
+  var t=ctx.currentTime+0.05;
+  var bpm=100;var b=60/bpm;var bar=b*4;
+  var sw=b*0.12; // swing offset
+
+  // 8 bars total
+  for(var i=0;i<32;i++){
+    var bt=t+i*b;
+    // === Samba surdo (low drum) on beats 2 and 4 ===
+    if(i%4===1)playPerc(ctx,bt,80,0.2,0.2);
+    if(i%4===3)playPerc(ctx,bt,90,0.15,0.25);
+    // === Agogô bell (high ping) - samba pattern ===
+    if(i%4===0)playPerc(ctx,bt,800,0.06,0.08);
+    if(i%4===1)playPerc(ctx,bt+sw,1000,0.05,0.06);
+    if(i%4===2)playPerc(ctx,bt,900,0.05,0.07);
+    if(i%4===3)playPerc(ctx,bt+sw,1100,0.04,0.05);
+    // === Shaker - 16th note groove ===
+    playShaker(ctx,bt,0.06);
+    playShaker(ctx,bt+b*0.25+sw*0.5,0.04);
+    playShaker(ctx,bt+b*0.5,0.07);
+    playShaker(ctx,bt+b*0.75+sw*0.5,0.04);
+    // === Tamborim accent pattern (high pop) ===
+    if([0,2,3,5,7].indexOf(i%8)>=0)playPerc(ctx,bt+sw*0.3,400,0.03,0.06);
+  }
+
+  // === Nylon guitar bossa chords (2 bars each) ===
+  // Am7 - Dm7 - G7 - Cmaj7 (classic bossa progression)
+  var chords=[
+    [[220,262,330,392],0],   // Am7
+    [[294,349,440,523],2],   // Dm7
+    [[196,247,294,349],4],   // G7
+    [[262,330,392,494],6]    // Cmaj7
+  ];
+  chords.forEach(function(ch){
+    var notes=ch[0];var barN=ch[1];
+    // Bossa nova rhythm: syncopated strums
+    var strumTimes=[0, b*1.5, b*2.5, bar+0, bar+b*1.5, bar+b*2.5];
+    strumTimes.forEach(function(st,si){
+      var strumT=t+barN*bar/2+st;
+      notes.forEach(function(n,ni){
+        playNylon(ctx,strumT+ni*0.012,n,b*1.2,si%3===0?0.04:0.03);
+      });
+    });
+  });
+
+  // === Flute-like melody (triangle wave, airy) ===
+  // Bars 1-4: playful ascending theme
+  var mel1=[
+    {n:523,t:0,d:b*0.5},        // C5
+    {n:587,t:b*0.5,d:b*0.5},    // D5
+    {n:659,t:b,d:b*0.75},       // E5
+    {n:587,t:b*2,d:b*0.5},      // D5
+    {n:523,t:b*2.5,d:b*0.5},    // C5
+    {n:440,t:b*3,d:b},          // A4
+    // bar 2
+    {n:494,t:bar,d:b*0.5},      // B4
+    {n:523,t:bar+b*0.5,d:b*0.75},// C5
+    {n:659,t:bar+b*1.5,d:b*0.5},// E5
+    {n:784,t:bar+b*2,d:b},      // G5!
+    {n:659,t:bar+b*3,d:b*0.5},  // E5
+    {n:587,t:bar+b*3.5,d:b*0.5},// D5
+    // bar 3
+    {n:523,t:bar*2,d:b},        // C5
+    {n:440,t:bar*2+b,d:b*0.5},  // A4
+    {n:494,t:bar*2+b*1.5,d:b*0.5},// B4
+    {n:523,t:bar*2+b*2,d:b*0.75},// C5
+    {n:659,t:bar*2+b*3,d:b},    // E5
+    // bar 4: playful ending
+    {n:587,t:bar*3,d:b*0.5},    // D5
+    {n:523,t:bar*3+b*0.5,d:b*0.5},// C5
+    {n:440,t:bar*3+b,d:b*0.75}, // A4
+    {n:392,t:bar*3+b*2,d:b},    // G4
+    {n:440,t:bar*3+b*3,d:b}     // A4
+  ];
+  mel1.forEach(function(m){
+    playNote(ctx,t+m.t,m.n,m.d,0.055,'triangle');
+    // Subtle octave shimmer
+    playNote(ctx,t+m.t+0.01,m.n*2,m.d*0.4,0.012,'sine');
+  });
+
+  // Bars 5-8: variation with call-and-response feel
+  var mel2=[
+    {n:659,t:0,d:b*0.75},       // E5
+    {n:784,t:b,d:b*0.5},        // G5
+    {n:659,t:b*1.5,d:b*0.5},    // E5
+    {n:587,t:b*2,d:b*0.75},     // D5
+    {n:523,t:b*3,d:b*0.5},      // C5
+    {n:587,t:b*3.5,d:b*0.5},    // D5
+    // bar 6
+    {n:659,t:bar,d:b},          // E5
+    {n:523,t:bar+b,d:b*0.5},    // C5
+    {n:440,t:bar+b*1.5,d:b*0.75},// A4
+    {n:392,t:bar+b*2.5,d:b*0.5},// G4
+    {n:440,t:bar+b*3,d:b},      // A4
+    // bar 7: peak energy
+    {n:523,t:bar*2,d:b*0.5},    // C5
+    {n:659,t:bar*2+b*0.5,d:b*0.5},// E5
+    {n:784,t:bar*2+b,d:b},      // G5
+    {n:880,t:bar*2+b*2,d:b*0.75},// A5!! peak
+    {n:784,t:bar*2+b*3,d:b*0.5},// G5
+    {n:659,t:bar*2+b*3.5,d:b*0.5},//E5
+    // bar 8: resolve
+    {n:587,t:bar*3,d:b*0.75},   // D5
+    {n:523,t:bar*3+b,d:b},      // C5
+    {n:440,t:bar*3+b*2,d:b*1.5} // A4 (long hold)
+  ];
+  mel2.forEach(function(m){
+    playNote(ctx,t+bar*4+m.t,m.n,m.d,0.055,'triangle');
+    playNote(ctx,t+bar*4+m.t+0.01,m.n*2,m.d*0.4,0.012,'sine');
+  });
+
+  // === Warm bass (sine, grounding) ===
+  var bassNotes=[
+    {n:110,t:0,d:bar*2},      // A2
+    {n:147,t:bar*2,d:bar*2},   // D3
+    {n:98,t:bar*4,d:bar*2},    // G2
+    {n:131,t:bar*6,d:bar*2}    // C3
+  ];
+  bassNotes.forEach(function(bn){
+    var o=ctx.createOscillator();var g=ctx.createGain();
+    o.type='sine';o.frequency.value=bn.n;
+    g.gain.setValueAtTime(0.1,t+bn.t);
+    g.gain.setValueAtTime(0.1,t+bn.t+bn.d*0.8);
+    g.gain.exponentialRampToValueAtTime(0.001,t+bn.t+bn.d);
+    o.connect(g);g.connect(ctx.destination);
+    o.start(t+bn.t);o.stop(t+bn.t+bn.d+0.02);
+  });
+
+  var totalDur=bar*8;
+  musicTimeout=setTimeout(function(){playSection();},totalDur*1000-100);
+}
+
+function toggleMusic(){
+  var btn=document.getElementById('musicBtn');
+  var cvBtn=document.getElementById('cvMusicBtn');
+  if(!mOn){
+    mOn=true;
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    audioCtx.resume().then(function(){playSection();});
+    if(btn){btn.textContent='🔊';btn.classList.add('on');}
+    if(cvBtn){cvBtn.textContent='🔊';}
+  }else{
+    mOn=false;
+    if(musicTimeout)clearTimeout(musicTimeout);
+    if(audioCtx){audioCtx.close();audioCtx=null;}
+    if(btn){btn.textContent='🎵';btn.classList.remove('on');}
+    if(cvBtn){cvBtn.textContent='🎵';}
+  }
+}
+
+// ===== ST API (SillyTavern only, safe regex) =====
+var stLoaded=false;
+async function loadStories(){
+  if(stLoaded||typeof getChatMessages!=='function')return;
+  try{
+    var ms=await getChatMessages("0",{include_swipe:true});
+    if(!ms||!ms[0].swipes||ms[0].swipes.length<=1)return;
+    var list=document.getElementById('storyList');list.innerHTML='';
+    for(var i=1;i<ms[0].swipes.length;i++){
+      var sw=ms[0].swipes[i];
+      var t='故事线 '+i,d='点击开启旅程。';
+      var tm=sw.match(/<title>([\s\S]*?)<\/title>/i);if(tm)t=tm[1].trim();
+      var dm=sw.match(/<!--([\s\S]*?)-->/);if(dm)d=dm[1].trim();
+      var card=document.createElement('div');card.className='st-card';
+      card.innerHTML='<div class="st-inner"><div class="st-ep">EPISODE '+String(i).padStart(2,'0')+'</div><div class="st-title">'+t+'</div><div class="st-desc">'+d+'</div></div><div class="st-arrow">进入故事 →</div>';
+      (function(idx){card.onclick=function(){goStory(idx);};})(i);
+      list.appendChild(card);
+    }
+    stLoaded=true;
+  }catch(e){console.error(e);}
+}
+async function goStory(sid){
+  try{
+    var ms=await getChatMessages("0",{include_swipe:true});
+    if(ms&&ms[0].swipes&&ms[0].swipes[sid])
+      await setChatMessage(ms[0].swipes[sid],0,{swipe_id:sid,refresh:'display_and_render_current'});
+  }catch(e){alert('切换失败：'+e.message);}
+}
+</script>
+</body>
+</html>

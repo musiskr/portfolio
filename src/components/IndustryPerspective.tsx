@@ -1,0 +1,71 @@
+import { motion } from 'motion/react';
+
+const insights = [
+  {
+    title: "AI 陪伴赛道现状",
+    content: "Glow、星野等先发，酒馆（SillyTavern）凭免费开源+社区角色卡生态快速增长。纯 App 面临「信息差消失」风险。"
+  },
+  {
+    title: "女性用户洞察",
+    content: "比乙游更自由：模拟手机界面（聊天、语音、朋友圈、微博、转账）是核心需求。真实感营造陪伴感，细节越生活化，情感粘性越强。Y2K、古早风、亚系审美正流行。"
+  },
+  {
+    title: "硬件差异化",
+    content: "触觉维度是纯 App 做不到的——毛绒硬件+AI 对话+触摸交互+记忆成长，留出了差异化空间。"
+  }
+];
+
+const fadeUp = {
+  initial: { opacity: 0, y: 40 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-100px" },
+  transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+};
+
+export default function IndustryPerspective() {
+  return (
+    <section id="perspective" className="py-32 px-6 md:px-12 lg:px-24 bg-surface relative filigree-border overflow-hidden">
+      <div className="absolute top-[20%] left-[-20%] w-[60vw] h-[60vw] bg-accent/5 organic-shape blur-3xl animate-float pointer-events-none z-0" />
+      
+      <div className="max-w-7xl mx-auto relative z-10">
+        <motion.div {...fadeUp} className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-24 border-b border-accent/20 pb-12">
+          <div>
+            <span className="gothic-text text-sm tracking-widest opacity-60 block mb-4 text-accent">06 // DOSSIER: PERSPECTIVE</span>
+            <h2 className="gothic-text text-5xl md:text-7xl tracking-widest">Industry Perspective</h2>
+          </div>
+          <p className="font-serif text-2xl italic opacity-80 max-w-md md:text-right text-ink drop-shadow-sm">
+            不只是创作者，也是深度用户。从 Glow 到酒馆，从国内 App 到开源社区——我理解这个赛道。
+          </p>
+        </motion.div>
+
+        <div className="flex flex-col gap-16">
+          {insights.map((insight, i) => (
+            <motion.div 
+              key={i} 
+              {...fadeUp}
+              transition={{ ...fadeUp.transition, delay: 0.1 }}
+              className="relative p-12 md:p-16 bg-bg/50 border border-accent/20 rounded-[40px_10px_40px_10px] hover:bg-accent/10 hover:border-accent/50 transition-all duration-700 group hover-trigger shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_50px_rgba(139,0,0,0.2)] overflow-hidden"
+            >
+              <div className="absolute -right-10 -top-10 w-40 h-40 bg-accent/10 organic-shape blur-2xl group-hover:bg-accent/30 transition-colors duration-700" />
+              
+              <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-start md:items-center relative z-10">
+                <div className="gothic-text text-6xl md:text-8xl text-accent/20 group-hover:text-accent/60 transition-colors duration-700 drop-shadow-md">
+                  0{i + 1}
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-serif italic text-3xl md:text-5xl mb-6 relative inline-block text-ink">
+                    {insight.title}
+                    <span className="absolute -bottom-4 left-0 w-12 h-[2px] bg-accent group-hover:w-full transition-all duration-700 organic-line"></span>
+                  </h3>
+                  <p className="font-sans text-lg md:text-xl leading-relaxed opacity-80 group-hover:opacity-100 max-w-4xl text-ink/90 transition-opacity duration-700">
+                    {insight.content}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
