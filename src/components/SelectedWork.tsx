@@ -148,7 +148,7 @@ const WorkItem = ({ work }: { work: typeof works[0]; key?: React.Key }) => {
           {hasVideo ? (
             <video
               src={work.videoUrl}
-              className="absolute inset-0 w-full h-full object-cover rounded-[36px]"
+              className="absolute inset-0 w-full h-full object-contain rounded-[36px] bg-black"
               autoPlay
               loop
               muted
