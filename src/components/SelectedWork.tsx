@@ -3,11 +3,74 @@ import React, { useRef, useState, useEffect } from 'react';
 
 const works = [
   {
+    title: "Happy Football Simulator",
+    tags: ["Product Concept", "Narrative", "2025"],
+    stamp: "Featured",
+    intro: "快乐足球模拟器 · 女性向互动叙事产品。完整角色体系（11 名球员 + 教练组）+ 世界书 + 角色卡。等距阵型 SVG 交互，配套 AI 生成主题音乐。",
+    detail: "架空职业足球俱乐部为舞台的女性向叙事产品概念。深度研究女性向轻互动内容市场，设计完整角色体系，每个角色配套世界书与角色卡。实现等距阵型 SVG 交互与角色档案页。基于 1500+ 社区用户偏好数据指导设计决策。",
+    hint: "",
+    containerClass: "h-[800px] lg:h-[850px] w-full max-w-[400px] mx-auto rounded-[40px] overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.2)] border-4 border-accent/10",
+    problem: "女性向叙事产品题材集中在校园/古代/都市，缺少竞技类。但女性用户并非不需要竞技——竞技场景天然产生高情绪浓度（紧张、热血、心跳加速），这恰恰是情感叙事最好的催化剂。",
+    explore: "方案A：弱化足球重点做恋爱；方案B：硬核足球模拟+恋爱；方案C：足球作为情感催化剂，竞技瞬间即关系推进的契机。",
+    decision: "选择方案C。球场是情感的容器，不是规则的载体。等距阵型 SVG 让用户直观看到角色站位与关系距离，多元情感线并行覆盖不同偏好。11 名角色+教练组确保世界观自洽运转。",
+    stats: [
+      { label: "Characters", value: "11 + Coach" },
+      { label: "Routes", value: "Multi-Route" },
+      { label: "Interaction", value: "SVG · Music" },
+      { label: "Content", value: "World Book + Cards" }
+    ],
+    videoUrl: "/videos/football-demo.mp4",
+    iframeUrls: [],
+    links: []
+  },
+  {
+    title: "AETHER RACING · F1 ADV",
+    tags: ["App Design", "React", "2026"],
+    stamp: "New",
+    intro: "F1 赛车手养成 ADV · 女性向多模块 App 生态。12 个功能模块：故事入口、Chat、围场快讯、角色档案、赛程等。RPM // SYSTEM 状态监控栏 + 灵动岛音乐播放器。",
+    detail: "架空 F1 赛车世界观的女性向养成产品。基于 Google AI Studio 开发，集成 RPM // SYSTEM 状态监控栏（时间/地点/天气/穿搭/内心状态）、灵动岛音乐播放器、赛程倒计时。展现从 IP 世界观构建到多模块产品界面设计的完整链路思维。",
+    hint: "",
+    containerClass: "h-[800px] lg:h-[850px] w-full max-w-[400px] mx-auto rounded-[40px] overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.2)] border-4 border-accent/10",
+    problem: "F1 赛车题材在女性向市场几乎空白，但速度与肾上腺素是天然的情感催化剂。如何将硬核竞技转化为女性向情感体验？",
+    explore: "方案A：传统对话式 ADV；方案B：模拟手机桌面构建完整 App 生态，让用户「生活」在角色的世界里。",
+    decision: "选择方案B。设计 12 个功能模块构成完整 App 生态，每个模块都是叙事入口。RPM 状态栏让角色的当前状态可视化，灵动岛音乐播放器增强氛围沉浸感。暗金赛博机械美学统一视觉语言。",
+    stats: [
+      { label: "Modules", value: "12 App Modules" },
+      { label: "Tech", value: "React + Vite + Gemini" },
+      { label: "Aesthetic", value: "Dark Gold · Cyber" },
+      { label: "Feature", value: "RPM System · Dynamic Island" }
+    ],
+    videoUrl: "/videos/f1-demo.mp4",
+    iframeUrls: [],
+    links: []
+  },
+  {
+    title: "Post-Apocalypse Survival UI",
+    tags: ["Game UI", "Dev", "2024"],
+    stamp: "Signal Lost",
+    intro: "末世生存模拟器 · 动态响应式 UI。根据 AI 叙事内容实时响应的动态 UI 系统，天气特效与 SAN 值驱动视觉反馈。",
+    detail: "独立设计并开发的移动端交互界面。这是一个根据 AI 叙事内容实时响应的动态 UI 系统——天气特效（冰冻/火灾/浓雾）由剧情触发，SAN 值/威胁等级驱动视觉反馈，物资系统和地图模块提供情境感知。",
+    hint: "",
+    containerClass: "h-[800px] lg:h-[850px] w-full max-w-[400px] mx-auto rounded-[40px] overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.2)] border-4 border-accent/10",
+    problem: "AI 叙事陪伴场景下，UI 通常只是信息容器。但末世题材的情感氛围需要界面本身也参与叙事——如何让 UI「会讲故事」？",
+    explore: "方案A：干净功能性 UI，信息清晰但氛围弱；方案B：全屏沉浸动画，氛围强但可读性差；方案C：功能性基础上叠加视觉叙事层。",
+    decision: "选择方案C。状态栏的信号衰减、像素崩塌不是装饰，而是在告诉用户「这个世界正在衰败」。正则引擎动态解析数据，让每次打开时状态都不同——界面是活的，跟叙事同步呼吸。",
+    stats: [
+      { label: "System", value: "Dynamic UI" },
+      { label: "Visual", value: "Post-Apocalyptic" },
+      { label: "Tech", value: "HTML/CSS/JS · Regex" },
+      { label: "Platform", value: "Mobile-First" }
+    ],
+    videoUrl: "/videos/survival-demo.mp4",
+    iframeUrls: [],
+    links: []
+  },
+  {
     title: "Dossier Archives System",
     tags: ["Narrative", "UI", "2024"],
     stamp: "Classified",
     intro: "交互式角色档案卡 · 沉浸式 HTML 交互。Cormorant Garamond 排版，法语/英语双语混排。自研 8 套主题色切换系统，Tap to Reveal 三层解锁。",
-    detail: "为 AI 叙事场景设计的沉浸式交互项目。 我用 AI 作为设计工具，独立完成了从概念到可交互原型的全链路。 Cormorant Garamond 排版，法语/英语双语混排。 自研 8 套主题色切换系统，Tap to Reveal 三层解锁机制。 经过数月持续使用与迭代优化，验证了 AI 叙事内容与交互设计结合的可行性。",
+    detail: "为 AI 叙事场景设计的沉浸式交互项目。独立完成从概念到可交互原型的全链路。Cormorant Garamond 排版，法语/英语双语混排。自研 8 套主题色切换系统，Tap to Reveal 三层解锁机制。经过数月持续使用与迭代优化，验证了 AI 叙事内容与交互设计结合的可行性。",
     hint: "轻触左边或右边卡片可查看其他角色 · Tap left or right card to explore",
     containerClass: "h-[600px] lg:h-[700px] w-full max-w-[420px] mx-auto rounded-[40px] overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.2)] border-4 border-accent/10",
     problem: "角色档案需要承载大量信息（身份、性格、关系、背景），但一次性展示会造成信息过载，破坏沉浸感。",
@@ -19,6 +82,7 @@ const works = [
       { label: "Aesthetic", value: "Gothic · Baroque" },
       { label: "Language", value: "FR / EN Bilingual" }
     ],
+    videoUrl: "",
     iframeUrls: [
       { label: "Dark Mode", url: "/卡片状态栏-暗色版.html" },
       { label: "Light Mode", url: "/卡片状态栏-白色版.html" }
@@ -26,54 +90,6 @@ const works = [
     links: [
       { label: "Open Dark Mode ↗", url: "/卡片状态栏-暗色版.html" },
       { label: "Open Light Mode ↗", url: "/卡片状态栏-白色版.html" }
-    ]
-  },
-  {
-    title: "Post-Apocalypse Survival UI",
-    tags: ["Game UI", "Dev", "2024"],
-    stamp: "Signal Lost",
-    intro: "末世生存模拟器 · 动态响应式 UI。根据 AI 叙事内容实时响应的动态 UI 系统，天气特效与 SAN 值驱动视觉反馈。",
-    detail: "独立设计并开发的移动端交互界面。这是一个根据 AI 叙事内容实时响应的动态 UI 系统——天气特效（冰冻/火灾/浓雾）由剧情触发，SAN 值/威胁等级驱动视觉反馈，物资系统和地图模块提供情境感知。",
-    hint: "点击卡片查看详情 · Click card to view details",
-    containerClass: "h-[800px] lg:h-[850px] w-full max-w-[400px] mx-auto rounded-[40px] overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.2)] border-4 border-accent/10",
-    problem: "AI 叙事陪伴场景下，UI 通常只是信息容器。但末世题材的情感氛围需要界面本身也参与叙事——如何让 UI「会讲故事」？",
-    explore: "方案A：干净功能性 UI，信息清晰但氛围弱；方案B：全屏沉浸动画，氛围强但可读性差；方案C：功能性基础上叠加视觉叙事层。",
-    decision: "选择方案C。状态栏的信号衰减、像素崩塌不是装饰，而是在告诉用户「这个世界正在衰败」。正则引擎动态解析数据，让每次打开时状态都不同——界面是活的，跟叙事同步呼吸。",
-    stats: [
-      { label: "System", value: "Dynamic UI" },
-      { label: "Visual", value: "Post-Apocalyptic" },
-      { label: "Tech", value: "HTML/CSS/JS · Regex" },
-      { label: "Platform", value: "Mobile-First" }
-    ],
-    iframeUrls: [
-      { label: "Preview", url: "/末世状态栏-demo.html" }
-    ],
-    links: [
-      { label: "Open in New Tab ↗", url: "/末世状态栏-demo.html" }
-    ]
-  },
-  {
-    title: "Happy Football Simulator",
-    tags: ["Concept", "Narrative", "2025"],
-    stamp: "Draft",
-    intro: "快乐足球模拟器 · 女性向互动叙事。完整角色体系+世界书+角色卡。等距阵型 SVG 交互。配套 AI 生成主题音乐。",
-    detail: "架空职业足球俱乐部为舞台的女性向叙事产品。深度研究女性向轻互动内容市场，设计 11 名球员 + 教练组完整角色体系，每个角色配套世界书与角色卡。实现等距阵型 SVG 交互与角色档案页。",
-    hint: "点击球场上的角色头像查看档案 · Click player to explore",
-    containerClass: "h-[800px] lg:h-[850px] w-full max-w-[400px] mx-auto rounded-[40px] overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.2)] border-4 border-accent/10",
-    problem: "女性向叙事产品题材集中在校园/古代/都市，缺少竞技类。但女性用户并非不需要竞技——竞技场景天然产生高情绪浓度（紧张、热血、心跳加速），这恰恰是情感叙事最好的催化剂。",
-    explore: "方案A：弱化足球重点做恋爱；方案B：硬核足球模拟+恋爱；方案C：足球作为情感催化剂，竞技瞬间即关系推进的契机。",
-    decision: "选择方案C。球场是情感的容器，不是规则的载体。等距阵型 SVG 让用户直观看到角色站位与关系距离，BG/GL/GB/BL 四线并行覆盖不同偏好。11 名角色+教练组确保世界观自洽运转。",
-    stats: [
-      { label: "Characters", value: "11 + Coach" },
-      { label: "Routes", value: "BG · GL · GB · BL" },
-      { label: "Interaction", value: "SVG · Music" },
-      { label: "Content", value: "世界书 + 角色卡" }
-    ],
-    iframeUrls: [
-      { label: "Preview", url: "/football.html" }
-    ],
-    links: [
-      { label: "Open in New Tab ↗", url: "/football.html" }
     ]
   }
 ];
@@ -90,6 +106,9 @@ const WorkItem = ({ work }: { work: typeof works[0]; key?: React.Key }) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [activeIframeIdx, setActiveIframeIdx] = useState(0);
   
+  const hasVideo = work.videoUrl && work.videoUrl.length > 0;
+  const hasIframe = work.iframeUrls && work.iframeUrls.length > 0;
+  
   const handleIframeLoad = () => {
     const iframe = iframeRef.current;
     if (!iframe) return;
@@ -98,49 +117,11 @@ const WorkItem = ({ work }: { work: typeof works[0]; key?: React.Key }) => {
       const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
       if (!iframeDoc) return;
       
-      // Inject CSS to hide cursor and scrollbar
       const style = iframeDoc.createElement('style');
       style.innerHTML = '* { cursor: none !important; } ::-webkit-scrollbar { display: none !important; } * { -ms-overflow-style: none; scrollbar-width: none; }';
       iframeDoc.head.appendChild(style);
-      
-      // Forward mousemove events to parent window
-      iframeDoc.addEventListener('mousemove', (e) => {
-        const rect = iframe.getBoundingClientRect();
-        const x = e.clientX + rect.left;
-        const y = e.clientY + rect.top;
-        
-        const event = new MouseEvent('mousemove', {
-          clientX: x,
-          clientY: y,
-          bubbles: true,
-          cancelable: true,
-          view: window
-        });
-        window.dispatchEvent(event);
-      });
-      
-      // Forward mouseover for hover states
-      iframeDoc.addEventListener('mouseover', (e) => {
-        const target = e.target as HTMLElement;
-        const isClickable = target.tagName.toLowerCase() === 'a' || 
-                            target.tagName.toLowerCase() === 'button' || 
-                            target.closest('a') || 
-                            target.closest('button');
-                            
-        if (isClickable) {
-          // Dispatch a custom event or just let the parent know
-          const event = new MouseEvent('mouseover', {
-            bubbles: true,
-            cancelable: true,
-            view: window
-          });
-          // We can attach a dummy element to the event to trigger the hover state in CustomCursor
-          Object.defineProperty(event, 'target', { value: document.createElement('a'), enumerable: true });
-          window.dispatchEvent(event);
-        }
-      });
     } catch (err) {
-      console.error("Cannot access iframe content for cursor tracking", err);
+      console.error("Cannot access iframe content", err);
     }
   };
 
@@ -164,26 +145,35 @@ const WorkItem = ({ work }: { work: typeof works[0]; key?: React.Key }) => {
         </div>
 
         <div className={`relative w-full bg-transparent ${work.containerClass || 'h-[70vh] lg:h-[85vh]'}`}>
-          {/* The actual interactive project - NO BORDERS, FULLY INTERACTIVE */}
-          <iframe
-            ref={iframeRef}
-            src={work.iframeUrls[activeIframeIdx].url}
-            className="absolute inset-0 w-full h-full border-none pointer-events-auto"
-            title={work.title}
-            loading="lazy"
-            onLoad={handleIframeLoad}
-            sandbox="allow-scripts allow-same-origin allow-popups"
-            scrolling="no"
-          />
+          {hasVideo ? (
+            <video
+              src={work.videoUrl}
+              className="absolute inset-0 w-full h-full object-cover rounded-[36px]"
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+          ) : hasIframe ? (
+            <iframe
+              ref={iframeRef}
+              src={work.iframeUrls[activeIframeIdx].url}
+              className="absolute inset-0 w-full h-full border-none pointer-events-auto"
+              title={work.title}
+              loading="lazy"
+              onLoad={handleIframeLoad}
+              sandbox="allow-scripts allow-same-origin allow-popups"
+              scrolling="no"
+            />
+          ) : null}
 
-          {/* Top Right Stamp (Optional, kept for aesthetic but non-blocking) */}
           <div className="absolute top-8 right-8 stamp z-10 pointer-events-none opacity-50 mix-blend-multiply">
             {work.stamp}
           </div>
         </div>
 
         {/* Version Toggles - Moved Below Iframe */}
-        {work.iframeUrls.length > 1 && (
+        {hasIframe && work.iframeUrls.length > 1 && (
           <div className="flex justify-center gap-4 mt-6 relative z-30">
             {work.iframeUrls.map((urlObj, idx) => (
               <button
