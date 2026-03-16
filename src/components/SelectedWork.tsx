@@ -30,7 +30,7 @@ const works = [
     intro: "F1 赛车手养成 ADV · 女性向多模块 App 生态。12 个功能模块：故事入口、Chat、围场快讯、角色档案、赛程等。RPM // SYSTEM 状态监控栏 + 灵动岛音乐播放器。",
     detail: "架空 F1 赛车世界观的女性向养成产品。基于 Google AI Studio 开发，集成 RPM // SYSTEM 状态监控栏（时间/地点/天气/穿搭/内心状态）、灵动岛音乐播放器、赛程倒计时。展现从 IP 世界观构建到多模块产品界面设计的完整链路思维。",
     hint: "",
-    containerClass: "h-[800px] lg:h-[850px] w-full max-w-[400px] mx-auto rounded-[40px] overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.2)] border-4 border-accent/10",
+    containerClass: "h-[500px] lg:h-[600px] w-full max-w-[900px] mx-auto rounded-[20px] overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.2)] border-4 border-accent/10",
     problem: "F1 赛车题材在女性向市场几乎空白，但速度与肾上腺素是天然的情感催化剂。如何将硬核竞技转化为女性向情感体验？",
     explore: "方案A：传统对话式 ADV；方案B：模拟手机桌面构建完整 App 生态，让用户「生活」在角色的世界里。",
     decision: "选择方案B。设计 12 个功能模块构成完整 App 生态，每个模块都是叙事入口。RPM 状态栏让角色的当前状态可视化，灵动岛音乐播放器增强氛围沉浸感。暗金赛博机械美学统一视觉语言。",
