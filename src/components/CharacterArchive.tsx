@@ -52,7 +52,7 @@ export default function CharacterArchive() {
 
   const rotate = useTransform(scrollYProgress, [0, 1], [0, 360]);
   const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1.1, 0.9]);
-  const heartOpacity = useTransform(scrollYProgress, [0, 0.15, 0.8, 1], [0, 0.15, 0.15, 0]);
+  const heartOpacity = useTransform(scrollYProgress, [0, 0.1, 0.8, 1], [0, 0.6, 0.6, 0]);
 
   return (
     <section id="archive" ref={containerRef} className="py-32 px-6 md:px-12 lg:px-24 border-t border-accent/20 bg-bg relative filigree-border overflow-hidden">
@@ -61,7 +61,7 @@ export default function CharacterArchive() {
       {/* Interactive Rotating Heart Background */}
       <motion.div 
         style={{ opacity: heartOpacity }}
-        className="fixed top-1/2 right-[-20%] md:right-[-10%] w-[120vw] h-[120vw] md:w-[80vw] md:h-[80vw] -translate-y-1/2 pointer-events-none z-0 text-accent flex items-center justify-center mix-blend-screen"
+        className="fixed top-1/2 right-[-20%] md:right-[-10%] w-[120vw] h-[120vw] md:w-[80vw] md:h-[80vw] -translate-y-1/2 pointer-events-none z-0 text-accent flex items-center justify-center"
       >
         <motion.svg 
           style={{ rotate, scale }}
