@@ -130,7 +130,7 @@ export default function About() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-4 pt-6 gap-4 hover-trigger group">
                 <div className="gothic-text opacity-60 group-hover:text-accent transition-colors">Interests</div>
-                <div className="md:col-span-3 text-ink/90 font-serif italic text-lg">音乐剧 · Lolita · 哲学 · 手作 · AIRP · 探索未知</div>
+                <div className="md:col-span-3 text-ink/90 font-serif italic text-lg">音乐剧 · Lolita · 哲学 · 手作 · AI 创作 · 探索未知</div>
               </div>
             </motion.div>
 
