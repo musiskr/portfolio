@@ -66,24 +66,36 @@ export default function CharacterArchive() {
         <motion.svg 
           style={{ rotate, scale }}
           viewBox="0 0 200 200" 
-          className="w-full h-full stroke-current fill-transparent" 
-          strokeWidth="0.5"
+          fill="none"
+          stroke="#8b0000"
+          strokeWidth="1.5"
+          className="w-full h-full"
         >
           {/* Outer Heart */}
-          <path d="M100 180 C 100 180, 20 120, 20 60 C 20 20, 80 20, 100 60 C 120 20, 180 20, 180 60 C 180 120, 100 180, 100 180 Z" strokeWidth="1" className="drop-shadow-[0_0_15px_rgba(139,0,0,0.8)]" />
+          <path d="M100 180 C 100 180, 20 120, 20 60 C 20 20, 80 20, 100 60 C 120 20, 180 20, 180 60 C 180 120, 100 180, 100 180 Z" strokeWidth="2" stroke="#8b0000" filter="url(#glow)" />
           {/* Inner organic lines */}
-          <path d="M100 160 C 100 160, 40 110, 40 60 C 40 30, 80 30, 100 60 C 120 30, 160 30, 160 60 C 160 110, 100 160, 100 160 Z" strokeDasharray="2 2" />
-          <path d="M100 140 C 100 140, 60 100, 60 60 C 60 40, 80 40, 100 60 C 120 40, 140 40, 140 60 C 140 100, 100 140, 100 140 Z" />
+          <path d="M100 160 C 100 160, 40 110, 40 60 C 40 30, 80 30, 100 60 C 120 30, 160 30, 160 60 C 160 110, 100 160, 100 160 Z" strokeDasharray="3 3" strokeWidth="1" />
+          <path d="M100 140 C 100 140, 60 100, 60 60 C 60 40, 80 40, 100 60 C 120 40, 140 40, 140 60 C 140 100, 100 140, 100 140 Z" strokeWidth="1" />
           {/* Center decorative elements */}
-          <circle cx="100" cy="70" r="15" />
-          <circle cx="100" cy="70" r="5" fill="currentColor" />
-          <path d="M100 20 L100 180 M20 70 L180 70" strokeDasharray="1 4" opacity="0.5" />
+          <circle cx="100" cy="70" r="15" strokeWidth="1" />
+          <circle cx="100" cy="70" r="5" fill="#8b0000" />
+          <path d="M100 20 L100 180 M20 70 L180 70" strokeDasharray="1 4" opacity="0.6" strokeWidth="0.8" />
           {/* Radiating lines */}
-          <path d="M100 70 L50 30 M100 70 L150 30 M100 70 L50 110 M100 70 L150 110" opacity="0.5" />
+          <path d="M100 70 L50 30 M100 70 L150 30 M100 70 L50 110 M100 70 L150 110" opacity="0.6" strokeWidth="0.8" />
           {/* Additional filigree */}
-          <path d="M100 100 C 80 120, 120 120, 100 140" strokeWidth="0.5" />
-          <path d="M70 70 C 50 50, 50 90, 70 70" strokeWidth="0.5" />
-          <path d="M130 70 C 150 50, 150 90, 130 70" strokeWidth="0.5" />
+          <path d="M100 100 C 80 120, 120 120, 100 140" strokeWidth="1" />
+          <path d="M70 70 C 50 50, 50 90, 70 70" strokeWidth="1" />
+          <path d="M130 70 C 150 50, 150 90, 130 70" strokeWidth="1" />
+          {/* Glow filter */}
+          <defs>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
         </motion.svg>
       </motion.div>
       
