@@ -3,11 +3,11 @@ import { motion } from 'motion/react';
 const insights = [
   {
     title: "AI 陪伴赛道现状",
-    content: "Glow、星野等先发，酒馆（SillyTavern）凭免费开源+社区角色卡生态快速增长。纯 App 面临「信息差消失」风险。"
+    content: "Glow、星野等先发，开源 AI 叙事内容平台凭社区角色卡生态快速增长。纯 App 面临「信息差消失」风险。"
   },
   {
     title: "女性用户洞察",
-    content: "比乙游更自由：模拟手机界面（聊天、语音、朋友圈、微博、转账）是核心需求。真实感营造陪伴感，细节越生活化，情感粘性越强。Y2K、古早风、亚系审美正流行。"
+    content: "比乙游更自由：模拟手机界面（聊天、语音、朋友圈、微博、转账）是核心需求。真实感营造陪伴感，细节越生活化，情感粘性越强。Y2K、古早风、亚系审美正流行，也成为年轻女性群体使用AI界面的主流设计风格。"
   },
   {
     title: "硬件差异化",
@@ -34,7 +34,7 @@ export default function IndustryPerspective() {
             <h2 className="gothic-text text-5xl md:text-7xl tracking-widest">Industry Perspective</h2>
           </div>
           <p className="font-serif text-2xl italic opacity-80 max-w-md md:text-right text-ink drop-shadow-sm">
-            不只是创作者，也是深度用户。从 Glow 到酒馆，从国内 App 到开源社区——我理解这个赛道。
+            不只是创作者，也是深度用户。从 Glow 到开源社区，从国内 App 到全球平台——我理解这个赛道。
           </p>
         </motion.div>
 
