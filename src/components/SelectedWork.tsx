@@ -19,7 +19,7 @@ const works = [
       { label: "Interaction", value: "SVG · Music" },
       { label: "Content", value: "World Book + Cards" }
     ],
-    videoUrl: "/videos/football-demo.mp4",
+    videoUrl: "https://res.cloudinary.com/dpoym5kxi/video/upload/v1773669568/%E5%BF%AB%E4%B9%90%E8%B6%B3%E7%90%83%E6%A8%A1%E6%8B%9F%E5%99%A8_paqsnn.mp4",
     iframeUrls: [],
     links: []
   },
@@ -40,7 +40,7 @@ const works = [
       { label: "Aesthetic", value: "Dark Gold · Cyber" },
       { label: "Feature", value: "RPM System · Dynamic Island" }
     ],
-    videoUrl: "/videos/f1-demo.mp4",
+    videoUrl: "https://res.cloudinary.com/dpoym5kxi/video/upload/v1773669564/F1%E8%B5%9B%E8%BD%A6%E6%89%8B_%E5%8E%8B%E7%BC%A9_kw2e1p.mp4",
     iframeUrls: [],
     links: []
   },
@@ -61,7 +61,7 @@ const works = [
       { label: "Tech", value: "HTML/CSS/JS · Regex" },
       { label: "Platform", value: "Mobile-First" }
     ],
-    videoUrl: "/videos/survival-demo.mp4",
+    videoUrl: "https://res.cloudinary.com/dpoym5kxi/video/upload/v1773669541/%E6%9C%AB%E4%B8%96%E7%8A%B6%E6%80%81%E6%A0%8F_%E5%8E%8B%E7%BC%A9_foprkc.mp4",
     iframeUrls: [],
     links: []
   },
