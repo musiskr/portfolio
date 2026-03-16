@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import { Plus, X, MessageCircle, Mail, Volume2, VolumeX, ArrowRight } from 'lucide-react';
 
@@ -165,53 +164,50 @@ export default function Header() {
         </div>
       </motion.header>
 
-      {/* Fullscreen Menu Overlay via Portal */}
-      {typeof document !== 'undefined' && createPortal(
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div 
-              key="fullscreen-menu"
-              initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-              animate={{ opacity: 1, backdropFilter: "blur(20px)" }}
-              exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-              transition={{ duration: 0.4 }}
-              style={{ zIndex: 99990, backgroundColor: 'rgba(10, 5, 5, 0.98)' }}
-              className="fixed inset-0 w-full h-full flex flex-col justify-center items-center filigree-border pointer-events-auto"
-            >
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] bg-accent/5 organic-shape blur-[100px] pointer-events-none -z-10 animate-pulse-slow" />
+      {/* Fullscreen Menu Overlay */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div 
+            key="fullscreen-menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            style={{ zIndex: 100001 }}
+            className="fixed inset-0 w-full h-full flex flex-col justify-center items-center bg-[rgba(10,5,5,0.98)] backdrop-blur-xl"
+          >
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] bg-accent/5 organic-shape blur-[100px] pointer-events-none -z-10 animate-pulse-slow" />
 
-              <nav className="w-full max-w-4xl px-6 relative z-10 mt-12">
-                <div className="flex flex-col border-t border-accent/20">
-                  {menuItems.map((item, i) => (
-                    <motion.a
-                      key={item.label}
-                      href={item.href}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        scrollToSection(item.href);
-                      }}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.1 + 0.2, duration: 0.5 }}
-                      className="group flex items-center justify-between py-8 md:py-10 border-b border-accent/10 hover:bg-accent/5 transition-all duration-500 hover-trigger px-8 -mx-8 rounded-[40px_10px_40px_10px] relative overflow-hidden"
-                    >
-                      <div className="absolute left-0 top-0 w-1 h-full bg-accent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-l-[40px]" />
-                      <div className="flex items-center gap-8 md:gap-16 relative z-10">
-                        <span className="gothic-text text-sm opacity-50 italic text-accent">({item.num})</span>
-                        <span className="font-serif italic text-4xl md:text-6xl text-ink group-hover:text-accent group-hover:translate-x-4 transition-all duration-500 drop-shadow-sm">
-                          {item.label}
-                        </span>
-                      </div>
-                      <ArrowRight className="w-8 h-8 opacity-0 -translate-x-8 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 text-accent relative z-10" />
-                    </motion.a>
-                  ))}
-                </div>
-              </nav>
-            </motion.div>
-          )}
-        </AnimatePresence>,
-        document.body
-      )}
+            <nav className="w-full max-w-4xl px-6 relative z-10 mt-12">
+              <div className="flex flex-col border-t border-accent/20">
+                {menuItems.map((item, i) => (
+                  <motion.a
+                    key={item.label}
+                    href={item.href}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection(item.href);
+                    }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.1 + 0.2, duration: 0.5 }}
+                    className="group flex items-center justify-between py-8 md:py-10 border-b border-accent/10 hover:bg-accent/5 transition-all duration-500 hover-trigger px-8 -mx-8 rounded-[40px_10px_40px_10px] relative overflow-hidden"
+                  >
+                    <div className="absolute left-0 top-0 w-1 h-full bg-accent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-l-[40px]" />
+                    <div className="flex items-center gap-8 md:gap-16 relative z-10">
+                      <span className="gothic-text text-sm opacity-50 italic text-accent">({item.num})</span>
+                      <span className="font-serif italic text-4xl md:text-6xl text-ink group-hover:text-accent group-hover:translate-x-4 transition-all duration-500 drop-shadow-sm">
+                        {item.label}
+                      </span>
+                    </div>
+                    <ArrowRight className="w-8 h-8 opacity-0 -translate-x-8 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 text-accent relative z-10" />
+                  </motion.a>
+                ))}
+              </div>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
