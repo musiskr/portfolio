@@ -47,7 +47,7 @@ export default function CharacterArchive() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start bottom", "end top"]
+    offset: ["start end", "end start"]
   });
 
   const rotate = useTransform(scrollYProgress, [0, 1], [0, 360]);
@@ -61,7 +61,7 @@ export default function CharacterArchive() {
       {/* Interactive Rotating Heart Background */}
       <motion.div 
         style={{ opacity: heartOpacity }}
-        className="fixed top-1/2 right-[-20%] md:right-[-10%] w-[120vw] h-[120vw] md:w-[80vw] md:h-[80vw] -translate-y-1/2 pointer-events-none z-0 text-accent flex items-center justify-center"
+        className="fixed top-1/2 right-[-20%] md:right-[-10%] w-[120vw] h-[120vw] md:w-[80vw] md:h-[80vw] -translate-y-1/2 pointer-events-none z-[5] text-accent flex items-center justify-center"
       >
         <motion.svg 
           style={{ rotate, scale }}
