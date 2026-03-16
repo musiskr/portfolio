@@ -27,11 +27,11 @@ const archive = [
     { type: "Simulator", title: "⚽ Sports", desc: "快乐足球模拟器 | 角色卡+世界书完成，状态栏开发中" }
   ]},
   { cat: "设定体系 / 特殊类型", items: [
-    { type: "World Book", title: "黑道 · Crime", desc: "养兄妹 · 黑道 | 单角色，禁忌关系线" },
+    { type: "World Book", title: "黑道 · Crime", desc: "非血缘关系 · 情感博弈 | 单角色，复杂关系线" },
     { type: "Solo Card", title: "Racing", desc: "赛车手 | 单男性角色，速度与肾上腺素" },
     { type: "World Book", title: "警匪 · Thriller", desc: "警匪对峙 | 正邪边界模糊的双线叙事" },
     { type: "World Book", title: "哨向 · Sentinel", desc: "哨向设定 | 感官共鸣与精神链接" },
-    { type: "World Book", title: "AO3", desc: "Cake · Fork · ABO | AO3 体系设定" },
+    { type: "World Book", title: "AO3", desc: "多元设定体系 | 多维度世界观构建" },
     { type: "OC", title: "Original", desc: "原创角色 | User 的姐姐 / 弟弟" }
   ]}
 ];
