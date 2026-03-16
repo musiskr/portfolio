@@ -40,7 +40,7 @@ const works = [
       { label: "Aesthetic", value: "Dark Gold · Cyber" },
       { label: "Feature", value: "RPM System · Dynamic Island" }
     ],
-    videoUrl: "https://res.cloudinary.com/dpoym5kxi/video/upload/v1773669564/F1%E8%B5%9B%E8%BD%A6%E6%89%8B_%E5%8E%8B%E7%BC%A9_kw2e1p.mp4",
+    videoUrl: "https://res.cloudinary.com/dpoym5kxi/video/upload/v1773675144/%E5%85%BB%E6%88%90F1%E8%B5%9B%E8%BD%A6%E6%89%8B_yhrfux.mp4",
     iframeUrls: [],
     links: []
   },
@@ -148,7 +148,7 @@ const WorkItem = ({ work }: { work: typeof works[0]; key?: React.Key }) => {
           {hasVideo ? (
             <video
               src={work.videoUrl}
-              className="absolute inset-0 w-full h-full object-contain rounded-[36px] bg-black"
+              className={`absolute inset-0 w-full h-full rounded-[36px] bg-black ${work.containerClass?.includes('max-w-[900px]') ? 'object-contain' : 'object-cover'}`}
               autoPlay
               loop
               muted
