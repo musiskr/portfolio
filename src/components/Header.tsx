@@ -97,7 +97,7 @@ export default function Header() {
           opacity: isMenuOpen ? 1 : headerOpacity, 
           y: isMenuOpen ? 0 : headerY 
         }}
-        className="fixed top-0 left-0 w-full z-[100000] pointer-events-none p-6 md:p-12 flex justify-between items-start transition-opacity duration-300"
+        className="fixed top-0 left-0 w-full z-[100010] pointer-events-none p-6 md:p-12 flex justify-between items-start transition-opacity duration-300"
       >
         {/* Top Left: Menu Button */}
         <div className="pointer-events-auto">
@@ -173,7 +173,7 @@ export default function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            style={{ zIndex: 100001 }}
+            style={{ zIndex: 100005 }}
             className="fixed inset-0 w-full h-full flex flex-col justify-center items-center bg-[rgba(10,5,5,0.98)] backdrop-blur-xl"
           >
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] bg-accent/5 organic-shape blur-[100px] pointer-events-none -z-10 animate-pulse-slow" />
