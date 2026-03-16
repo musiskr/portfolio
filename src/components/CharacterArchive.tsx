@@ -39,7 +39,7 @@ const archive = [
 const fadeUp = {
   initial: { opacity: 0, y: 40 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-100px" },
+  viewport: { once: false, margin: "-100px" },
   transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
 };
 
@@ -52,7 +52,7 @@ export default function CharacterArchive() {
 
   const rotate = useTransform(scrollYProgress, [0, 1], [0, 360]);
   const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1.1, 0.9]);
-  const heartOpacity = useTransform(scrollYProgress, [0, 0.1, 0.8, 1], [0, 0.6, 0.6, 0]);
+  const heartOpacity = useTransform(scrollYProgress, [0, 0.1, 0.8, 1], [0, 0.35, 0.35, 0]);
 
   return (
     <section id="archive" ref={containerRef} className="py-32 px-6 md:px-12 lg:px-24 border-t border-accent/20 bg-bg relative filigree-border overflow-hidden">
@@ -61,13 +61,14 @@ export default function CharacterArchive() {
       {/* Interactive Rotating Heart Background */}
       <motion.div 
         style={{ opacity: heartOpacity }}
-        className="fixed top-1/2 right-[-20%] md:right-[-10%] w-[120vw] h-[120vw] md:w-[80vw] md:h-[80vw] -translate-y-1/2 pointer-events-none z-[5] text-accent flex items-center justify-center"
+        className="fixed top-1/2 right-[-10%] md:right-[0%] w-[60vw] h-[60vw] md:w-[40vw] md:h-[40vw] -translate-y-1/2 pointer-events-none z-[5] text-accent flex items-center justify-center"
       >
         <motion.svg 
           style={{ rotate, scale }}
           viewBox="0 0 200 200" 
           fill="none"
           stroke="#8b0000"
+          strokeOpacity="0.4"
           strokeWidth="1.5"
           className="w-full h-full"
         >
