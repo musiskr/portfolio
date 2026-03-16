@@ -71,7 +71,7 @@ export default function Footer() {
           <div className="w-full flex flex-col md:flex-row justify-between items-center gap-6 gothic-text text-[10px] md:text-xs tracking-widest opacity-60 border-t border-accent/20 pt-8 text-ink">
             <div className="flex gap-6">
               <a href="#" className="hover:text-accent transition-colors hover-trigger">Pinterest</a>
-              <a href="#" className="hover:text-accent transition-colors hover-trigger">Resume ↓</a>
+              <a href="/周婧仪_简历.pdf" target="_blank" className="hover:text-accent transition-colors hover-trigger">Resume ↓</a>
             </div>
             <div className="flex flex-col md:flex-row gap-2 md:gap-6 text-center md:text-right">
               <span>Last Updated: 2026.03</span>
