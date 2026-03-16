@@ -103,7 +103,7 @@ export default function Header() {
         <div className="pointer-events-auto">
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="relative z-[100002] w-14 h-14 rounded-full border border-accent/30 flex items-center justify-center hover:bg-accent hover:text-white transition-all duration-500 backdrop-blur-md bg-bg/60 hover-trigger shadow-[0_0_15px_rgba(139,0,0,0.2)] hover:shadow-[0_0_25px_rgba(139,0,0,0.6)]"
+            className="relative z-[100010] w-14 h-14 rounded-full border border-accent/30 flex items-center justify-center hover:bg-accent hover:text-white transition-all duration-500 backdrop-blur-md bg-bg/60 hover-trigger shadow-[0_0_15px_rgba(139,0,0,0.2)] hover:shadow-[0_0_25px_rgba(139,0,0,0.6)]"
           >
             <div className="flex flex-col gap-[5px] items-center justify-center w-6 h-6">
               <motion.span 
