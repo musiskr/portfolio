@@ -144,7 +144,7 @@ const WorkItem = ({ work }: { work: typeof works[0]; key?: React.Key }) => {
           ))}
         </div>
 
-        <div className={`relative w-full bg-transparent ${work.containerClass || 'h-[70vh] lg:h-[85vh]'}`}>
+        <div className={`relative w-full bg-transparent ${work.containerClass || 'h-[70vh] lg:h-[85vh]'}`} style={{isolation: 'isolate'}}>
           {hasVideo ? (
             <video
               src={work.videoUrl}
