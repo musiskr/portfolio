@@ -47,7 +47,7 @@ export default function CustomCursor() {
   return (
     <>
       <motion.div
-        className="fixed top-0 left-0 w-8 h-8 pointer-events-none z-[9999] mix-blend-difference flex items-center justify-center"
+        className="fixed top-0 left-0 w-8 h-8 pointer-events-none z-[200000] mix-blend-difference flex items-center justify-center"
         animate={{
           x: mousePosition.x - 16,
           y: mousePosition.y - 16,
@@ -58,7 +58,7 @@ export default function CustomCursor() {
         <div className={`w-full h-full border border-white transition-all duration-300 ${isHovering ? 'rounded-full bg-white/20' : 'organic-shape bg-transparent'}`} />
       </motion.div>
       <motion.div
-        className="fixed top-0 left-0 w-2 h-2 bg-accent rounded-full pointer-events-none z-[10000] mix-blend-difference"
+        className="fixed top-0 left-0 w-2 h-2 bg-accent rounded-full pointer-events-none z-[200001] mix-blend-difference"
         animate={{
           x: mousePosition.x - 4,
           y: mousePosition.y - 4,
