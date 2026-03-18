@@ -55,103 +55,61 @@ export default function CharacterArchive() {
   const heartOpacity = useTransform(scrollYProgress, [0, 0.1, 0.8, 1], [0, 0.35, 0.35, 0]);
 
   return (
-    <section id="archive" ref={containerRef} className="py-32 px-6 md:px-12 lg:px-24 border-t border-accent/20 bg-bg relative filigree-border overflow-hidden">
+    <section id="archive" ref={containerRef} className="py-16 md:py-32 px-4 md:px-12 lg:px-24 border-t border-accent/20 bg-bg relative filigree-border overflow-hidden">
       <div className="absolute top-[40%] left-[-10%] w-[50vw] h-[50vw] bg-accent/5 organic-shape blur-3xl animate-float pointer-events-none z-0" style={{ animationDelay: '-4s' }} />
       
-      {/* Interactive Rotating Heart Background */}
+      {/* Rotating Heart — hidden on mobile to save performance */}
       <motion.div 
         style={{ opacity: heartOpacity }}
-        className="fixed top-1/2 right-[-10%] md:right-[0%] w-[60vw] h-[60vw] md:w-[40vw] md:h-[40vw] -translate-y-1/2 pointer-events-none z-[5] text-accent flex items-center justify-center"
+        className="fixed top-1/2 right-[0%] w-[40vw] h-[40vw] -translate-y-1/2 pointer-events-none z-[5] text-accent items-center justify-center hidden md:flex"
       >
         <motion.svg 
           style={{ rotate, scale }}
           viewBox="0 0 200 200" 
-          fill="none"
-          stroke="#8b0000"
-          strokeOpacity="0.4"
-          strokeWidth="1.5"
+          fill="none" stroke="#8b0000" strokeOpacity="0.4" strokeWidth="1.5"
           className="w-full h-full"
         >
-          {/* Outer Heart */}
-          <path d="M100 180 C 100 180, 20 120, 20 60 C 20 20, 80 20, 100 60 C 120 20, 180 20, 180 60 C 180 120, 100 180, 100 180 Z" strokeWidth="2" stroke="#8b0000" filter="url(#glow)" />
-          {/* Inner organic lines */}
+          <path d="M100 180 C 100 180, 20 120, 20 60 C 20 20, 80 20, 100 60 C 120 20, 180 20, 180 60 C 180 120, 100 180, 100 180 Z" strokeWidth="2" filter="url(#glow)" />
           <path d="M100 160 C 100 160, 40 110, 40 60 C 40 30, 80 30, 100 60 C 120 30, 160 30, 160 60 C 160 110, 100 160, 100 160 Z" strokeDasharray="3 3" strokeWidth="1" />
           <path d="M100 140 C 100 140, 60 100, 60 60 C 60 40, 80 40, 100 60 C 120 40, 140 40, 140 60 C 140 100, 100 140, 100 140 Z" strokeWidth="1" />
-          {/* Center decorative elements */}
           <circle cx="100" cy="70" r="15" strokeWidth="1" />
           <circle cx="100" cy="70" r="5" fill="#8b0000" />
           <path d="M100 20 L100 180 M20 70 L180 70" strokeDasharray="1 4" opacity="0.6" strokeWidth="0.8" />
-          {/* Radiating lines */}
           <path d="M100 70 L50 30 M100 70 L150 30 M100 70 L50 110 M100 70 L150 110" opacity="0.6" strokeWidth="0.8" />
-          {/* Additional filigree */}
-          <path d="M100 100 C 80 120, 120 120, 100 140" strokeWidth="1" />
-          <path d="M70 70 C 50 50, 50 90, 70 70" strokeWidth="1" />
-          <path d="M130 70 C 150 50, 150 90, 130 70" strokeWidth="1" />
-          {/* Glow filter */}
-          <defs>
-            <filter id="glow">
-              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-          </defs>
+          <defs><filter id="glow"><feGaussianBlur stdDeviation="3" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
         </motion.svg>
       </motion.div>
       
       <div className="max-w-7xl mx-auto relative z-10">
-        <motion.div {...fadeUp} className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-32 border-b border-accent/20 pb-12">
+        <motion.div {...fadeUp} className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-8 mb-16 md:mb-32 border-b border-accent/20 pb-6 md:pb-12">
           <div>
-            <span className="gothic-text text-sm tracking-widest opacity-60 block mb-4 text-accent">05 // DOSSIER: ARCHIVE</span>
-            <h2 className="gothic-text text-5xl md:text-7xl tracking-widest">Character Archive</h2>
+            <span className="gothic-text text-xs md:text-sm tracking-widest opacity-60 block mb-3 text-accent">05 // DOSSIER: ARCHIVE</span>
+            <h2 className="gothic-text text-3xl md:text-7xl tracking-widest">Character Archive</h2>
           </div>
-          <div className="font-serif text-4xl md:text-5xl italic opacity-80 text-ink drop-shadow-sm">20+ Worlds Built.</div>
+          <div className="font-serif text-2xl md:text-5xl italic opacity-80 text-ink drop-shadow-sm">20+ Worlds Built.</div>
         </motion.div>
 
-        <div className="space-y-24">
+        <div className="space-y-12 md:space-y-24">
           {archive.map((group, idx) => (
-            <motion.div 
-              key={idx} 
-              {...fadeUp}
-              transition={{ ...fadeUp.transition, delay: 0.1 }}
-              className="space-y-6"
-            >
-              {/* Category Header */}
-              <div className="flex items-center gap-6 border-b border-accent/30 pb-4">
-                <h3 className="font-serif italic text-3xl md:text-4xl text-accent drop-shadow-md">
-                  {group.cat}
-                </h3>
+            <motion.div key={idx} {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.1 }} className="space-y-4 md:space-y-6">
+              <div className="flex items-center gap-4 border-b border-accent/30 pb-3">
+                <h3 className="font-serif italic text-xl md:text-4xl text-accent drop-shadow-md">{group.cat}</h3>
               </div>
               
-              {/* Dossier List */}
               <div className="flex flex-col border-t border-accent/10">
                 {group.items.map((item, i) => (
-                  <motion.div 
-                    key={i} 
-                    className="group relative flex flex-col md:flex-row md:items-center justify-between py-6 md:py-8 border-b border-accent/10 hover:bg-accent/5 transition-all duration-500 hover-trigger px-4 md:px-8 -mx-4 md:-mx-8 cursor-pointer"
-                  >
+                  <motion.div key={i} className="group relative flex flex-col md:flex-row md:items-center justify-between py-4 md:py-8 border-b border-accent/10 hover:bg-accent/5 transition-all duration-500 hover-trigger px-3 md:px-8 -mx-3 md:-mx-8 cursor-pointer">
                     <div className="absolute left-0 top-0 w-1 h-full bg-accent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    
-                    <div className="flex items-center gap-6 md:gap-12 w-full md:w-auto">
-                      <span className="gothic-text text-xs tracking-widest opacity-40 group-hover:opacity-80 transition-opacity w-8 md:w-12">
-                        {String(i + 1).padStart(2, '0')}
-                      </span>
-                      <div>
-                        <h4 className="font-serif italic text-2xl md:text-3xl text-ink/90 group-hover:text-accent transition-colors duration-500">
-                          {item.title}
-                        </h4>
-                        <p className="font-sans text-sm font-light opacity-60 text-ink/80 mt-2">
-                          {item.desc}
-                        </p>
+                    <div className="flex items-center gap-4 md:gap-12 w-full md:w-auto">
+                      <span className="gothic-text text-[10px] tracking-widest opacity-40 w-6 md:w-12">{String(i + 1).padStart(2, '0')}</span>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-serif italic text-lg md:text-3xl text-ink/90 group-hover:text-accent transition-colors duration-500">{item.title}</h4>
+                        <p className="font-sans text-xs md:text-sm font-light opacity-60 text-ink/80 mt-1 truncate md:whitespace-normal">{item.desc}</p>
                       </div>
                     </div>
-
-                    <div className="flex items-center gap-8 mt-4 md:mt-0 pl-14 md:pl-0">
-                      <span className="gothic-text text-[10px] tracking-widest text-accent border border-accent/30 px-4 py-1.5 rounded-full group-hover:bg-accent group-hover:text-white transition-colors duration-500">
-                        {item.type}
-                      </span>
-                      <ArrowUpRight className="w-5 h-5 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 text-accent hidden md:block" />
+                    <div className="flex items-center gap-4 mt-2 md:mt-0 pl-10 md:pl-0">
+                      <span className="gothic-text text-[9px] md:text-[10px] tracking-widest text-accent border border-accent/30 px-3 py-1 rounded-full group-hover:bg-accent group-hover:text-white transition-colors duration-500">{item.type}</span>
+                      <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-500 text-accent hidden md:block" />
                     </div>
                   </motion.div>
                 ))}
