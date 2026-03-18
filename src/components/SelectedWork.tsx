@@ -40,7 +40,7 @@ const works = [
       { label: "Aesthetic", value: "Dark Gold · Cyber" },
       { label: "Feature", value: "RPM System · Dynamic Island" }
     ],
-    videoUrl: "https://res.cloudinary.com/dpoym5kxi/video/upload/v1773850263/%E5%85%BB%E6%88%90f1%E8%B5%9B%E8%BD%A6%E6%89%8B_1_ikucc8.mp4",
+    videoUrl: "https://res.cloudinary.com/dpoym5kxi/video/upload/v1773853713/%E8%B5%9B%E8%BD%A6%E6%89%8B_%E5%89%AA%E5%80%8D_oazngn.mp4",
     iframeUrls: [],
     links: []
   },
