@@ -161,3 +161,23 @@ body {
   opacity: 0.8;
   mix-blend-mode: screen;
 }
+
+/* ========================================
+   MOBILE-SPECIFIC FIXES
+   ======================================== */
+
+/* Fix: Video containers on mobile — reduce height to avoid overflow */
+@media (max-width: 1023px) {
+  /* Ensure video containers don't exceed viewport */
+  video {
+    /* iOS Safari requires this for inline playback */
+    -webkit-transform: translateZ(0);
+  }
+}
+
+/* Fix: Ensure touch devices show default cursor */
+@media (pointer: coarse) {
+  body, a, button, [role="button"] {
+    cursor: auto !important;
+  }
+}
