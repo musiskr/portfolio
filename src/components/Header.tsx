@@ -14,11 +14,37 @@ const menuItems = [
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isCapsuleOpen, setIsCapsuleOpen] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const capsuleRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const { scrollY } = useScroll();
-  const headerOpacity = useTransform(scrollY, [0, 300], [1, 1]); // Always visible now
-  const headerY = useTransform(scrollY, [0, 300], [0, 0]); // Always at top now
+  const headerOpacity = useTransform(scrollY, [0, 300], [1, 1]);
+  const headerY = useTransform(scrollY, [0, 300], [0, 0]);
+
+  // Detect touch device
+  useEffect(() => {
+    setIsTouchDevice(window.matchMedia('(pointer: coarse)').matches);
+  }, []);
+
+  // Close capsule when tapping outside on mobile
+  useEffect(() => {
+    if (!isTouchDevice || !isCapsuleOpen) return;
+    
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+      if (capsuleRef.current && !capsuleRef.current.contains(e.target as Node)) {
+        setIsCapsuleOpen(false);
+      }
+    };
+    
+    document.addEventListener('touchstart', handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('touchstart', handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isTouchDevice, isCapsuleOpen]);
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -32,13 +58,11 @@ export default function Header() {
   }, [isMenuOpen]);
 
   useEffect(() => {
-    // Royalty-free dark ambient/gothic track
     const audio = new Audio('https://cdn.pixabay.com/download/audio/2022/11/22/audio_febc508520.mp3?filename=dark-ambient-128598.mp3');
     audio.loop = true;
     audio.volume = 0.5;
     audioRef.current = audio;
 
-    // Attempt autoplay
     const playAudio = () => {
       if (audioRef.current && audioRef.current.paused) {
         audioRef.current.play()
@@ -49,7 +73,6 @@ export default function Header() {
 
     playAudio();
 
-    // Add interaction listeners to start audio if autoplay was blocked
     const handleInteraction = () => {
       playAudio();
       document.removeEventListener('click', handleInteraction);
@@ -89,6 +112,12 @@ export default function Header() {
     }
   };
 
+  const handleCapsuleClick = () => {
+    if (isTouchDevice) {
+      setIsCapsuleOpen(!isCapsuleOpen);
+    }
+  };
+
   return (
     <>
       {/* Fixed Header Elements */}
@@ -97,7 +126,7 @@ export default function Header() {
           opacity: isMenuOpen ? 1 : headerOpacity, 
           y: isMenuOpen ? 0 : headerY 
         }}
-        className="fixed top-0 left-0 w-full z-[100010] pointer-events-none p-6 md:p-12 flex justify-between items-start transition-opacity duration-300"
+        className="fixed top-0 left-0 w-full z-[100010] pointer-events-none p-4 md:p-12 flex justify-between items-start transition-opacity duration-300"
       >
         {/* Top Left: Menu Button */}
         <div className="pointer-events-auto">
@@ -133,9 +162,17 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Top Right: Contact & Audio Capsule (Collapsible) */}
+        {/* Top Right: Contact & Audio Capsule */}
         <div className="pointer-events-auto flex justify-end">
-          <div className="group flex items-center border border-accent/20 rounded-full h-14 backdrop-blur-md bg-bg/60 gothic-text text-xs tracking-widest shadow-[0_5px_15px_rgba(0,0,0,0.3)] text-ink overflow-hidden transition-all duration-500 hover:shadow-[0_5px_25px_rgba(139,0,0,0.4)] hover:border-accent/50 w-14 hover:w-[380px]">
+          <div 
+            ref={capsuleRef}
+            onClick={handleCapsuleClick}
+            className={`group flex items-center border border-accent/20 rounded-full h-14 backdrop-blur-md bg-bg/60 gothic-text text-xs tracking-widest shadow-[0_5px_15px_rgba(0,0,0,0.3)] text-ink overflow-hidden transition-all duration-500 ${
+              isCapsuleOpen 
+                ? 'w-[320px] md:w-[380px] shadow-[0_5px_25px_rgba(139,0,0,0.4)] border-accent/50' 
+                : 'w-14 hover:w-[380px] hover:shadow-[0_5px_25px_rgba(139,0,0,0.4)] hover:border-accent/50'
+            }`}
+          >
             
             {/* Default Icon (Always visible) */}
             <div className="w-14 h-14 shrink-0 flex items-center justify-center cursor-pointer group-hover:bg-accent/10 transition-colors">
@@ -143,20 +180,22 @@ export default function Header() {
             </div>
 
             {/* Expanded Content */}
-            <div className="flex items-center gap-6 px-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 whitespace-nowrap">
+            <div className={`flex items-center gap-4 md:gap-6 px-2 md:px-4 transition-opacity duration-500 whitespace-nowrap ${
+              isCapsuleOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+            }`}>
               <a href="weixin://dl/chat?ejzz233" className="flex items-center gap-2 hover:text-accent transition-colors hover-trigger" title="WeChat: ejzz233">
                 <MessageCircle className="w-4 h-4" />
-                <span>WeChat</span>
+                <span className="hidden md:inline">WeChat</span>
               </a>
               <div className="w-px h-4 bg-accent/30"></div>
               <a href="mailto:musiskr@gmail.com" className="flex items-center gap-2 hover:text-accent transition-colors hover-trigger" title="Email">
                 <Mail className="w-4 h-4" />
-                <span>Email</span>
+                <span className="hidden md:inline">Email</span>
               </a>
               <div className="w-px h-4 bg-accent/30"></div>
-              <button onClick={toggleAudio} className="flex items-center gap-2 hover:text-accent transition-colors hover-trigger" title="Toggle Audio">
+              <button onClick={(e) => { e.stopPropagation(); toggleAudio(); }} className="flex items-center gap-2 hover:text-accent transition-colors hover-trigger" title="Toggle Audio">
                 {isPlaying ? <Volume2 className="w-4 h-4 text-accent" /> : <VolumeX className="w-4 h-4" />}
-                <span>{isPlaying ? 'Playing' : 'Audio'}</span>
+                <span className="hidden md:inline">{isPlaying ? 'Playing' : 'Audio'}</span>
               </button>
             </div>
 
