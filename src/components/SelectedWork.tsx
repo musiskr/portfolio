@@ -104,10 +104,35 @@ const fadeUp = {
 const WorkItem = ({ work }: { work: typeof works[0]; key?: React.Key }) => {
   const ref = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [activeIframeIdx, setActiveIframeIdx] = useState(0);
+  const [videoLoaded, setVideoLoaded] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   
   const hasVideo = work.videoUrl && work.videoUrl.length > 0;
   const hasIframe = work.iframeUrls && work.iframeUrls.length > 0;
+
+  // Force play video when it becomes visible (handles iOS edge cases)
+  useEffect(() => {
+    if (!hasVideo || !videoRef.current) return;
+    
+    const video = videoRef.current;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => {
+            // Autoplay still blocked, that's ok - user will see poster
+          });
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, [hasVideo]);
   
   const handleIframeLoad = () => {
     const iframe = iframeRef.current;
@@ -127,15 +152,15 @@ const WorkItem = ({ work }: { work: typeof works[0]; key?: React.Key }) => {
 
   return (
     <div ref={ref} className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start min-h-screen py-24 border-t border-accent/20 first:border-t-0">
-      {/* Left: Interactive Iframe Container (Borderless) */}
+      {/* Left: Interactive Container — sticky ONLY on desktop */}
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="lg:col-span-6 space-y-4 sticky top-32 z-20"
+        className="lg:col-span-6 space-y-4 lg:sticky lg:top-32 z-20"
       >
-        {/* Tags moved above the project */}
+        {/* Tags */}
         <div className="flex flex-wrap gap-3 mb-6 relative z-30">
           {work.tags.map(tag => (
             <span key={tag} className="gothic-text text-[10px] tracking-wider border border-accent/30 px-4 py-2 rounded-full text-ink/80 bg-surface/50 backdrop-blur-sm">
@@ -146,14 +171,38 @@ const WorkItem = ({ work }: { work: typeof works[0]; key?: React.Key }) => {
 
         <div className={`relative w-full bg-transparent ${work.containerClass || 'h-[70vh] lg:h-[85vh]'}`} style={{isolation: 'isolate'}}>
           {hasVideo ? (
-            <video
-              src={work.videoUrl}
-              className={`absolute inset-0 w-full h-full rounded-[36px] bg-black ${work.containerClass?.includes('max-w-[900px]') ? 'object-contain' : 'object-cover'}`}
-              autoPlay
-              loop
-              muted
-              playsInline
-            />
+            <>
+              {/* Loading skeleton shown until video loads */}
+              {!videoLoaded && !videoError && (
+                <div className="absolute inset-0 rounded-[36px] bg-surface/80 flex items-center justify-center z-[1]">
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="w-10 h-10 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
+                    <span className="gothic-text text-[10px] tracking-widest text-ink/50">LOADING</span>
+                  </div>
+                </div>
+              )}
+              {/* Error fallback */}
+              {videoError && (
+                <div className="absolute inset-0 rounded-[36px] bg-surface/80 flex items-center justify-center z-[1]">
+                  <div className="flex flex-col items-center gap-4 text-center px-8">
+                    <span className="gothic-text text-xs tracking-widest text-accent">VIDEO UNAVAILABLE</span>
+                    <span className="text-sm text-ink/50">请稍后刷新重试</span>
+                  </div>
+                </div>
+              )}
+              <video
+                ref={videoRef}
+                src={work.videoUrl}
+                className={`absolute inset-0 w-full h-full rounded-[36px] bg-black ${work.containerClass?.includes('max-w-[900px]') ? 'object-contain' : 'object-cover'}`}
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                onLoadedData={() => setVideoLoaded(true)}
+                onError={() => setVideoError(true)}
+              />
+            </>
           ) : hasIframe ? (
             <iframe
               ref={iframeRef}
@@ -172,7 +221,7 @@ const WorkItem = ({ work }: { work: typeof works[0]; key?: React.Key }) => {
           </div>
         </div>
 
-        {/* Version Toggles - Moved Below Iframe */}
+        {/* Version Toggles */}
         {hasIframe && work.iframeUrls.length > 1 && (
           <div className="flex justify-center gap-4 mt-6 relative z-30">
             {work.iframeUrls.map((urlObj, idx) => (
