@@ -19,7 +19,7 @@ const works = [
       { label: "Interaction", value: "SVG · Music" },
       { label: "Content", value: "World Book + Cards" }
     ],
-    videoUrl: "https://res.cloudinary.com/dpoym5kxi/video/upload/v1773669568/%E5%BF%AB%E4%B9%90%E8%B6%B3%E7%90%83%E6%A8%A1%E6%8B%9F%E5%99%A8_paqsnn.mp4",
+    videoUrl: "https://res.cloudinary.com/dpoym5kxi/video/upload/v1773850151/%E5%BF%AB%E4%B9%90%E8%B6%B3%E7%90%83_%E5%80%8D%E9%80%9F%E7%89%88_nf3wwo.mp4",
     iframeUrls: [],
     links: []
   },
@@ -40,7 +40,7 @@ const works = [
       { label: "Aesthetic", value: "Dark Gold · Cyber" },
       { label: "Feature", value: "RPM System · Dynamic Island" }
     ],
-    videoUrl: "https://res.cloudinary.com/dpoym5kxi/video/upload/v1773675144/%E5%85%BB%E6%88%90F1%E8%B5%9B%E8%BD%A6%E6%89%8B_yhrfux.mp4",
+    videoUrl: "https://res.cloudinary.com/dpoym5kxi/video/upload/v1773850263/%E5%85%BB%E6%88%90f1%E8%B5%9B%E8%BD%A6%E6%89%8B_1_ikucc8.mp4",
     iframeUrls: [],
     links: []
   },
@@ -61,7 +61,7 @@ const works = [
       { label: "Tech", value: "HTML/CSS/JS · Regex" },
       { label: "Platform", value: "Mobile-First" }
     ],
-    videoUrl: "https://res.cloudinary.com/dpoym5kxi/video/upload/v1773669541/%E6%9C%AB%E4%B8%96%E7%8A%B6%E6%80%81%E6%A0%8F_%E5%8E%8B%E7%BC%A9_foprkc.mp4",
+    videoUrl: "https://res.cloudinary.com/dpoym5kxi/video/upload/v1773850204/%E6%9C%AB%E4%B8%96%E7%8A%B6%E6%80%81%E6%A0%8F_%E5%80%8D%E9%80%9F%E7%89%88_kfnc69.mp4",
     iframeUrls: [],
     links: []
   },
