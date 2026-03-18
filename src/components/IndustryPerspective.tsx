@@ -24,40 +24,40 @@ const fadeUp = {
 
 export default function IndustryPerspective() {
   return (
-    <section id="perspective" className="py-32 px-6 md:px-12 lg:px-24 bg-surface relative filigree-border overflow-hidden">
+    <section id="perspective" className="py-16 md:py-32 px-4 md:px-12 lg:px-24 bg-surface relative filigree-border overflow-hidden">
       <div className="absolute top-[20%] left-[-20%] w-[60vw] h-[60vw] bg-accent/5 organic-shape blur-3xl animate-float pointer-events-none z-0" />
       
       <div className="max-w-7xl mx-auto relative z-10">
-        <motion.div {...fadeUp} className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-24 border-b border-accent/20 pb-12">
+        <motion.div {...fadeUp} className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-8 mb-12 md:mb-24 border-b border-accent/20 pb-6 md:pb-12">
           <div>
-            <span className="gothic-text text-sm tracking-widest opacity-60 block mb-4 text-accent">06 // DOSSIER: PERSPECTIVE</span>
-            <h2 className="gothic-text text-5xl md:text-7xl tracking-widest">Industry Perspective</h2>
+            <span className="gothic-text text-xs md:text-sm tracking-widest opacity-60 block mb-3 text-accent">06 // DOSSIER: PERSPECTIVE</span>
+            <h2 className="gothic-text text-3xl md:text-7xl tracking-widest">Industry Perspective</h2>
           </div>
-          <p className="font-serif text-2xl italic opacity-80 max-w-md md:text-right text-ink drop-shadow-sm">
+          <p className="font-serif text-lg md:text-2xl italic opacity-80 max-w-md md:text-right text-ink drop-shadow-sm">
             不只是创作者，也是深度用户。从 Glow 到开源社区，从国内 App 到全球平台——我理解这个赛道。
           </p>
         </motion.div>
 
-        <div className="flex flex-col gap-16">
+        <div className="flex flex-col gap-8 md:gap-16">
           {insights.map((insight, i) => (
             <motion.div 
               key={i} 
               {...fadeUp}
               transition={{ ...fadeUp.transition, delay: 0.1 }}
-              className="relative p-12 md:p-16 bg-bg/50 border border-accent/20 rounded-[40px_10px_40px_10px] hover:bg-accent/10 hover:border-accent/50 transition-all duration-700 group hover-trigger shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_50px_rgba(139,0,0,0.2)] overflow-hidden"
+              className="relative p-6 md:p-16 bg-bg/50 border border-accent/20 rounded-[40px_10px_40px_10px] hover:bg-accent/10 hover:border-accent/50 transition-all duration-700 group hover-trigger shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_50px_rgba(139,0,0,0.2)] overflow-hidden"
             >
               <div className="absolute -right-10 -top-10 w-40 h-40 bg-accent/10 organic-shape blur-2xl group-hover:bg-accent/30 transition-colors duration-700" />
               
-              <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-start md:items-center relative z-10">
-                <div className="gothic-text text-6xl md:text-8xl text-accent/20 group-hover:text-accent/60 transition-colors duration-700 drop-shadow-md">
+              <div className="flex flex-col md:flex-row gap-4 md:gap-16 items-start md:items-center relative z-10">
+                <div className="gothic-text text-4xl md:text-8xl text-accent/20 group-hover:text-accent/60 transition-colors duration-700 drop-shadow-md">
                   0{i + 1}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-serif italic text-3xl md:text-5xl mb-6 relative inline-block text-ink">
+                  <h3 className="font-serif italic text-2xl md:text-5xl mb-3 md:mb-6 relative inline-block text-ink">
                     {insight.title}
-                    <span className="absolute -bottom-4 left-0 w-12 h-[2px] bg-accent group-hover:w-full transition-all duration-700 organic-line"></span>
+                    <span className="absolute -bottom-2 md:-bottom-4 left-0 w-12 h-[2px] bg-accent group-hover:w-full transition-all duration-700 organic-line"></span>
                   </h3>
-                  <p className="font-sans text-lg md:text-xl leading-relaxed opacity-80 group-hover:opacity-100 max-w-4xl text-ink/90 transition-opacity duration-700">
+                  <p className="font-sans text-sm md:text-xl leading-relaxed opacity-80 group-hover:opacity-100 max-w-4xl text-ink/90 transition-opacity duration-700 mt-4 md:mt-0">
                     {insight.content}
                   </p>
                 </div>
