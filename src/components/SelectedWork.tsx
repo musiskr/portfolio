@@ -3,6 +3,28 @@ import React, { useRef, useState, useEffect } from 'react';
 
 const works = [
   {
+    title: "STARDATE · 星历",
+    tags: ["Game Design", "Narrative", "AI Simulation", "2026"],
+    stamp: "In Dev",
+    intro: "星际政治叙事 × AI驱动世界模拟 · 女性向内容产品。没有任何一条路是必经之路。但你选的每一条，都会有人因此活下来，或者死去。",
+    detail: "不给她一个被爱的世界，给她一个值得她做决定的世界。STARDATE 是一个星际政治题材的女性向叙事产品——不卖匮乏卖权力，不做好感度养成，做决策与后果。参考系：Suzerain × Reigns × 极乐迪斯科。独立完成 8 万字项目圣经、12 势力 × 11 维度设计矩阵、系统机制文档、角色详设、对话脚本、Pitch Doc 等完整文档体系。",
+    hint: "",
+    containerClass: "h-[500px] lg:h-[600px] w-full max-w-[900px] mx-auto rounded-[20px] overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.2)] border-4 border-accent/10",
+    problem: "女性向游戏市场 2024 年达 80 亿元（+124.1%），但增长高度集中于头部，所有人在优化同一个答案：更逼真的陪伴、更精致的卡面、更高的好感度天花板。没人在问新问题——如果女性玩家想要的不是被爱，而是被认真对待呢？",
+    explore: "方案A：AI 升级传统乙游，用语音/3D 建模做更逼真的陪伴；方案B：加入政治设定但保留好感度核心循环；方案C：彻底重构——没有好感度，没有卡池，没有货币，玩家的资源是时间和政治筹码。",
+    decision: "选择方案C。「批奏触发一切」：每个决策周期 5 个时间槽，处理政务事件或执行非决策行动。角色不等你去攻略——是你的决策把他们逼到你面前。数值在底层驱动，体验层只有叙事语气和氛围的变化。12 势力星际格局 + 星潮模型（心理史学武器化）+ 基因筛选计划（三百年审美操控）构成世界观底座。",
+    stats: [
+      { label: "Bible", value: "80,000+ Words" },
+      { label: "Factions", value: "12 Powers × 11D" },
+      { label: "Characters", value: "5M + 7F Core" },
+      { label: "Reference", value: "Suzerain · Reigns · DE" }
+    ],
+    imageUrl: "https://res.cloudinary.com/dpoym5kxi/image/upload/v1774542300/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE_2026-03-26_184246_dbl6h4.png",
+    videoUrl: "",
+    iframeUrls: [],
+    links: []
+  },
+  {
     title: "Happy Football Simulator",
     tags: ["Product Concept", "Narrative", "2025"],
     stamp: "Featured",
@@ -19,6 +41,7 @@ const works = [
       { label: "Interaction", value: "SVG · Music" },
       { label: "Content", value: "World Book + Cards" }
     ],
+    imageUrl: "",
     videoUrl: "https://res.cloudinary.com/dpoym5kxi/video/upload/v1773850151/%E5%BF%AB%E4%B9%90%E8%B6%B3%E7%90%83_%E5%80%8D%E9%80%9F%E7%89%88_nf3wwo.mp4",
     iframeUrls: [],
     links: []
@@ -40,6 +63,7 @@ const works = [
       { label: "Aesthetic", value: "Dark Gold · Cyber" },
       { label: "Feature", value: "RPM System · Dynamic Island" }
     ],
+    imageUrl: "",
     videoUrl: "https://res.cloudinary.com/dpoym5kxi/video/upload/v1773853713/%E8%B5%9B%E8%BD%A6%E6%89%8B_%E5%89%AA%E5%80%8D_oazngn.mp4",
     iframeUrls: [],
     links: []
@@ -61,6 +85,7 @@ const works = [
       { label: "Tech", value: "HTML/CSS/JS · Regex" },
       { label: "Platform", value: "Mobile-First" }
     ],
+    imageUrl: "",
     videoUrl: "https://res.cloudinary.com/dpoym5kxi/video/upload/v1773850204/%E6%9C%AB%E4%B8%96%E7%8A%B6%E6%80%81%E6%A0%8F_%E5%80%8D%E9%80%9F%E7%89%88_kfnc69.mp4",
     iframeUrls: [],
     links: []
@@ -82,6 +107,7 @@ const works = [
       { label: "Aesthetic", value: "Gothic · Baroque" },
       { label: "Language", value: "FR / EN Bilingual" }
     ],
+    imageUrl: "",
     videoUrl: "",
     iframeUrls: [
       { label: "Dark Mode", url: "/卡片状态栏-暗色版.html" },
@@ -111,6 +137,7 @@ const WorkItem = ({ work }: { work: typeof works[0]; key?: React.Key }) => {
   
   const hasVideo = work.videoUrl && work.videoUrl.length > 0;
   const hasIframe = work.iframeUrls && work.iframeUrls.length > 0;
+  const hasImage = work.imageUrl && work.imageUrl.length > 0;
 
   // Force play video when it becomes visible (handles iOS edge cases)
   useEffect(() => {
@@ -213,6 +240,13 @@ const WorkItem = ({ work }: { work: typeof works[0]; key?: React.Key }) => {
               onLoad={handleIframeLoad}
               sandbox="allow-scripts allow-same-origin allow-popups"
               scrolling="no"
+            />
+          ) : hasImage ? (
+            <img
+              src={work.imageUrl}
+              alt={work.title}
+              className="absolute inset-0 w-full h-full rounded-[16px] object-cover"
+              loading="lazy"
             />
           ) : null}
 
