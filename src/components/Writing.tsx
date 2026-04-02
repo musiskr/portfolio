@@ -147,7 +147,7 @@ function ScriptCardComponent({ card }: { card: ScriptCard }) {
       {/* Card */}
       <div 
         onClick={() => setIsOpen(!isOpen)}
-        className="relative border border-accent/20 bg-gradient-to-br from-surface/90 to-bg/90 backdrop-blur-sm rounded-sm overflow-hidden cursor-pointer transition-all duration-500 hover:border-accent/40 hover:shadow-[0_0_30px_rgba(139,0,0,0.15)]"
+        className="relative border border-accent/20 bg-gradient-to-br from-surface/90 to-bg/90 backdrop-blur-sm rounded-sm overflow-hidden cursor-none transition-all duration-500 hover:border-accent/40 hover:shadow-[0_0_30px_rgba(139,0,0,0.15)]"
       >
         {/* Top bar */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-accent/10">
