@@ -47,8 +47,8 @@ body {
 
 /* Custom cursor only on non-touch devices */
 @media (pointer: fine) {
-  body { cursor: none; }
-  a, button, [role="button"] { cursor: none; }
+  body { cursor: none !important; }
+  *, a, button, [role="button"] { cursor: none !important; }
 }
 @media (pointer: coarse) {
   body, a, button, [role="button"] { cursor: auto !important; }
