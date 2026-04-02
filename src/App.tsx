@@ -9,6 +9,7 @@ import Hero from './components/Hero';
 import About from './components/About';
 import WhatIDo from './components/WhatIDo';
 import SelectedWork from './components/SelectedWork';
+import Writing from './components/Writing';
 import CharacterArchive from './components/CharacterArchive';
 import HowIWork from './components/HowIWork';
 import IndustryPerspective from './components/IndustryPerspective';
@@ -47,6 +48,7 @@ export default function App() {
       <WhatIDo />
       <HowIWork />
       <SelectedWork />
+      <Writing />
       <CharacterArchive />
       <IndustryPerspective />
       <Photography />
