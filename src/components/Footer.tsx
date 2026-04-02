@@ -30,10 +30,10 @@ export default function Footer() {
 
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
           <motion.div style={{ scale: textScale, opacity: textOpacity, y: textY }} className="text-center px-4">
-            <h2 className="gothic-text text-[12vw] md:text-[6vw] leading-[0.8] tracking-tighter text-ink drop-shadow-lg">
+            <h2 className="gothic-text text-[12vw] md:text-[6vw] leading-[0.8] tracking-tighter text-white/90 drop-shadow-[0_0_30px_rgba(139,0,0,0.4)]">
               Let's build
             </h2>
-            <h2 className="gothic-text text-[12vw] md:text-[6vw] leading-[0.8] tracking-tighter text-accent italic drop-shadow-lg">
+            <h2 className="gothic-text text-[12vw] md:text-[6vw] leading-[0.8] tracking-tighter text-[#e8c8b0] italic drop-shadow-[0_0_30px_rgba(139,0,0,0.4)]">
               worlds together.
             </h2>
           </motion.div>
