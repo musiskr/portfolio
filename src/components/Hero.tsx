@@ -13,11 +13,11 @@ export default function Hero() {
   const nameY = useTransform(scrollYProgress, [0, 0.4], ["0%", "-50%"]);
   const nameOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-  const avatarOpacity = useTransform(scrollYProgress, [0.03, 0.1], [0, 1]);
-  const avatarY = useTransform(scrollYProgress, [0.03, 0.1], [40, 0]);
+  const avatarOpacity = useTransform(scrollYProgress, [0.01, 0.06], [0, 1]);
+  const avatarY = useTransform(scrollYProgress, [0.01, 0.06], [40, 0]);
 
-  const bioOpacity = useTransform(scrollYProgress, [0.08, 0.15], [0, 1]);
-  const bioY = useTransform(scrollYProgress, [0.08, 0.15], [40, 0]);
+  const bioOpacity = useTransform(scrollYProgress, [0.03, 0.08], [0, 1]);
+  const bioY = useTransform(scrollYProgress, [0.03, 0.08], [40, 0]);
 
   const sectionOpacity = useTransform(scrollYProgress, [0.8, 1], [1, 0]);
 
@@ -67,7 +67,8 @@ export default function Hero() {
           >
             <img 
               src="/keen.jpg" 
-              alt="Keen Zhou" 
+              alt="Keen Zhou"
+              onError={(e) => { (e.target as HTMLImageElement).src = '/我的照片/我(1).jpg'; }}
               className="w-full h-full object-cover organic-shape transition-all duration-700 hover:scale-110"
             />
           </motion.div>
