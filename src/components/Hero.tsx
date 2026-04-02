@@ -13,11 +13,11 @@ export default function Hero() {
   const nameY = useTransform(scrollYProgress, [0, 0.4], ["0%", "-50%"]);
   const nameOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-  const avatarOpacity = useTransform(scrollYProgress, [0.1, 0.25], [0, 1]);
-  const avatarY = useTransform(scrollYProgress, [0.1, 0.25], [40, 0]);
+  const avatarOpacity = useTransform(scrollYProgress, [0.03, 0.1], [0, 1]);
+  const avatarY = useTransform(scrollYProgress, [0.03, 0.1], [40, 0]);
 
-  const bioOpacity = useTransform(scrollYProgress, [0.25, 0.4], [0, 1]);
-  const bioY = useTransform(scrollYProgress, [0.25, 0.4], [40, 0]);
+  const bioOpacity = useTransform(scrollYProgress, [0.08, 0.15], [0, 1]);
+  const bioY = useTransform(scrollYProgress, [0.08, 0.15], [40, 0]);
 
   const sectionOpacity = useTransform(scrollYProgress, [0.8, 1], [1, 0]);
 
@@ -66,10 +66,9 @@ export default function Hero() {
             className="w-20 h-20 md:w-40 md:h-40 shrink-0 overflow-hidden border border-accent/30 bg-surface p-1 organic-shape shadow-[0_0_20px_rgba(139,0,0,0.3)]"
           >
             <img 
-              src={encodeURI("/我的照片/我(1).jpg")} 
+              src="/keen.jpg" 
               alt="Keen Zhou" 
               className="w-full h-full object-cover organic-shape transition-all duration-700 hover:scale-110"
-              referrerPolicy="no-referrer"
             />
           </motion.div>
           
