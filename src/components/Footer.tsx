@@ -18,7 +18,7 @@ export default function Footer() {
   const bottomY = useTransform(scrollYProgress, [0.8, 1], [50, 0]);
 
   return (
-    <footer ref={containerRef} className="relative h-[150vh] bg-bg filigree-border">
+    <footer ref={containerRef} className="relative h-[200vh] bg-bg filigree-border">
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-end pb-8 md:pb-12 px-4 md:px-12 lg:px-24">
         
         <motion.div 
