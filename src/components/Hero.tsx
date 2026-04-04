@@ -34,7 +34,7 @@ export default function Hero() {
           <div className="absolute bottom-1/4 right-1/4 w-[50vw] h-[50vw] bg-white/5 organic-shape blur-3xl animate-float" style={{ animationDelay: '-5s' }} />
         </div>
 
-        {/* Massive Name */}
+        {/* Name */}
         <motion.div 
           style={{ scale: nameScale, y: nameY, opacity: nameOpacity }}
           className="relative z-10 flex flex-col items-center justify-center w-full transform-origin-center"
@@ -59,7 +59,7 @@ export default function Hero() {
           </h1>
         </motion.div>
 
-        {/* Avatar and Bio — smaller + stacked on mobile */}
+        {/* Avatar and Bio */}
         <div className="absolute bottom-6 md:bottom-24 left-4 right-4 md:left-12 md:right-auto z-20 max-w-2xl flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-8">
           <motion.div 
             style={{ opacity: avatarOpacity, y: avatarY }}
@@ -77,21 +77,21 @@ export default function Hero() {
             style={{ opacity: bioOpacity, y: bioY }}
             className="flex flex-col justify-center bg-black/40 backdrop-blur-md p-4 md:p-6 rounded-[40px_10px_40px_10px] border border-white/5"
           >
-            <p className="font-serif text-lg md:text-3xl italic leading-relaxed text-ink drop-shadow-md text-center md:text-left">
-              Hello! I'm a Narrative Architect & Interaction Designer.
+            <p className="font-serif text-lg md:text-2xl italic leading-relaxed text-ink drop-shadow-md text-center md:text-left">
+              游戏内容策划 · 叙事设计 · 交互原型
             </p>
-            <p className="font-serif text-sm md:text-xl italic text-ink/70 mt-2 md:mt-4 leading-relaxed text-center md:text-left">
-              Exploring the boundaries between human emotion and the digital world.
+            <p className="font-sans text-xs md:text-sm text-ink/50 mt-2 md:mt-3 leading-relaxed text-center md:text-left tracking-wide">
+              独立完成多个跨题材游戏项目的全流程策划与可交互原型
             </p>
           </motion.div>
         </div>
 
-        {/* Scroll Indicator — hidden on mobile to avoid overlap */}
+        {/* Scroll Indicator */}
         <motion.div 
           style={{ opacity: useTransform(scrollYProgress, [0, 0.1], [1, 0]) }}
           className="absolute bottom-12 left-1/2 -translate-x-1/2 flex-col items-center gap-4 hidden md:flex"
         >
-          <span className="gothic-text text-[10px] opacity-60 tracking-[0.3em]">DESCEND</span>
+          <span className="gothic-text text-[10px] opacity-60 tracking-[0.3em]">SCROLL</span>
           <div className="w-[1px] h-16 bg-gradient-to-b from-accent/80 to-transparent organic-line" />
         </motion.div>
       </motion.div>
