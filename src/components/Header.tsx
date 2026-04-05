@@ -4,11 +4,9 @@ import { MessageCircle, Mail, Volume2, VolumeX, ArrowRight } from 'lucide-react'
 
 const menuItems = [
   { num: '01', label: 'ABOUT', href: '#about' },
-  { num: '02', label: 'SERVICES', href: '#services' },
-  { num: '03', label: 'WORK', href: '#work' },
+  { num: '02', label: 'WORK', href: '#work' },
+  { num: '03', label: 'WRITING', href: '#writing' },
   { num: '04', label: 'ARCHIVE', href: '#archive' },
-  { num: '05', label: 'PERSPECTIVE', href: '#perspective' },
-  { num: '06', label: 'PHOTOGRAPHY', href: '#photography' },
 ];
 
 export default function Header() {
