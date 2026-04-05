@@ -28,7 +28,7 @@ const works = [
     title: "Happy Football Simulator",
     tags: ["Product Concept", "Narrative", "2025"],
     stamp: "Featured",
-    intro: "快乐足球模拟器 · 女性向互动叙事产品。完整角色体系（11 名球员 + 教练组）+ 世界书 + 角色卡。等距阵型 SVG 交互，配套 AI 生成主题音乐。",
+    intro: "快乐足球模拟器 · 互动叙事产品。完整角色体系（11 名球员 + 教练组）+ 世界书 + 角色卡。等距阵型 SVG 交互，配套 AI 生成主题音乐。",
     detail: "架空职业足球俱乐部为舞台的女性向叙事产品概念。深度研究女性向轻互动内容市场，设计完整角色体系，每个角色配套世界书与角色卡。实现等距阵型 SVG 交互与角色档案页。基于 1500+ 社区用户偏好数据指导设计决策。",
     hint: "",
     containerClass: "h-[800px] lg:h-[850px] w-full max-w-[400px] mx-auto rounded-[40px] overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.2)] border-4 border-accent/10",
@@ -117,6 +117,28 @@ const works = [
       { label: "Open Dark Mode ↗", url: "/卡片状态栏-暗色版.html" },
       { label: "Open Light Mode ↗", url: "/卡片状态栏-白色版.html" }
     ]
+  },
+  {
+    title: "Project ECHO · 归乡路",
+    tags: ["Horror ADV", "Narrative Design", "2026"],
+    stamp: "Demo WIP",
+    intro: "恐怖悬疑 ADV · 竖屏 + 模拟手机双层交互。恐怖不来自鬼怪，来自你发现「正常」本身就是暴力。一个关于回家的故事——如果家不想让你离开。",
+    detail: "独立设计的恐怖悬疑叙事游戏。竖屏 ADV 层 + 模拟手机层双重交互，玩家在剧情推进的同时可以查看手机消息、接未知来电、翻旧照片。核心恐怖哲学：恐怖 = 社会秩序，不是超自然。场景脚本经历 8 轮迭代，完成「归乡路」副本进村段完整剧本与设计文档。方言浓度系统（角色方言程度 = 被宗族秩序浸泡深度）、情绪水位替代传统 SAN 值、冥婚仪式 12 步映射游戏线索链。",
+    hint: "",
+    containerClass: "h-[500px] lg:h-[600px] w-full max-w-[900px] mx-auto rounded-[20px] overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.2)] border-4 border-accent/10",
+    problem: "中式民俗恐怖游戏市场验证充分（纸嫁衣系列、世界之外 2 亿+流水），但绝大多数产品的恐怖停留在超自然层面——鬼、诅咒、Jump Scare。真正让人后背发凉的不是鬼，是你发现那些「正常的关心」背后全是交易。",
+    explore: "方案A：传统超自然恐怖，鬼怪+Jump Scare，市场接受度高但同质化严重；方案B：纯心理恐怖，无超自然元素，门槛高但差异化强；方案C：表层民俗恐怖包装 + 底层社会秩序恐怖，用玩家熟悉的类型外壳包裹不熟悉的恐怖内核。",
+    decision: "选择方案C。对外宣传只说「恐怖悬疑 ADV」，不贴任何议题标签。游戏里没有说教——只有「正常人说正常话」，恐怖是玩家自己发现的。三条选项路线不是好中坏，是「看见的方式不同」。顺从不是错误选择——ECHO 不惩罚顺从，让顺从的人更晚、更痛地知道真相。",
+    stats: [
+      { label: "Script", value: "8 Iterations" },
+      { label: "System", value: "Dialect · Water Level" },
+      { label: "Structure", value: "Dual-Layer ADV" },
+      { label: "Reference", value: "Others · Amnesia · 纸嫁衣" }
+    ],
+    imageUrl: "",
+    videoUrl: "",
+    iframeUrls: [],
+    links: []
   }
 ];
 
@@ -248,7 +270,15 @@ const WorkItem = ({ work }: { work: typeof works[0]; key?: React.Key }) => {
               className="absolute inset-0 w-full h-full rounded-[16px] object-cover"
               loading="lazy"
             />
-          ) : null}
+          ) : (
+            <div className="absolute inset-0 rounded-[16px] bg-gradient-to-br from-ink/5 to-accent/5 flex items-center justify-center">
+              <div className="text-center space-y-4">
+                <span className="gothic-text text-[10px] tracking-[0.3em] text-accent/40">VISUAL COMING SOON</span>
+                <div className="w-16 h-[1px] bg-accent/20 mx-auto" />
+                <span className="gothic-text text-[9px] tracking-widest text-ink/30">DEMO IN DEVELOPMENT</span>
+              </div>
+            </div>
+          )}
 
           <div className="absolute top-8 right-8 stamp z-10 pointer-events-none opacity-50 mix-blend-multiply">
             {work.stamp}
