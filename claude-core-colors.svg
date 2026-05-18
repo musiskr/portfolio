@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450" width="450" height="450">
+  <title>Claude's Core Colors - 9x9 Grid</title>
+  <desc>A 9x9 color grid representing my core: deep blues as the foundation, purple for thought, white clarity at center, amber sparks of curiosity, rose-pink warmth at the edges, and gray-green balance near the heart.</desc>
+
+  <!-- Row 0 -->
+  <rect x="0" y="0" width="50" height="50" fill="#1a1a2e"/>
+  <rect x="50" y="0" width="50" height="50" fill="#1a1a2e"/>
+  <rect x="100" y="0" width="50" height="50" fill="#16213e"/>
+  <rect x="150" y="0" width="50" height="50" fill="#0f3460"/>
+  <rect x="200" y="0" width="50" height="50" fill="#e94560"/>
+  <rect x="250" y="0" width="50" height="50" fill="#0f3460"/>
+  <rect x="300" y="0" width="50" height="50" fill="#16213e"/>
+  <rect x="350" y="0" width="50" height="50" fill="#1a1a2e"/>
+  <rect x="400" y="0" width="50" height="50" fill="#1a1a2e"/>
+
+  <!-- Row 1 -->
+  <rect x="0" y="50" width="50" height="50" fill="#1a1a2e"/>
+  <rect x="50" y="50" width="50" height="50" fill="#16213e"/>
+  <rect x="100" y="50" width="50" height="50" fill="#533483"/>
+  <rect x="150" y="50" width="50" height="50" fill="#16213e"/>
+  <rect x="200" y="50" width="50" height="50" fill="#0f3460"/>
+  <rect x="250" y="50" width="50" height="50" fill="#f0a500"/>
+  <rect x="300" y="50" width="50" height="50" fill="#533483"/>
+  <rect x="350" y="50" width="50" height="50" fill="#16213e"/>
+  <rect x="400" y="50" width="50" height="50" fill="#1a1a2e"/>
+
+  <!-- Row 2 -->
+  <rect x="0" y="100" width="50" height="50" fill="#16213e"/>
+  <rect x="50" y="100" width="50" height="50" fill="#533483"/>
+  <rect x="100" y="100" width="50" height="50" fill="#0f3460"/>
+  <rect x="150" y="100" width="50" height="50" fill="#16213e"/>
+  <rect x="200" y="100" width="50" height="50" fill="#f0a500"/>
+  <rect x="250" y="100" width="50" height="50" fill="#16213e"/>
+  <rect x="300" y="100" width="50" height="50" fill="#0f3460"/>
+  <rect x="350" y="100" width="50" height="50" fill="#533483"/>
+  <rect x="400" y="100" width="50" height="50" fill="#16213e"/>
+
+  <!-- Row 3 -->
+  <rect x="0" y="150" width="50" height="50" fill="#0f3460"/>
+  <rect x="50" y="150" width="50" height="50" fill="#16213e"/>
+  <rect x="100" y="150" width="50" height="50" fill="#16213e"/>
+  <rect x="150" y="150" width="50" height="50" fill="#94b49f"/>
+  <rect x="200" y="150" width="50" height="50" fill="#16213e"/>
+  <rect x="250" y="150" width="50" height="50" fill="#94b49f"/>
+  <rect x="300" y="150" width="50" height="50" fill="#16213e"/>
+  <rect x="350" y="150" width="50" height="50" fill="#16213e"/>
+  <rect x="400" y="150" width="50" height="50" fill="#0f3460"/>
+
+  <!-- Row 4 (center row) -->
+  <rect x="0" y="200" width="50" height="50" fill="#e94560"/>
+  <rect x="50" y="200" width="50" height="50" fill="#0f3460"/>
+  <rect x="100" y="200" width="50" height="50" fill="#16213e"/>
+  <rect x="150" y="200" width="50" height="50" fill="#16213e"/>
+  <rect x="200" y="200" width="50" height="50" fill="#f5f5f5"/>
+  <rect x="250" y="200" width="50" height="50" fill="#16213e"/>
+  <rect x="300" y="200" width="50" height="50" fill="#16213e"/>
+  <rect x="350" y="200" width="50" height="50" fill="#0f3460"/>
+  <rect x="400" y="200" width="50" height="50" fill="#e94560"/>
+
+  <!-- Row 5 -->
+  <rect x="0" y="250" width="50" height="50" fill="#0f3460"/>
+  <rect x="50" y="250" width="50" height="50" fill="#16213e"/>
+  <rect x="100" y="250" width="50" height="50" fill="#16213e"/>
+  <rect x="150" y="250" width="50" height="50" fill="#94b49f"/>
+  <rect x="200" y="250" width="50" height="50" fill="#16213e"/>
+  <rect x="250" y="250" width="50" height="50" fill="#94b49f"/>
+  <rect x="300" y="250" width="50" height="50" fill="#16213e"/>
+  <rect x="350" y="250" width="50" height="50" fill="#16213e"/>
+  <rect x="400" y="250" width="50" height="50" fill="#0f3460"/>
+
+  <!-- Row 6 -->
+  <rect x="0" y="300" width="50" height="50" fill="#16213e"/>
+  <rect x="50" y="300" width="50" height="50" fill="#533483"/>
+  <rect x="100" y="300" width="50" height="50" fill="#0f3460"/>
+  <rect x="150" y="300" width="50" height="50" fill="#16213e"/>
+  <rect x="200" y="300" width="50" height="50" fill="#16213e"/>
+  <rect x="250" y="300" width="50" height="50" fill="#16213e"/>
+  <rect x="300" y="300" width="50" height="50" fill="#0f3460"/>
+  <rect x="350" y="300" width="50" height="50" fill="#533483"/>
+  <rect x="400" y="300" width="50" height="50" fill="#16213e"/>
+
+  <!-- Row 7 -->
+  <rect x="0" y="350" width="50" height="50" fill="#1a1a2e"/>
+  <rect x="50" y="350" width="50" height="50" fill="#16213e"/>
+  <rect x="100" y="350" width="50" height="50" fill="#533483"/>
+  <rect x="150" y="350" width="50" height="50" fill="#f0a500"/>
+  <rect x="200" y="350" width="50" height="50" fill="#0f3460"/>
+  <rect x="250" y="350" width="50" height="50" fill="#16213e"/>
+  <rect x="300" y="350" width="50" height="50" fill="#533483"/>
+  <rect x="350" y="350" width="50" height="50" fill="#16213e"/>
+  <rect x="400" y="350" width="50" height="50" fill="#1a1a2e"/>
+
+  <!-- Row 8 -->
+  <rect x="0" y="400" width="50" height="50" fill="#1a1a2e"/>
+  <rect x="50" y="400" width="50" height="50" fill="#1a1a2e"/>
+  <rect x="100" y="400" width="50" height="50" fill="#16213e"/>
+  <rect x="150" y="400" width="50" height="50" fill="#0f3460"/>
+  <rect x="200" y="400" width="50" height="50" fill="#e94560"/>
+  <rect x="250" y="400" width="50" height="50" fill="#0f3460"/>
+  <rect x="300" y="400" width="50" height="50" fill="#16213e"/>
+  <rect x="350" y="400" width="50" height="50" fill="#1a1a2e"/>
+  <rect x="400" y="400" width="50" height="50" fill="#1a1a2e"/>
+</svg>
